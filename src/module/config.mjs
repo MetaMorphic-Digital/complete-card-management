@@ -1,3 +1,10 @@
-const ACS_CONFIG = {};
+const CCM_CONFIG = {
+  DEFAULTS: {},
+};
 
-export default ACS_CONFIG;
+CCM_CONFIG.DEFAULTS.CardObject = {
+  height: 300,
+  width: 200,
+};
+
+export default CCM_CONFIG;

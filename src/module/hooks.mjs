@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/no-undefined-types */
 import * as apps from './apps/_module.mjs';
-import * as canvas from './canvas/_module.mjs';
-import ACS_CONFIG from './config.mjs';
+import * as ccm_canvas from './canvas/_module.mjs';
+import CCM_CONFIG from './config.mjs';
 import { MODULE_ID } from './helpers.mjs';
 import { addCard, removeCard } from './patches.mjs';
 
@@ -10,20 +10,20 @@ import { addCard, removeCard } from './patches.mjs';
  */
 export function init() {
   // TODO: Consider ASCII art
-  console.log('Initializing ACS');
-  CONFIG.ACS = ACS_CONFIG;
+  console.log('Complete Card Management | Initializing');
+  CONFIG.CCM = CCM_CONFIG;
 
   foundry.utils.mergeObject(CONFIG.Canvas, {
     layers: {
       cards: {
         group: 'interface',
-        layerClass: canvas.CardLayer,
+        layerClass: ccm_canvas.CardLayer,
       },
     },
   });
 
-  CONFIG.Card.objectClass = canvas.CardObject;
-  CONFIG.Card.layerClass = canvas.CardLayer;
+  CONFIG.Card.objectClass = ccm_canvas.CardObject;
+  CONFIG.Card.layerClass = ccm_canvas.CardLayer;
   CONFIG.Card.hudClass = apps.CardHud;
 
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheet, {
@@ -37,14 +37,14 @@ export function init() {
   interfaceCls.prototype.addCard = addCard;
   interfaceCls.prototype.removeCard = removeCard;
 
-  Hooks.callAll('ACSInit');
+  Hooks.callAll('CCMInit');
 }
 
 /**
  * Run on Foundry ready
  */
 export function ready() {
-  console.log('ACS Ready');
+  console.log('Complete Card Management | Ready');
 }
 
 /**
@@ -69,18 +69,12 @@ export function dropCanvasData(canvas, data) {
 async function handleCardDrop(canvas, data) {
   /** @type {Card} */
   const card = await fromUuid(data.uuid);
-  /** @type {import('./_types.mjs').CardObjectModelData} */
-  const objectData = {
-    alpha: 1,
-    elevation: 0,
-    height: 300,
-    width: 200,
-    rotation: 0,
-    sort: 0,
+  const cardObject = new ccm_canvas.CardObjectModel({
+    ...CONFIG.CCM.DEFAULTS.CardObject,
     x: data.x,
     y: data.y,
-  };
-  await card.setFlag(MODULE_ID, canvas.scene.id, objectData);
+  });
+  await card.setFlag(MODULE_ID, canvas.scene.id, cardObject['_source']);
 
   const currentCards =
     game.scenes.active.getFlag(MODULE_ID, 'cardCollection') ?? [];

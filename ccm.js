@@ -1,7 +1,9 @@
-import * as hooksACS from './src/module/hooks.mjs';
+import { hooks, canvas, apps } from './src/module/_module.mjs';
 
-Hooks.once('init', hooksACS.init);
+globalThis.ccm = { canvas, apps };
 
-Hooks.once('ready', hooksACS.ready);
+Hooks.once('init', hooks.init);
 
-Hooks.once('dropCanvasData', hooksACS.dropCanvasData);
+Hooks.once('ready', hooks.ready);
+
+Hooks.once('dropCanvasData', hooks.dropCanvasData);
