@@ -47,7 +47,9 @@ export default class CardLayer extends PlaceablesLayer {
     const activeScene = canvas.scene;
     if (!activeScene) return null;
     const uuids = activeScene.getFlag(MODULE_ID, 'cardCollection') ?? [];
-    return new foundry.utils.Collection(uuids.map((uuid) => [uuid, fromUuidSync(uuid)]));
+    return new foundry.utils.Collection(
+      uuids.map((uuid) => [uuid, fromUuidSync(uuid)])
+    );
   }
 
   /** @override */

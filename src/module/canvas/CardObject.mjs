@@ -28,12 +28,25 @@ export default class CardObject extends PlaceableObject {
   // TODO: The render flag work is definitely more complex than I'm imagining
   static RENDER_FLAGS = {
     redraw: { propagate: ['refresh'] },
-    refresh: { propagate: ['refreshState', 'refreshTransform', 'refreshMesh', 'refreshElevation'], alias: true },
+    refresh: {
+      propagate: [
+        'refreshState',
+        'refreshTransform',
+        'refreshMesh',
+        'refreshElevation',
+      ],
+      alias: true,
+    },
     refreshState: {},
-    refreshTransform: { propagate: ['refreshPosition', 'refreshRotation', 'refreshSize'], alias: true },
+    refreshTransform: {
+      propagate: ['refreshPosition', 'refreshRotation', 'refreshSize'],
+      alias: true,
+    },
     refreshPosition: {},
     refreshRotation: { propagate: ['refreshFrame'] },
-    refreshSize: { propagate: ['refreshPosition', 'refreshFrame', 'refreshMesh'] },
+    refreshSize: {
+      propagate: ['refreshPosition', 'refreshFrame', 'refreshMesh'],
+    },
     refreshMesh: {},
     refreshFrame: {},
     refreshElevation: {},
@@ -50,7 +63,14 @@ export default class CardObject extends PlaceableObject {
     const { x, y, width, height, rotation } = objData;
 
     // If the card is rotated, return recomputed bounds according to rotation
-    if (rotation !== 0) return PIXI.Rectangle.fromRotation(x, y, width, height, Math.toRadians(rotation)).normalize();
+    if (rotation !== 0)
+      return PIXI.Rectangle.fromRotation(
+        x,
+        y,
+        width,
+        height,
+        Math.toRadians(rotation)
+      ).normalize();
 
     // Normal case
     return new PIXI.Rectangle(x, y, width, height).normalize();
@@ -74,7 +94,9 @@ export default class CardObject extends PlaceableObject {
     let texture;
     if (this._original) texture = this._original.texture?.clone();
     else if (this.document.currentFace) {
-      texture = await loadTexture(this.document.currentFace.img, { fallback: 'cards/backs/light-soft.webp' });
+      texture = await loadTexture(this.document.currentFace.img, {
+        fallback: 'cards/backs/light-soft.webp',
+      });
     }
 
     this.texture = texture;
@@ -144,8 +166,12 @@ export default class CardObject extends PlaceableObject {
    * @protected
    */
   _refreshPosition() {
-    const { x, y, width, height } = this.document.getFlag(MODULE_ID, canvas.scene.id);
-    if (this.position.x !== x || this.position.y !== y) MouseInteractionManager.emulateMoveEvent();
+    const { x, y, width, height } = this.document.getFlag(
+      MODULE_ID,
+      canvas.scene.id
+    );
+    if (this.position.x !== x || this.position.y !== y)
+      MouseInteractionManager.emulateMoveEvent();
     this.position.set(x, y);
     this.shape.position.set(x + width / 2, y + height / 2);
     this.shape.pivot.set(width / 2, height / 2);
@@ -178,8 +204,13 @@ export default class CardObject extends PlaceableObject {
     if (this.visible !== wasVisible) MouseInteractionManager.emulateMoveEvent();
     this.alpha = this._getTargetAlpha();
     const colors = CONFIG.Canvas.dispositionColors;
-    this.frame.border.tint = this.controlled ? (locked ? colors.HOSTILE : colors.CONTROLLED) : colors.INACTIVE;
-    this.frame.border.visible = this.controlled || this.hover || this.layer.highlightObjects;
+    this.frame.border.tint = this.controlled
+      ? locked
+        ? colors.HOSTILE
+        : colors.CONTROLLED
+      : colors.INACTIVE;
+    this.frame.border.visible =
+      this.controlled || this.hover || this.layer.highlightObjects;
     this.frame.handle.visible = this.controlled && !locked;
     this.zIndex = this.shape.zIndex = this.controlled ? 2 : this.hover ? 1 : 0;
     this.shape.visible = this.visible;
@@ -221,9 +252,19 @@ export default class CardObject extends PlaceableObject {
         );
         break;
       case Drawing.SHAPE_TYPES.POLYGON:
-        const isClosed = this.document.fillType || shape.points.slice(0, 2).equals(shape.points.slice(-2));
-        if (isClosed) this.shape.drawSmoothedPolygon(shape.points, this.document.bezierFactor * 2);
-        else this.shape.drawSmoothedPath(shape.points, this.document.bezierFactor * 2);
+        const isClosed =
+          this.document.fillType ||
+          shape.points.slice(0, 2).equals(shape.points.slice(-2));
+        if (isClosed)
+          this.shape.drawSmoothedPolygon(
+            shape.points,
+            this.document.bezierFactor * 2
+          );
+        else
+          this.shape.drawSmoothedPath(
+            shape.points,
+            this.document.bezierFactor * 2
+          );
         break;
     }
     this.shape.endFill();
@@ -266,10 +307,20 @@ export default class CardObject extends PlaceableObject {
     const border = this.frame.border;
     border.clear();
     border
-      .lineStyle({ width: thickness, color: 0x000000, join: PIXI.LINE_JOIN.ROUND, alignment: 0.75 })
+      .lineStyle({
+        width: thickness,
+        color: 0x000000,
+        join: PIXI.LINE_JOIN.ROUND,
+        alignment: 0.75,
+      })
       .drawShape(bounds);
     border
-      .lineStyle({ width: thickness / 2, color: 0xffffff, join: PIXI.LINE_JOIN.ROUND, alignment: 1 })
+      .lineStyle({
+        width: thickness / 2,
+        color: 0xffffff,
+        join: PIXI.LINE_JOIN.ROUND,
+        alignment: 1,
+      })
       .drawShape(bounds);
 
     // Draw the handle

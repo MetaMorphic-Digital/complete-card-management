@@ -26,8 +26,12 @@ export function init() {
   CONFIG.Card.layerClass = canvas.CardLayer;
   CONFIG.Card.hudClass = apps.CardHud;
 
-  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheet, { label: 'CCM.Sheet.Cards' });
-  DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, { label: 'CCM.Sheet.Card' });
+  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheet, {
+    label: 'CCM.Sheet.Cards',
+  });
+  DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, {
+    label: 'CCM.Sheet.Card',
+  });
 
   const interfaceCls = CONFIG.Canvas.groups.interface.groupClass;
   interfaceCls.prototype.addCard = addCard;
@@ -65,7 +69,7 @@ export function dropCanvasData(canvas, data) {
 async function handleCardDrop(canvas, data) {
   /** @type {Card} */
   const card = await fromUuid(data.uuid);
-  /** @type {import('./_types.mjs').PlaceableCardObjectData} */
+  /** @type {import('./_types.mjs').CardObjectModelData} */
   const objectData = {
     alpha: 1,
     elevation: 0,
@@ -78,7 +82,8 @@ async function handleCardDrop(canvas, data) {
   };
   await card.setFlag(MODULE_ID, canvas.scene.id, objectData);
 
-  const currentCards = game.scenes.active.getFlag(MODULE_ID, 'cardCollection') ?? [];
+  const currentCards =
+    game.scenes.active.getFlag(MODULE_ID, 'cardCollection') ?? [];
 
   currentCards.push(card.uuid);
 

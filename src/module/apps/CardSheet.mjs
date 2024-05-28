@@ -1,10 +1,13 @@
-const { HandlebarsApplicationMixin, DocumentSheetV2 } = foundry.applications.api;
+const { HandlebarsApplicationMixin, DocumentSheetV2 } =
+  foundry.applications.api;
 
 /**
  * AppV2 card sheet
  */
 // eslint-disable-next-line new-cap
-export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
+export default class CardSheet extends HandlebarsApplicationMixin(
+  DocumentSheetV2
+) {
   /** @override */
   static DEFAULT_OPTIONS = {
     classes: ['ccm', 'card'],
