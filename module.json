@@ -1,0 +1,66 @@
+{
+  "id": "complete-card-management",
+  "title": "Complete Card Management",
+  "description": "A module for generic card, deck, hand, and pile interactions using the canvas",
+  "authors": [
+    {
+      "name": "Joseph M.",
+      "discord": "chaosos"
+    },
+    {
+      "name": "Zhell",
+      "discord": "zhell9201"
+    }
+  ],
+  "url": "https://github.com/MetaMorphic-Digital/complete-card-management",
+  "license": "LICENSE.txt",
+  "readme": "README.md",
+  "bugs": "https://github.com/MetaMorphic-Digital/complete-card-management/issues",
+  "changelog": "CHANGELOG.md",
+  "media": [
+    {
+      "type": "setup",
+      "url": "",
+      "thumbnail": ""
+    }
+  ],
+  "version": "AUTOMATIC",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12.324"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "universal-tabletop-system",
+        "type": "system",
+        "manifest": "https://github.com/MetaMorphic-Digital/universal-tabletop-system/releases/latest/download/system.json",
+        "compatibility": {
+          "verified": "0.8"
+        }
+      },
+      {
+        "id": "swade",
+        "type": "system",
+        "manifest": "https://gitlab.com/api/v4/projects/16269883/packages/generic/swade/latest/system.json",
+        "compatibility": {
+          "minimum": "4.0.0",
+          "verified": "4"
+        }
+      }
+    ]
+  },
+  "esmodules": ["./ccm.js"],
+  "styles": ["./ccm.css"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "packs": [],
+  "packFolders": [],
+  "manifest": "https://github.com/MetaMorphic-Digital/complete-card-management/releases/latest/download/system.json",
+  "download": "AUTOMATIC"
+}
