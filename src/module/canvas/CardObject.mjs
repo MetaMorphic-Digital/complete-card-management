@@ -1,10 +1,24 @@
 import {MODULE_ID} from "../helpers.mjs";
+import CardObjectModel from "./CardObjectModel.mjs";
 
 /**
  * A CardObject is an implementation of PlaceableObject which represents a single Card document within the Scene.
  * CardObjects are drawn inside of the {@link CardLayer} container
  */
 export default class CardObject extends PlaceableObject {
+  constructor(document) {
+    super(document);
+
+    /** @override */
+    this.scene = canvas.scene;
+
+    /**
+     * The data model constructed from the placed card
+     * @type {CardObjectModel}
+     */
+    this.dataModel = new CardObjectModel(document)
+  }
+
   static embeddedName = "Card";
 
   /**

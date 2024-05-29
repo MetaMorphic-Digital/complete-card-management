@@ -67,13 +67,15 @@ export function dropCanvasData(canvas, data) {
  */
 async function handleCardDrop(canvas, data) {
   /** @type {Card} */
-  const card = await fromUuid(data.uuid);
-  const cardObject = new ccm_canvas.CardObjectModel({
-    ...CONFIG.CCM.DEFAULTS.CardObject,
-    x: data.x,
-    y: data.y
-  });
-  await card.setFlag(MODULE_ID, canvas.scene.id, cardObject["_source"]);
+  let card;
+  try {
+    card = fromUuidSync(data.uuid)
+  }
+  catch (e) {
+    ui.notifications.error("The dropped card must already be in a card stack in the world")
+  }
+
+  await card.setFlag(MODULE_ID, canvas.scene.id, { x: data.x, y: data.y });
 
   const currentCards =
     game.scenes.active.getFlag(MODULE_ID, "cardCollection") ?? [];
