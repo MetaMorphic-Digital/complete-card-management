@@ -3,6 +3,17 @@
     "Sheets": {
       "Cards": "Complete Card Management Sheet",
       "Card": "Complete Card Management Sheet"
+    },
+
+    "CardSheet": {
+      "Save": "Save Card",
+      "AddFace": "Add Face",
+      "DeleteFace": "Delete Face",
+      "TabDetails": "Card Details",
+      "TabFaces": "Card Faces",
+      "TabBack": "Card Back",
+      "BacksideUp": "Backside Up",
+      "FaceName": "Face Name"
     }
   }
 }

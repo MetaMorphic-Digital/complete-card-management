@@ -27,10 +27,10 @@ export function init() {
   CONFIG.Card.hudClass = apps.CardHud;
 
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheet, {
-    label: 'CCM.Sheet.Cards',
+    label: 'CCM.Sheets.Cards',
   });
   DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, {
-    label: 'CCM.Sheet.Card',
+    label: 'CCM.Sheets.Card',
   });
 
   const interfaceCls = CONFIG.Canvas.groups.interface.groupClass;
