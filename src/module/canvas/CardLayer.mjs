@@ -56,6 +56,25 @@ export default class CardLayer extends PlaceablesLayer {
 
   /** @override */
   async _draw(options) {
+    // Setting up the group functionality
+    const itf = this.parent;
+    itf.cardContainer = itf.addChild(new PIXI.Container());
+    itf.cardContainer.sortChildren = function() {
+      const children = this.children;
+      for (let i = 0, n = children.length; i < n; i++) children[i]._lastSortedIndex = i;
+      children.sort((a, b) => {
+        return ((a.elevation || 0) - (b.elevation || 0))
+          || ((a.sort || 0) - (b.sort || 0))
+          || (a.zIndex - b.zIndex)
+          || (a._lastSortedIndex - b._lastSortedIndex);
+      });
+      this.sortDirty = false;
+    };
+    itf.cardContainer.sortableChildren = true;
+    itf.cardContainer.eventMode = "none";
+    itf.cardContainer.zIndex = CONFIG.Canvas.groups.interface.zIndexDrawings;
+
+    // Layer functionality
     this.hitArea = canvas.dimensions.rect;
     this.zIndex = this.getZIndex();
 

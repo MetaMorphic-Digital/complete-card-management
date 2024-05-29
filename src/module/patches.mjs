@@ -7,7 +7,7 @@
  */
 export function addCard(card) {
   const name = card.objectId;
-  const shape = this.cards.graphics.get(name) ?? new PIXI.Graphics(); // this.#drawings.addChild(new PIXI.Graphics());
+  const shape = this.cards.graphics.get(name) ?? this.cardContainer.addChild(new PIXI.Graphics());
   shape.name = name;
   this.cards.graphics.set(name, shape);
   console.log(shape);
