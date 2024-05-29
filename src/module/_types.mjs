@@ -9,7 +9,7 @@
  * @property {boolean} [locked]     Is the card currently locked? (Flags)
  * @property {number} [width]       The pixel width of the card. Derived from the Card's width.
  * @property {number} [height]      The pixel height of the card. Derived from the Card's height.
- * @property {number} [texture]     The card's texture on the canvas. (CardData)
+ * @property {number} [texture]     The card's texture on the canvas. Derived from the Card's facing.
  */
 
 /**                       */

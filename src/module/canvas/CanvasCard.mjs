@@ -2,8 +2,9 @@ import {MODULE_ID} from "../helpers.mjs";
 
 /**
  * A data model that captures the necessary characteristics for a CardObject on the canvas
+ * Contains many properties to enable functionality as a synthetic document
  */
-export default class CardObjectModel extends foundry.abstract.DataModel {
+export default class CanvasCard extends foundry.abstract.DataModel {
   constructor(card) {
     if (!(card instanceof Card)) {
       throw new Error("The card object model takes a Card document as its only argument")
@@ -25,7 +26,12 @@ export default class CardObjectModel extends foundry.abstract.DataModel {
       height: card.height * canvas.grid.sizeY,
     })
 
-    super(data, { parent: card })
+    /**
+     * A reference to the card document this takes data from
+     */
+    this.card = card;
+
+    super(data, { parent: canvas.scene })
   }
 
 
@@ -85,5 +91,48 @@ export default class CardObjectModel extends foundry.abstract.DataModel {
         }
       )
     };
+  }
+
+  static flagProps = ["x", "y", "elevation", "rotation", "hidden", "locked"];
+
+  static derivedProps = ["height", "width", "texture"];
+
+  get id() {
+    return this.card.id;
+  }
+
+  get documentName() {
+    return this.card.documentName;
+  }
+
+  get layer() {
+    return canvas.cards;
+  }
+
+  get sheet() {
+    // TODO: Custom sheet? I think?
+    return this.card.sheet;
+  }
+
+  // clone
+
+  // update
+
+  /**
+   * Synthetic pass through
+   * @param  {...any} args Arguments to Document#canUserModify
+   * @returns {boolean}
+   */
+  canUserModify(...args) {
+    return this.card.canUserModify(...args);
+  }
+
+  /**
+   * Synthetic pass through
+   * @param  {...any} args Arguments to Document#testUserPermission
+   * @returns {boolean}
+   */
+  testUserPermission(...args) {
+    return this.card.testUserPermission(...args);
   }
 }

@@ -1,5 +1,6 @@
 import CardObject from "./CardObject.mjs";
 import {MODULE_ID} from "../helpers.mjs";
+import CanvasCard from "./CanvasCard.mjs";
 
 /**
  * The main Card lay
@@ -42,6 +43,7 @@ export default class CardLayer extends PlaceablesLayer {
     return canvas.hud.canvas;
   }
 
+  // TODO: investigate if there's caching performance improvements
   /** @override */
   get documentCollection() {
     const activeScene = canvas.scene;
@@ -77,8 +79,8 @@ export default class CardLayer extends PlaceablesLayer {
 
     const documents = this.getDocuments();
     const promises = documents.map((doc) => {
-      // The reference here may cause issues on scene swap
-      const obj = (doc._object = this.createObject(doc));
+      const syntheticDoc = new CanvasCard(doc);
+      const obj = (syntheticDoc._object = this.createObject(syntheticDoc));
       this.objects.addChild(obj);
       return obj.draw();
     });
