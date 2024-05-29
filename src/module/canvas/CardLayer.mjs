@@ -1,12 +1,12 @@
-import CardObject from './CardObject.mjs';
-import { MODULE_ID } from '../helpers.mjs';
+import CardObject from "./CardObject.mjs";
+import {MODULE_ID} from "../helpers.mjs";
 
 /**
  * The main Card lay
  */
 export default class CardLayer extends PlaceablesLayer {
   // "Card" is not a valid document name within the scene document
-  static documentName = 'Card';
+  static documentName = "Card";
 
   /**
    * Configuration options for the CardLayer
@@ -15,9 +15,9 @@ export default class CardLayer extends PlaceablesLayer {
    */
   static get layerOptions() {
     return foundry.utils.mergeObject(super.layerOptions, {
-      name: 'cards',
+      name: "cards",
       controllableObjects: true,
-      rotateableObjects: true,
+      rotateableObjects: true
     });
   }
 
@@ -46,7 +46,7 @@ export default class CardLayer extends PlaceablesLayer {
   get documentCollection() {
     const activeScene = canvas.scene;
     if (!activeScene) return null;
-    const uuids = activeScene.getFlag(MODULE_ID, 'cardCollection') ?? [];
+    const uuids = activeScene.getFlag(MODULE_ID, "cardCollection") ?? [];
     return new foundry.utils.Collection(
       uuids.map((uuid) => [uuid, fromUuidSync(uuid)])
     );
@@ -62,12 +62,12 @@ export default class CardLayer extends PlaceablesLayer {
     this.objects.visible = false;
     // const cls = getDocumentClass(this.constructor.documentName);
     this.objects.sortChildren = null;
-    this.objects.on('childAdded', (obj) => {
+    this.objects.on("childAdded", (obj) => {
       if (obj instanceof CardObject) {
         obj._updateQuadtree();
       }
     });
-    this.objects.on('childRemoved', (obj) => {
+    this.objects.on("childRemoved", (obj) => {
       if (obj instanceof CardObject) {
         obj._updateQuadtree();
       }

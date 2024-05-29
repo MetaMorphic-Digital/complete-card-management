@@ -1,4 +1,4 @@
-const { HandlebarsApplicationMixin, DocumentSheetV2 } =
+const {HandlebarsApplicationMixin, DocumentSheetV2} =
   foundry.applications.api;
 
 /**
@@ -10,12 +10,12 @@ export default class CardsSheet extends HandlebarsApplicationMixin(
 ) {
   /** @override */
   static DEFAULT_OPTIONS = {
-    classes: ['ccm', 'cards'],
+    classes: ["ccm", "cards"],
     position: {
       width: 620,
-      height: 'auto',
+      height: "auto"
     },
-    actions: {},
+    actions: {}
   };
 
   /** @override */
@@ -26,7 +26,7 @@ export default class CardsSheet extends HandlebarsApplicationMixin(
     return {
       cards: this.cards,
       source: this.cards.toObject(),
-      fields: this.cards.schema.fields,
+      fields: this.cards.schema.fields
       // systemFields: this.cards.system.schema?.fields, // Unsure if correct to include?
     };
   }

@@ -23,6 +23,6 @@ export function removeCard(card) {
   const name = card.objectId;
   if (!this.cards.graphics.has(name)) return;
   const shape = this.cards.graphics.get(name);
-  if (shape?.destroyed === false) shape.destroy({ children: true });
+  if (shape?.destroyed === false) shape.destroy({children: true});
   this.cards.graphics.delete(name);
 }

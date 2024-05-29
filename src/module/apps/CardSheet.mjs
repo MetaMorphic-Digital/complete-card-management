@@ -16,7 +16,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     classes: ["ccm", "card"],
     position: {
       width: 500,
-      height: "auto",
+      height: "auto"
     },
     actions: {
       addFace: this._onAddFace,
@@ -54,7 +54,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     details: {template: "modules/complete-card-management/templates/card/details.hbs"},
     faces: {template: "modules/complete-card-management/templates/card/faces.hbs", scrollable: [""]},
     back: {template: "modules/complete-card-management/templates/card/back.hbs"},
-    footer: {template: "modules/complete-card-management/templates/card/footer.hbs"},
+    footer: {template: "modules/complete-card-management/templates/card/footer.hbs"}
   };
 
   /** @override */
@@ -70,8 +70,8 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
         field: schema.getField(name),
         value: foundry.utils.getProperty(document, name),
         ...options
-      }
-    }
+      };
+    };
 
     // Header
     context.currentFace = this.document.faces[this.document.face]?.img || this.document.constructor.DEFAULT_ICON;
@@ -106,7 +106,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
 
     const fph = game.i18n.localize("CCM.CardSheet.FaceName");
     const schema = this.document.schema.getField("faces.element");
-    for(const face of this.document.faces) {
+    for (const face of this.document.faces) {
       const idx = context.faces.length;
       context.faces.push({
         name: makeField("name", {schema: schema, document: face, name: `faces.${idx}.name`, placeholder: fph}),

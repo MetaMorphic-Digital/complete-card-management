@@ -7,8 +7,8 @@ export default class CardHud extends BasePlaceableHUD {
   /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: 'card-hud',
-      template: 'modules/complete-card-management/templates/card-hud.hbs',
+      id: "card-hud",
+      template: "modules/complete-card-management/templates/card-hud.hbs"
     });
   }
 

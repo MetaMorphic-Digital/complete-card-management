@@ -1,11 +1,11 @@
-import { MODULE_ID } from '../helpers.mjs';
+import {MODULE_ID} from "../helpers.mjs";
 
 /**
  * A CardObject is an implementation of PlaceableObject which represents a single Card document within the Scene.
  * CardObjects are drawn inside of the {@link CardLayer} container
  */
 export default class CardObject extends PlaceableObject {
-  static embeddedName = 'Card';
+  static embeddedName = "Card";
 
   /**
    * The texture that is used to fill this Drawing, if any.
@@ -27,40 +27,40 @@ export default class CardObject extends PlaceableObject {
 
   // TODO: The render flag work is definitely more complex than I'm imagining
   static RENDER_FLAGS = {
-    redraw: { propagate: ['refresh'] },
+    redraw: {propagate: ["refresh"]},
     refresh: {
       propagate: [
-        'refreshState',
-        'refreshTransform',
-        'refreshMesh',
-        'refreshElevation',
+        "refreshState",
+        "refreshTransform",
+        "refreshMesh",
+        "refreshElevation"
       ],
-      alias: true,
+      alias: true
     },
     refreshState: {},
     refreshTransform: {
-      propagate: ['refreshPosition', 'refreshRotation', 'refreshSize'],
-      alias: true,
+      propagate: ["refreshPosition", "refreshRotation", "refreshSize"],
+      alias: true
     },
     refreshPosition: {},
-    refreshRotation: { propagate: ['refreshFrame'] },
+    refreshRotation: {propagate: ["refreshFrame"]},
     refreshSize: {
-      propagate: ['refreshPosition', 'refreshFrame', 'refreshMesh'],
+      propagate: ["refreshPosition", "refreshFrame", "refreshMesh"]
     },
     refreshMesh: {},
     refreshFrame: {},
-    refreshElevation: {},
+    refreshElevation: {}
   };
 
   /** @override */
   get layer() {
-    return 'cards';
+    return "cards";
   }
 
   /** @override */
   get bounds() {
     const objData = this.document.getFlag(MODULE_ID, canvas.scene.id);
-    const { x, y, width, height, rotation } = objData;
+    const {x, y, width, height, rotation} = objData;
 
     // If the card is rotated, return recomputed bounds according to rotation
     if (rotation !== 0)
@@ -84,7 +84,7 @@ export default class CardObject extends PlaceableObject {
   /** @override */
   get objectId() {
     let id = `${this.document.uuid}`;
-    if (this.isPreview) id += '.preview';
+    if (this.isPreview) id += ".preview";
     return id;
   }
 
@@ -95,7 +95,7 @@ export default class CardObject extends PlaceableObject {
     if (this._original) texture = this._original.texture?.clone();
     else if (this.document.currentFace) {
       texture = await loadTexture(this.document.currentFace.img, {
-        fallback: 'cards/backs/light-soft.webp',
+        fallback: "cards/backs/light-soft.webp"
       });
     }
 
@@ -112,14 +112,14 @@ export default class CardObject extends PlaceableObject {
       canvas.interface.removeCard(this);
       this.texture = this.mesh = null;
       this.bg = this.addChild(new PIXI.Graphics());
-      this.bg.eventMode = 'none';
+      this.bg.eventMode = "none";
     }
 
     // Control Border
     this.frame = this.addChild(this.#drawFrame());
 
     // Interactivity
-    this.cursor = this.document.isOwner ? 'pointer' : null;
+    this.cursor = this.document.isOwner ? "pointer" : null;
   }
 
   /**
@@ -128,15 +128,15 @@ export default class CardObject extends PlaceableObject {
    */
   #drawFrame() {
     const frame = new PIXI.Container();
-    frame.eventMode = 'passive';
+    frame.eventMode = "passive";
     frame.bounds = new PIXI.Rectangle();
     frame.interaction = frame.addChild(new PIXI.Container());
     frame.interaction.hitArea = frame.bounds;
-    frame.interaction.eventMode = 'auto';
+    frame.interaction.eventMode = "auto";
     frame.border = frame.addChild(new PIXI.Graphics());
-    frame.border.eventMode = 'none';
+    frame.border.eventMode = "none";
     frame.handle = frame.addChild(new ResizeHandle([1, 1]));
-    frame.handle.eventMode = 'static';
+    frame.handle.eventMode = "static";
     return frame;
   }
 
@@ -151,7 +151,7 @@ export default class CardObject extends PlaceableObject {
    * @protected
    */
   _applyRenderFlags(flags) {
-    console.log('Card Object RenderFlags', flags);
+    console.log("Card Object RenderFlags", flags);
     // if (flags.refreshState) this._refreshState();
     // if (flags.refreshPosition) this._refreshPosition();
     // if (flags.refreshRotation) this._refreshRotation();
@@ -166,11 +166,8 @@ export default class CardObject extends PlaceableObject {
    * @protected
    */
   _refreshPosition() {
-    const { x, y, width, height } = this.document.getFlag(
-      MODULE_ID,
-      canvas.scene.id
-    );
-    if (this.position.x !== x || this.position.y !== y)
+    const {x, y, width, height} = this.document.getFlag(MODULE_ID, canvas.scene.id);
+    if ((this.position.x !== x) || (this.position.y !== y))
       MouseInteractionManager.emulateMoveEvent();
     this.position.set(x, y);
     this.shape.position.set(x + width / 2, y + height / 2);
@@ -198,7 +195,7 @@ export default class CardObject extends PlaceableObject {
    * @protected
    */
   _refreshState() {
-    const { hidden, locked, sort } = this.document;
+    const {hidden, locked, sort} = this.document;
     const wasVisible = this.visible;
     this.visible = this.isVisible;
     if (this.visible !== wasVisible) MouseInteractionManager.emulateMoveEvent();
@@ -251,7 +248,7 @@ export default class CardObject extends PlaceableObject {
           Math.max(shape.height - lineWidth, 0) / 2
         );
         break;
-      case Drawing.SHAPE_TYPES.POLYGON:
+      case Drawing.SHAPE_TYPES.POLYGON: {
         const isClosed =
           this.document.fillType ||
           shape.points.slice(0, 2).equals(shape.points.slice(-2));
@@ -266,6 +263,7 @@ export default class CardObject extends PlaceableObject {
             this.document.bezierFactor * 2
           );
         break;
+      }
     }
     this.shape.endFill();
     this.shape.line.reset();
@@ -291,8 +289,8 @@ export default class CardObject extends PlaceableObject {
   _refreshFrame() {
     // Update the frame bounds
     const {
-      shape: { width, height },
-      rotation,
+      shape: {width, height},
+      rotation
     } = this.document;
     const bounds = this.frame.bounds;
     bounds.x = 0;
@@ -311,7 +309,7 @@ export default class CardObject extends PlaceableObject {
         width: thickness,
         color: 0x000000,
         join: PIXI.LINE_JOIN.ROUND,
-        alignment: 0.75,
+        alignment: 0.75
       })
       .drawShape(bounds);
     border
@@ -319,7 +317,7 @@ export default class CardObject extends PlaceableObject {
         width: thickness / 2,
         color: 0xffffff,
         join: PIXI.LINE_JOIN.ROUND,
-        alignment: 1,
+        alignment: 1
       })
       .drawShape(bounds);
 

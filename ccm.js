@@ -1,9 +1,9 @@
-import { hooks, canvas, apps } from './src/module/_module.mjs';
+import {hooks, canvas, apps} from "./src/module/_module.mjs";
 
-globalThis.ccm = { canvas, apps };
+globalThis.ccm = {canvas, apps};
 
-Hooks.once('init', hooks.init);
+Hooks.once("init", hooks.init);
 
-Hooks.once('ready', hooks.ready);
+Hooks.once("ready", hooks.ready);
 
-Hooks.once('dropCanvasData', hooks.dropCanvasData);
+Hooks.once("dropCanvasData", hooks.dropCanvasData);
