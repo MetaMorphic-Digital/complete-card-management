@@ -26,12 +26,12 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       height: card.height * canvas.grid.sizeY,
     })
 
+    super(data, {parent: canvas.scene});
+
     /**
      * A reference to the card document this takes data from
      */
     this.card = card;
-
-    super(data, { parent: canvas.scene })
   }
 
 

@@ -6,6 +6,21 @@ import CanvasCard from "./CanvasCard.mjs";
  * CardObjects are drawn inside of the {@link CardLayer} container
  */
 export default class CardObject extends PlaceableObject {
+
+  constructor(canvasCard) {
+    if (!(canvasCard instanceof CanvasCard)) {
+      throw new Error("You must provide a CanvasCard to construct a CardObject")
+    }
+    // PlaceableObject checks for both document status and embedded
+    super(canvasCard.card)
+
+    /** @override */
+    this.scene = canvasCard.parent;
+
+    /** @override */
+    this.document = canvasCard;
+  }
+
   static embeddedName = "Card";
 
   /**
