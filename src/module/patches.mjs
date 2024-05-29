@@ -10,11 +10,12 @@ export function addCard(card) {
   const shape = this.cards.graphics.get(name) ?? new PIXI.Graphics(); // this.#drawings.addChild(new PIXI.Graphics());
   shape.name = name;
   this.cards.graphics.set(name, shape);
+  console.log(shape);
   return shape;
 }
 
 /**
- * Add a CardObject to the layer
+ * Remove a CardObject from the layer
  *
  * @this InterfaceCanvasGroup
  * @param {import('./CardObject.mjs').CardObject} card The CardObject being added
