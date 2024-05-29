@@ -1,0 +1,2 @@
+packs/** binary
+*.mjs text eol=lf
