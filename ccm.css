@@ -1,0 +1,52 @@
+.ccm.card {
+  max-height: 90%;
+
+  & h1 {
+    font-family: unset;
+    [name=name] { font-size: 18px; }
+  }
+
+  .sheet-tabs.tabs .item .fa-solid {
+    font-size: 14px;
+  }
+
+  .tab.scrollable {
+    padding: 5px;
+  }
+
+  .form-group.face {
+    [data-action=addFace] {
+      flex: 0 0 var(--input-height);
+      height: var(--input-height);
+      line-height: var(--input-height);
+
+      .fa-solid {
+        margin: 0;
+      }
+    }
+  }
+
+  .faces legend {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    padding: 0 5px;
+
+    & input {
+      height: 24px;
+    }
+
+    [data-action=deleteFace] {
+      flex: 0 0 24px;
+      height: 24px;
+      line-height: 24px;
+      font-size: 12px;
+      padding: 0;
+
+      .fa-solid {
+        margin: 0;
+      }
+    }
+  }
+}
