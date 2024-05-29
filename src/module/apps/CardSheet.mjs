@@ -58,6 +58,15 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   };
 
   /** @override */
+  _onRender(...T) {
+    super._onRender(...T);
+    this.#faces = this.element.querySelector("[name=face]");
+    this.element.querySelectorAll(".faces legend input").forEach(n => {
+      n.addEventListener("change", this._onChangeFaceName.bind(this));
+    });
+  }
+
+  /** @override */
   async _prepareContext(_options) {
     const context = {};
     const src = this.document.toObject();
@@ -101,14 +110,13 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     });
 
     // Faces
-    context.face = makeField("face", {placeholder: game.i18n.localize("CCM.CardSheet.BacksideUp")});
+    context.face = makeField("face", {choices: {}});
     context.faces = [];
-
     const fph = game.i18n.localize("CCM.CardSheet.FaceName");
     const schema = this.document.schema.getField("faces.element");
     for (const face of this.document.faces) {
       const idx = context.faces.length;
-      context.faces.push({
+      const f = {
         name: makeField("name", {schema: schema, document: face, name: `faces.${idx}.name`, placeholder: fph}),
         img: makeField("img", {schema: schema, document: face, name: `faces.${idx}.img`}),
         text: makeField("text", {
@@ -117,7 +125,9 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
           name: `faces.${idx}.text`,
           enriched: await TextEditor.enrichHTML(face.text, {relativeTo: this.document})
         })
-      });
+      };
+      context.face.choices[idx] = f.name.value || game.i18n.format("CCM.CardSheet.Unnamed", {idx: idx});
+      context.faces.push(f);
     }
 
     // Back
@@ -146,6 +156,12 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     return this.document;
   }
 
+  /**
+   * Reference to the 'face' select.
+   * @type {HTMLElement}
+   */
+  #faces = null;
+
   /* ----------------------------- */
   /* Event Handlers                */
   /* ----------------------------- */
@@ -156,8 +172,9 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
    * @param {HTMLElement} target      The current target of the event.
    */
   static _onAddFace(event, target) {
-    const faces = this.document.toObject().faces.concat([{name: "", img: "", text: ""}]);
-    this.document.update({faces});
+    const formData = foundry.utils.expandObject(new FormDataExtended(this.element).object);
+    formData.faces = Object.values(formData.faces ?? {}).concat([{name: "", img: "", text: ""}]);
+    this.document.update(formData);
   }
 
   /**
@@ -165,10 +182,31 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
    * @param {Event} event             Triggering click event.
    * @param {HTMLElement} target      The current target of the event.
    */
-  static _onDeleteFace(event, target) {
-    const idx = parseInt(target.closest("[data-idx]").dataset.idx);
-    const faces = this.document.toObject().faces;
-    faces.splice(idx, 1);
-    this.document.update({faces});
+  static async _onDeleteFace(event, target) {
+    const confirm = await foundry.applications.api.DialogV2.confirm({
+      rejectClose: false,
+      content: game.i18n.localize("CCM.CardSheet.DeleteFacePrompt"),
+      window: {
+        icon: "fa-solid fa-cards",
+        title: "CCM.CardSheet.DeleteFaceTitle"
+      }
+    });
+    if (!confirm) return;
+
+    target.closest(".faces").remove();
+    const formData = foundry.utils.expandObject(new FormDataExtended(this.element).object);
+    formData.faces = Object.values(formData.faces ?? {});
+    if (formData.face >= formData.faces.length) formData.face = 0;
+    this.document.update(formData);
+  }
+
+  /**
+   * Change the displayed label in the 'face' dropdown when changing the name of a face in the 'faces' array.
+   * @param {Event} event     Initiating change event.
+   */
+  _onChangeFaceName(event) {
+    const idx = parseInt(event.currentTarget.closest("[data-idx]").dataset.idx);
+    const value = event.currentTarget.value || game.i18n.format("CCM.CardSheet.Unnamed", {idx: idx});
+    this.#faces.querySelector(`option[value="${idx}"]`).textContent = value;
   }
 }

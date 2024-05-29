@@ -2,7 +2,7 @@
   <div class="form-group face">
     <label>{{localize "CARD.Face"}}</label>
     <div class="form-fields">
-      {{formInput face.field localize=true value=face.value placeholder=face.placeholder}}
+      {{formInput face.field localize=true value=face.value choices=face.choices sort=false blank="CCM.CardSheet.BacksideUp"}}
     </div>
     <button type="button" data-action="addFace" data-tooltip="CCM.CardSheet.AddFace">
       <i class="fa-solid fa-plus"></i>
@@ -18,7 +18,7 @@
       </button>
     </legend>
     {{formGroup img.field value=img.value localize=true placeholder="icons/svg/card-joker.svg" name=img.name}}
-    {{formGroup text.field value=text.value enriched=text.enriched localize=true button=true toggled=true name=text.name}}
+    {{formGroup text.field value=text.value enriched=text.enriched localize=true button=true toggled=false name=text.name}}
   </fieldset>
   {{/each}}
 </div>

@@ -13,7 +13,10 @@
       "TabFaces": "Card Faces",
       "TabBack": "Card Back",
       "BacksideUp": "Backside Up",
-      "FaceName": "Face Name"
+      "FaceName": "Face Name",
+      "Unnamed": "Unnamed ({idx})",
+      "DeleteFacePrompt": "Delete this face? This action cannot be undone.",
+      "DeleteFaceTitle": "Delete Face"
     }
   }
 }
