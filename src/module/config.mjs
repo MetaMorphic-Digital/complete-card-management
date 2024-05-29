@@ -1,10 +1,10 @@
 const CCM_CONFIG = {
-  DEFAULTS: {},
+  DEFAULTS: {}
 };
 
 CCM_CONFIG.DEFAULTS.CardObject = {
   height: 300,
-  width: 200,
+  width: 200
 };
 
 export default CCM_CONFIG;
