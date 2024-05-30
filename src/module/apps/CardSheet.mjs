@@ -64,6 +64,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     this.element.querySelectorAll(".faces legend input").forEach(n => {
       n.addEventListener("change", this._onChangeFaceName.bind(this));
     });
+    this.element.querySelector("[name='back.name']").addEventListener("change", this._onChangeFaceName.bind(this));
   }
 
   /** @override */
@@ -110,7 +111,10 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     });
 
     // Faces
-    context.face = makeField("face", {choices: {}});
+    context.face = makeField("face", {
+      choices: {},
+      blank: this.document.back.name || "CCM.CardSheet.BacksideUp"
+    });
     context.faces = [];
     const fph = game.i18n.localize("CCM.CardSheet.FaceName");
     const schema = this.document.schema.getField("faces.element");
@@ -201,12 +205,22 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   }
 
   /**
-   * Change the displayed label in the 'face' dropdown when changing the name of a face in the 'faces' array.
+   * Change the displayed label in the 'face' dropdown when changing
+   * the name of a face in the 'faces' array or the back.
    * @param {Event} event     Initiating change event.
    */
   _onChangeFaceName(event) {
-    const idx = parseInt(event.currentTarget.closest("[data-idx]").dataset.idx);
-    const value = event.currentTarget.value || game.i18n.format("CCM.CardSheet.Unnamed", {idx: idx});
-    this.#faces.querySelector(`option[value="${idx}"]`).textContent = value;
+    // Changing the backside's name.
+    if (event.currentTarget.name === "back.name") {
+      const value = event.currentTarget.value || game.i18n.localize("CCM.CardSheet.BacksideUp");
+      this.#faces.children[0].textContent = value;
+    }
+
+    // Changing a face's name.
+    else {
+      const idx = parseInt(event.currentTarget.closest("[data-idx]").dataset.idx);
+      const value = event.currentTarget.value || game.i18n.format("CCM.CardSheet.Unnamed", {idx: idx});
+      this.#faces.querySelector(`option[value="${idx}"]`).textContent = value;
+    }
   }
 }
