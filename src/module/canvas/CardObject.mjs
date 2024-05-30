@@ -47,7 +47,6 @@ export default class CardObject extends PlaceableObject {
    */
   bg;
 
-  // TODO: The render flag work is definitely more complex than I'm imagining
   static RENDER_FLAGS = {
     redraw: {propagate: ["refresh"]},
     refresh: {propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshElevation"], alias: true},
@@ -172,7 +171,6 @@ export default class CardObject extends PlaceableObject {
    * @protected
    */
   _applyRenderFlags(flags) {
-    console.log("Card Object RenderFlags", flags, this);
     if (flags.refreshState) this._refreshState();
     if (flags.refreshPosition) this._refreshPosition();
     if (flags.refreshRotation) this._refreshRotation();

@@ -7,7 +7,6 @@
  */
 export function addCard(card) {
   const name = card.objectId;
-  console.log(card);
   const mesh = this.cardCollection.get(name) ?? this.addChild(new SpriteMesh(card.texture));
   mesh.texture = card.texture ?? PIXI.Texture.EMPTY;
   this.cardCollection.set(name, mesh);

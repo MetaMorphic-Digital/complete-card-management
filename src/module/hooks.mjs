@@ -87,7 +87,7 @@ async function handleCardDrop(canvas, data) {
   currentCards.push(card.uuid);
 
   await game.scenes.active.setFlag(MODULE_ID, "cardCollection", currentCards);
-  console.log("Updated", card.name);
+  await canvas.interface.draw();
 }
 
 /**
