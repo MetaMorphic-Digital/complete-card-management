@@ -1,4 +1,3 @@
-import {MODULE_ID} from "../helpers.mjs";
 import CanvasCard from "./CanvasCard.mjs";
 
 /**

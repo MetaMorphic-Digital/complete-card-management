@@ -78,8 +78,10 @@ async function handleCardDrop(canvas, data) {
   catch (e) {
     ui.notifications.error("The dropped card must already be in a card stack in the world")
   }
+  const adjusted_x = data.x - (card.width * canvas.grid.sizeX) / 2;
+  const adjusted_y = data.y - (card.height * canvas.grid.sizeY) / 2;
 
-  await card.setFlag(MODULE_ID, canvas.scene.id, { x: data.x, y: data.y });
+  await card.setFlag(MODULE_ID, canvas.scene.id, { x: adjusted_x, y: adjusted_y });
 
   const currentCards =
     game.scenes.active.getFlag(MODULE_ID, "cardCollection") ?? [];
