@@ -89,6 +89,14 @@ export default class CardObject extends PlaceableObject {
     return new PIXI.Rectangle(x, y, width, height).normalize();
   }
 
+  /**
+   * Is this Tile currently visible on the Canvas?
+   * @type {boolean}
+   */
+  get isVisible() {
+    return !this.document.hidden || game.user.isGM;
+  }
+
   /** @override */
   get id() {
     return this.document.card.uuid;
@@ -214,8 +222,8 @@ export default class CardObject extends PlaceableObject {
   }
 
   /**
-   * Refresh the displayed state of the Drawing.
-   * Used to update aspects of the Drawing which change based on the user interaction state.
+   * Refresh the displayed state of the CardObject.
+   * Used to update aspects of the CardObject which change based on the user interaction state.
    * @protected
    */
   _refreshState() {
@@ -244,7 +252,7 @@ export default class CardObject extends PlaceableObject {
   /* -------------------------------------------- */
 
   /**
-   * Refresh the appearance of the tile.
+   * Refresh the appearance of the CardObject.
    * @protected
    */
   _refreshMesh() {
