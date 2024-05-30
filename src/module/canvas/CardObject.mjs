@@ -31,7 +31,7 @@ export default class CardObject extends PlaceableObject {
 
   /**
    * A reference to the SpriteMesh which displays this CardObject in the InterfaceCanvasGroup.
-   * @type {PrimarySpriteMesh}
+   * @type {SpriteMesh}
    */
   mesh;
 
@@ -52,7 +52,7 @@ export default class CardObject extends PlaceableObject {
     redraw: {propagate: ["refresh"]},
     refresh: {propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshElevation"], alias: true},
     refreshState: {},
-    refreshTransform: {propagate: ["refreshRotation", "refreshSize"], alias: true},
+    refreshTransform: {propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true},
     refreshPosition: {},
     refreshRotation: {propagate: ["refreshFrame"]},
     refreshSize: {propagate: ["refreshFrame"]},
@@ -172,7 +172,7 @@ export default class CardObject extends PlaceableObject {
    * @protected
    */
   _applyRenderFlags(flags) {
-    console.log("Card Object RenderFlags", flags);
+    console.log("Card Object RenderFlags", flags, this);
     if (flags.refreshState) this._refreshState();
     if (flags.refreshPosition) this._refreshPosition();
     if (flags.refreshRotation) this._refreshRotation();
@@ -217,8 +217,7 @@ export default class CardObject extends PlaceableObject {
   _refreshSize() {
     const {width, height, texture: {fit, scaleX, scaleY}} = this.document;
     if (!this.mesh) return this.bg.clear().beginFill(0xFFFFFF, 0.5).drawRect(0, 0, width, height).endFill();
-    console.log(this.mesh)
-    // this.mesh.resize(width, height, {fit, scaleX, scaleY});
+    this._resizeMesh(width, height, {fit, scaleX, scaleY});
   }
 
   /**
@@ -257,14 +256,11 @@ export default class CardObject extends PlaceableObject {
    */
   _refreshMesh() {
     if (!this.mesh) return;
-    const {width, height, alpha, occlusion, texture} = this.document;
+    const {width, height, texture} = this.document;
     const {anchorX, anchorY, fit, scaleX, scaleY, tint, alphaThreshold} = texture;
-    // this.mesh.anchor.set(anchorX, anchorY);
-    // this.mesh.resize(width, height, {fit, scaleX, scaleY});
+    this.mesh.anchor.set(anchorX, anchorY);
+    this._resizeMesh(width, height, {fit, scaleX, scaleY});
 
-    // this.mesh.unoccludedAlpha = alpha;
-    // this.mesh.occludedAlpha = occlusion.alpha;
-    // this.mesh.occlusionMode = occlusion.mode;
     this.mesh.tint = tint;
     this.mesh.textureAlphaThreshold = alphaThreshold;
   }
@@ -306,5 +302,39 @@ export default class CardObject extends PlaceableObject {
 
     // Draw the handle
     this.frame.handle.refresh(bounds);
+  }
+
+  _resizeMesh(baseWidth, baseHeight, {fit = "fill", scaleX = 1, scaleY = 1} = {}) {
+    if (!((baseWidth >= 0) && (baseHeight >= 0))) {
+      throw new Error(`Invalid baseWidth/baseHeight passed to ${this.constructor.name}#_resizeMesh.`);
+    }
+    const {width: textureWidth, height: textureHeight} = this.mesh._texture;
+    let sx;
+    let sy;
+    switch (fit) {
+      case "fill":
+        sx = baseWidth / textureWidth;
+        sy = baseHeight / textureHeight;
+        break;
+      case "cover":
+        sx = sy = Math.max(baseWidth / textureWidth, baseHeight / textureHeight);
+        break;
+      case "contain":
+        sx = sy = Math.min(baseWidth / textureWidth, baseHeight / textureHeight);
+        break;
+      case "width":
+        sx = sy = baseWidth / textureWidth;
+        break;
+      case "height":
+        sx = sy = baseHeight / textureHeight;
+        break;
+      default:
+        throw new Error(`Invalid fill type passed to ${this.constructor.name}#_resizeMesh (fit=${fit}).`);
+    }
+    sx *= scaleX;
+    sy *= scaleY;
+    this.mesh.scale.set(sx, sy);
+    this.mesh._width = Math.abs(sx * textureWidth);
+    this.mesh._height = Math.abs(sy * textureHeight);
   }
 }

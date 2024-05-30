@@ -58,11 +58,12 @@ export default class CardLayer extends PlaceablesLayer {
   async _draw(options) {
     // Setting up the group functionality
     const itf = this.parent;
-    itf.cardContainer = itf.addChild(new PIXI.Container());
-    itf.cardContainer.sortChildren = CardLayer.#sortObjectsByElevationAndSort;
-    itf.cardContainer.sortableChildren = true;
-    itf.cardContainer.eventMode = "none";
-    itf.cardContainer.zIndex = CONFIG.Canvas.groups.interface.zIndexDrawings;
+    itf.cardCollection = new foundry.utils.Collection();
+    // itf.cardContainer = itf.addChild(new PIXI.Container());
+    // itf.cardContainer.sortChildren = CardLayer.#sortObjectsByElevationAndSort;
+    // itf.cardContainer.sortableChildren = true;
+    // itf.cardContainer.eventMode = "none";
+    // itf.cardContainer.zIndex = CONFIG.Canvas.groups.interface.zIndexDrawings;
 
     // Layer functionality
     // Inherited from InteractionLayer

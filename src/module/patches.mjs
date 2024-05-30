@@ -7,11 +7,11 @@
  */
 export function addCard(card) {
   const name = card.objectId;
-  const shape = this.cards.graphics.get(name) ?? this.cardContainer.addChild(new PIXI.Graphics());
-  shape.name = name;
-  this.cards.graphics.set(name, shape);
-  console.log(shape);
-  return shape;
+  console.log(card);
+  const mesh = this.cardCollection.get(name) ?? this.addChild(new SpriteMesh(card.texture));
+  mesh.texture = card.texture ?? PIXI.Texture.EMPTY;
+  this.cardCollection.set(name, mesh);
+  return mesh;
 }
 
 /**
@@ -22,8 +22,7 @@ export function addCard(card) {
  */
 export function removeCard(card) {
   const name = card.objectId;
-  if (!this.cards.graphics.has(name)) return;
-  const shape = this.cards.graphics.get(name);
-  if (shape?.destroyed === false) shape.destroy({children: true});
-  this.cards.graphics.delete(name);
+  const mesh = this.cards.get(name);
+  if (mesh?.destroyed === false) mesh.destroy({children: true});
+  this.tiles.delete(name);
 }
