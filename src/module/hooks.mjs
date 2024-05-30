@@ -25,8 +25,14 @@ export function init() {
   CONFIG.Card.layerClass = ccm_canvas.CardLayer;
   CONFIG.Card.hudClass = apps.CardHud;
 
-  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheet, {
-    label: "CCM.Sheets.Cards"
+  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
+    label: "CCM.Sheets.Deck", types: ["deck"]
+  });
+  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.HandSheet, {
+    label: "CCM.Sheets.Hand", types: ["hand"]
+  });
+  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.PileSheet, {
+    label: "CCM.Sheets.Pile", types: ["pile"]
   });
   DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, {
     label: "CCM.Sheets.Card"
