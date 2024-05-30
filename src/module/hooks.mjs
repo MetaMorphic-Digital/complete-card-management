@@ -46,6 +46,10 @@ export function ready() {
   console.log("Complete Card Management | Ready");
 }
 
+/****************
+ * Canvas Hooks
+ ****************/
+
 /**
  * Handles drop data
  *
@@ -84,4 +88,25 @@ async function handleCardDrop(canvas, data) {
 
   await game.scenes.active.setFlag(MODULE_ID, "cardCollection", currentCards);
   console.log("Updated", card.name);
+}
+
+/**
+ *
+ * @param {SceneControl[]} controls
+ */
+export function getSceneControlButtons(controls) {
+  controls.push({
+    name: 'cards',
+    title: 'CCM.CardLayer.Title',
+    layer: 'cards',
+    icon: CONFIG.Cards.sidebarIcon,
+    tools: [
+      {
+        name: "select",
+        title: 'CCM.CardLayer.Tools.SelectTitle',
+        icon: "fa-solid fa-expand"
+      }
+    ],
+    activeTool: 'select'
+  })
 }

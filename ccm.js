@@ -7,3 +7,5 @@ Hooks.once("init", hooks.init);
 Hooks.once("ready", hooks.ready);
 
 Hooks.once("dropCanvasData", hooks.dropCanvasData);
+
+Hooks.on('getSceneControlButtons', hooks.getSceneControlButtons)

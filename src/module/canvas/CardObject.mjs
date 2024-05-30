@@ -210,7 +210,7 @@ export default class CardObject extends PlaceableObject {
     const {width, height, texture: {fit, scaleX, scaleY}} = this.document;
     if (!this.mesh) return this.bg.clear().beginFill(0xFFFFFF, 0.5).drawRect(0, 0, width, height).endFill();
     console.log(this.mesh)
-    this.mesh.resize(width, height, {fit, scaleX, scaleY});
+    // this.mesh.resize(width, height, {fit, scaleX, scaleY});
   }
 
   /**
@@ -251,8 +251,9 @@ export default class CardObject extends PlaceableObject {
     if (!this.mesh) return;
     const {width, height, alpha, occlusion, texture} = this.document;
     const {anchorX, anchorY, fit, scaleX, scaleY, tint, alphaThreshold} = texture;
-    this.mesh.anchor.set(anchorX, anchorY);
-    this.mesh.resize(width, height, {fit, scaleX, scaleY});
+    // this.mesh.anchor.set(anchorX, anchorY);
+    // this.mesh.resize(width, height, {fit, scaleX, scaleY});
+
     // this.mesh.unoccludedAlpha = alpha;
     // this.mesh.occludedAlpha = occlusion.alpha;
     // this.mesh.occlusionMode = occlusion.mode;

@@ -59,30 +59,21 @@ export default class CardLayer extends PlaceablesLayer {
     // Setting up the group functionality
     const itf = this.parent;
     itf.cardContainer = itf.addChild(new PIXI.Container());
-    itf.cardContainer.sortChildren = function() {
-      const children = this.children;
-      for (let i = 0, n = children.length; i < n; i++) children[i]._lastSortedIndex = i;
-      children.sort((a, b) => {
-        return ((a.elevation || 0) - (b.elevation || 0))
-          || ((a.sort || 0) - (b.sort || 0))
-          || (a.zIndex - b.zIndex)
-          || (a._lastSortedIndex - b._lastSortedIndex);
-      });
-      this.sortDirty = false;
-    };
+    itf.cardContainer.sortChildren = CardLayer.#sortObjectsByElevationAndSort;
     itf.cardContainer.sortableChildren = true;
     itf.cardContainer.eventMode = "none";
     itf.cardContainer.zIndex = CONFIG.Canvas.groups.interface.zIndexDrawings;
 
     // Layer functionality
+    // Inherited from InteractionLayer
     this.hitArea = canvas.dimensions.rect;
     this.zIndex = this.getZIndex();
 
+    // Re-implementation of PlaceablesLayer._draw
     this.objects = this.addChild(new PIXI.Container());
     this.objects.sortableChildren = true;
     this.objects.visible = false;
-    // const cls = getDocumentClass(this.constructor.documentName);
-    this.objects.sortChildren = null;
+    this.objects.sortChildren = CardLayer.#sortObjectsByElevationAndSort;
     this.objects.on("childAdded", (obj) => {
       if (obj instanceof CardObject) {
         obj._updateQuadtree();
@@ -106,6 +97,24 @@ export default class CardLayer extends PlaceablesLayer {
 
     // Wait for all objects to draw
     await Promise.all(promises);
-    this.objects.visible = this.active;
+    this.objects.visible = true;
   }
+
+
+  /**
+   * The method to sort the objects elevation and sort before sorting by the z-index.
+   * @type {Function}
+   */
+  static #sortObjectsByElevationAndSort = function() {
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i]._lastSortedIndex = i;
+    }
+    this.children.sort((a, b) => (a.document.elevation - b.document.elevation)
+      || (a.document.sort - b.document.sort)
+      || (a.zIndex - b.zIndex)
+      || (a._lastSortedIndex - b._lastSortedIndex)
+    );
+    this.sortDirty = false;
+  };
+
 }

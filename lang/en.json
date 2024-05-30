@@ -5,6 +5,12 @@
       "Card": "Complete Card Management Sheet"
     },
 
+    "CardLayer": {
+      "Title": "Card Controls",
+      "Tools": {
+        "SelectTitle": "Select Cards"
+      }
+    },
     "CardSheet": {
       "Add": "Add",
       "Save": "Save Card",
