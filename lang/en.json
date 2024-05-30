@@ -6,17 +6,31 @@
     },
 
     "CardSheet": {
+      "Add": "Add",
       "Save": "Save Card",
       "AddFace": "Add Face",
       "DeleteFace": "Delete Face",
       "TabDetails": "Card Details",
       "TabFaces": "Card Faces",
       "TabBack": "Card Back",
+      "TabConfiguration": "Configuration",
+      "TabCards": "Cards",
       "BacksideUp": "Backside Up",
       "FaceName": "Face Name",
       "Unnamed": "Unnamed ({idx})",
       "DeleteFacePrompt": "Delete this face? This action cannot be undone.",
-      "DeleteFaceTitle": "Delete Face"
+      "DeleteFaceTitle": "Delete Face",
+
+      "CardType": "Type",
+      "CardSuit": "Suit",
+      "CardValue": "Value",
+      "CardDrawn": "Drawn",
+      "CardFace": "Face",
+      "CreateCard": "Create Card",
+      "EditCard": "Edit Card",
+      "DeleteCard": "Delete Card",
+      "NextFace": "Next Face",
+      "PreviousFace": "Previous Face"
     }
   }
 }

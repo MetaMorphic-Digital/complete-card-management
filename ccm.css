@@ -1,5 +1,5 @@
 /* Card Sheet */
-.ccm.card {
+.ccm.card, .ccm.cards {
   max-height: 90%;
 
   & h1 {
@@ -48,6 +48,53 @@
       .fa-solid {
         margin: 0;
       }
+    }
+  }
+
+  [data-tab=cards] {
+
+    .cards {
+      list-style: none;
+      padding: 0;
+      min-height: 200px;
+    }
+
+    .header, .card {
+      display: flex;
+
+      &.card { padding-left: 0; }
+
+      > * {
+        flex: 0 0 60px;
+        text-align: center;
+        margin: auto;
+      }
+
+      & img {
+        width: 40px;
+        flex: 0 0 40px;
+        margin: 0 10px;
+        border: none;
+      }
+
+      .name {
+        flex: 1;
+        text-align: left;
+      }
+
+      .face {
+        display: grid;
+        a[disabled] {
+          opacity: 0.5;
+        }
+      }
+
+      &.card .controls {
+        display: flex;
+        justify-content: space-evenly;
+      }
+
+      .drawn input:checked::before { color: var(--checkbox-checked-color); }
     }
   }
 }

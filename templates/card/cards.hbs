@@ -1,0 +1,48 @@
+<div class="{{tabs.cards.tabCssClass}}" data-group="primary" data-tab="cards">
+  <header class="header">
+    <a class="sort" data-tooltip="CARDS.SortMode" data-action="toggleSort">
+      <i class="fa-solid fa-sort fa-fw"></i>
+    </a>
+    <span class="name">{{localize "Name"}}</span>
+    <span class="type">{{localize "CCM.CardSheet.CardType"}}</span>
+    <span class="suit">{{localize "CCM.CardSheet.CardSuit"}}</span>
+    <span class="value">{{localize "CCM.CardSheet.CardValue"}}</span>
+    <span class="drawn">{{localize "CCM.CardSheet.CardDrawn"}}</span>
+    <span class="face">{{localize "CCM.CardSheet.CardFace"}}</span>
+    <a class="controls" data-tooltip="CCM.CardSheet.CreateCard" data-action="createCard">
+      <i class="fa-solid fa-plus"></i>
+      {{localize "CCM.CardSheet.Add"}}
+    </a>
+  </header>
+
+  <ol class="cards">
+    {{#each cards}}
+    <li class="card" data-card-id="{{id}}">
+      <img src="{{img}}" alt="{{name}}" class="sort">
+      <span class="name">{{name}}</span>
+      <span class="type">{{localize type}}</span>
+      <span class="suit">{{suit}}</span>
+      <span class="value">{{value}}</span>
+      <span class="drawn">
+        <input type="checkbox" disabled {{checked drawn}}>
+      </span>
+      <span class="face">
+        <a data-action="nextFace" data-tooltip="CCM.CardSheet.NextFace" {{#unless hasNextFace}}disabled{{/unless}}>
+          <i class="fa-solid fa-caret-up"></i>
+        </a>
+        <a data-action="previousFace" data-tooltip="CCM.CardSheet.PreviousFace" {{#unless hasPreviousFace}}disabled{{/unless}}>
+          <i class="fa-solid fa-caret-down"></i>
+        </a>
+      </span>
+      <span class="controls">
+        <a data-action="editCard" data-tooltip="CCM.CardSheet.EditCard">
+          <i class="fa-solid fa-edit"></i>
+        </a>
+        <a data-action="deleteCard" data-tooltip="CCM.CardSheet.DeleteCard">
+          <i class="fa-solid fa-trash"></i>
+        </a>
+      </span>
+    </li>
+    {{/each}}
+  </ol>
+</div>
