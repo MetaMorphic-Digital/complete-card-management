@@ -23,6 +23,10 @@ export default class CardsSheet extends HandlebarsApplicationMixin(DocumentSheet
     form: {
       submitOnChange: true,
       closeOnSubmit: false
+    },
+    window: {
+      contentClasses: ["standard-form"],
+      icon: "fa-solid fa-cards"
     }
   };
 

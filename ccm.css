@@ -98,3 +98,9 @@
     }
   }
 }
+
+/* Temp fix for core styling issue. */
+.theme-light :is(.ccm) nav.tabs .item {
+  color: var(--color-dark-3);
+  &.active { text-shadow: 0 0 8px var(--color-shadow-primary); }
+}
