@@ -17,6 +17,9 @@
       "TabCards": "Cards",
       "BacksideUp": "Backside Up",
       "FaceName": "Face Name",
+      "Unnamed": "Unnamed ({idx})",
+      "DeleteFacePrompt": "Delete this face? This action cannot be undone.",
+      "DeleteFaceTitle": "Delete Face",
 
       "CardType": "Type",
       "CardSuit": "Suit",
