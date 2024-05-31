@@ -36,6 +36,10 @@ export function init() {
   interfaceCls.prototype.addCard = addCard;
   interfaceCls.prototype.removeCard = removeCard;
 
+  // Hook up new Cards methods.
+  Cards.prototype.passDialog = apps.CardsDialogs.passDialog;
+  Cards.prototype.dealDialog = apps.CardsDialogs.dealDialog;
+
   Hooks.callAll("CCMInit");
 }
 

@@ -31,6 +31,10 @@
       "DeleteCard": "Delete Card",
       "NextFace": "Next Face",
       "PreviousFace": "Previous Face"
+    },
+
+    "Warning": {
+      "NoCardsAvailable": "This {type} has no cards available."
     }
   }
 }
