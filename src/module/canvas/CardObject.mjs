@@ -301,6 +301,16 @@ export default class CardObject extends PlaceableObject {
     this.frame.handle.refresh(bounds);
   }
 
+  /**
+   * Adapted from `PrimarySpriteMesh#resize`, this helper method adjusts the contained SpriteMesh
+   * according to desired dimensions and options.
+   * @param {number} baseWidth  The base width used for computations.
+   * @param {number} baseHeight The base height used for computations.
+   * @param {*} [options]       options
+   * @param {"fill"|"cover"|"contain"|"width"|"height"} [options.fit="fill"]  The fit type.
+   * @param {number} [options.scaleX=1]    The scale on X axis.
+   * @param {number} [options.scaleY=1]    The scale on Y axis.
+   */
   _resizeMesh(baseWidth, baseHeight, {fit = "fill", scaleX = 1, scaleY = 1} = {}) {
     if (!(baseWidth >= 0) || !(baseHeight >= 0)) {
       throw new Error(`Invalid baseWidth/baseHeight passed to ${this.constructor.name}#_resizeMesh.`);
