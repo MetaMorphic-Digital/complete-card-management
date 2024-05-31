@@ -94,7 +94,7 @@ async function handleCardDrop(canvas, data) {
 }
 
 /**
- *
+ * Hook event method for adding cards layer controls.
  * @param {SceneControl[]} controls
  */
 export function getSceneControlButtons(controls) {
