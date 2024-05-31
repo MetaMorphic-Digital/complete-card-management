@@ -302,6 +302,7 @@ export class HandSheet extends CardsSheet {
 
     // Hands hide cards' value, drawn, and the controls.
     context.isHand = true;
+    foundry.utils.setProperty(context, "tabs.cards.tabCssClass", "scrollable");
 
     return context;
   }
@@ -326,6 +327,7 @@ export class PileSheet extends CardsSheet {
 
     // Piles hide cards' value, drawn, and the controls.
     context.isPile = true;
+    foundry.utils.setProperty(context, "tabs.cards.tabCssClass", "scrollable");
 
     return context;
   }
