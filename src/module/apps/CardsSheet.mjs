@@ -1,7 +1,7 @@
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
 /** AppV2 cards sheet (Deck, Hand, Pile) */
-export default class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
+class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /** @override */
   static DEFAULT_OPTIONS = {
     classes: ["ccm", "cards"],
@@ -18,7 +18,9 @@ export default class CardsSheet extends HandlebarsApplicationMixin(DocumentSheet
       resetCards: this._onResetCards,
       toggleSort: this._onToggleSort,
       previousFace: this._onPreviousFace,
-      nextFace: this._onNextFace
+      nextFace: this._onNextFace,
+      drawCards: this._onDrawCards,
+      passCards: this._onPassCards
     },
     form: {
       submitOnChange: true,
@@ -31,28 +33,13 @@ export default class CardsSheet extends HandlebarsApplicationMixin(DocumentSheet
   };
 
   /** @override */
-  tabGroups = {
-    primary: "configuration"
-  };
+  tabGroups = {};
 
   /**
    * Tabs that are present on this sheet.
    * @enum {TabConfiguration}
    */
-  static TABS = {
-    configuration: {
-      id: "configuration",
-      group: "primary",
-      label: "CCM.CardSheet.TabConfiguration",
-      icon: "fa-solid fa-cogs"
-    },
-    cards: {
-      id: "cards",
-      group: "primary",
-      label: "CCM.CardSheet.TabCards",
-      icon: "fa-solid fa-id-badge"
-    }
-  };
+  static TABS = {};
 
   /**
    * The allowed sorting methods which can be used for this sheet.
@@ -64,13 +51,7 @@ export default class CardsSheet extends HandlebarsApplicationMixin(DocumentSheet
   };
 
   /** @override */
-  static PARTS = {
-    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
-    navigation: {template: "modules/complete-card-management/templates/card/nav.hbs"},
-    configuration: {template: "modules/complete-card-management/templates/card/configuration.hbs"},
-    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
-    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
-  };
+  static PARTS = {};
 
   /** @override */
   async _prepareContext(options) {
@@ -247,5 +228,107 @@ export default class CardsSheet extends HandlebarsApplicationMixin(DocumentSheet
     const id = target.closest("[data-card-id]").dataset.cardId;
     const card = this.document.cards.get(id);
     card.update({face: (card.face === null) ? 0 : card.face + 1});
+  }
+
+  static _onDrawCards(event, target) {
+    this.document.drawDialog();
+  }
+
+  static _onPassCards(event, target) {
+    this.document.passDialog();
+  }
+}
+
+export class DeckSheet extends CardsSheet {
+  /** @override */
+  static DEFAULT_OPTIONS = {
+    classes: ["deck"]
+  };
+
+  /** @override */
+  tabGroups = {
+    primary: "configuration"
+  };
+
+  /** @override */
+  static TABS = {
+    configuration: {
+      id: "configuration",
+      group: "primary",
+      label: "CCM.CardSheet.TabConfiguration",
+      icon: "fa-solid fa-cogs"
+    },
+    cards: {
+      id: "cards",
+      group: "primary",
+      label: "CCM.CardSheet.TabCards",
+      icon: "fa-solid fa-id-badge"
+    }
+  };
+
+  /** @override */
+  static PARTS = {
+    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
+    navigation: {template: "modules/complete-card-management/templates/card/nav.hbs"},
+    configuration: {template: "modules/complete-card-management/templates/card/configuration.hbs"},
+    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
+    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
+  };
+
+  /** @override */
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.isDeck = true;
+    return context;
+  }
+}
+
+export class HandSheet extends CardsSheet {
+  /** @override */
+  static DEFAULT_OPTIONS = {
+    classes: ["hand"]
+  };
+
+  /** @override */
+  static PARTS = {
+    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
+    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
+    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
+  };
+
+  /** @override */
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+
+    // Hands hide cards' value, drawn, and the controls.
+    context.isHand = true;
+    foundry.utils.setProperty(context, "tabs.cards.tabCssClass", "scrollable");
+
+    return context;
+  }
+}
+
+export class PileSheet extends CardsSheet {
+  /** @override */
+  static DEFAULT_OPTIONS = {
+    classes: ["pile"]
+  };
+
+  /** @override */
+  static PARTS = {
+    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
+    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
+    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
+  };
+
+  /** @override */
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+
+    // Piles hide cards' value, drawn, and the controls.
+    context.isPile = true;
+    foundry.utils.setProperty(context, "tabs.cards.tabCssClass", "scrollable");
+
+    return context;
   }
 }

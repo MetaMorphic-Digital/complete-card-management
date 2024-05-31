@@ -1,18 +1,26 @@
 <div class="{{tabs.cards.tabCssClass}}" data-group="primary" data-tab="cards">
   <header class="header">
+    {{#if isPile}}
+    <span class="sort"></span>
+    {{else}}
     <a class="sort" data-tooltip="CARDS.SortMode" data-action="toggleSort">
       <i class="fa-solid fa-sort fa-fw"></i>
     </a>
+    {{/if}}
     <span class="name">{{localize "Name"}}</span>
     <span class="type">{{localize "CCM.CardSheet.CardType"}}</span>
     <span class="suit">{{localize "CCM.CardSheet.CardSuit"}}</span>
+    {{#if isDeck}}
     <span class="value">{{localize "CCM.CardSheet.CardValue"}}</span>
     <span class="drawn">{{localize "CCM.CardSheet.CardDrawn"}}</span>
+    {{/if}}
     <span class="face">{{localize "CCM.CardSheet.CardFace"}}</span>
+    {{#if isDeck}}
     <a class="controls" data-tooltip="CCM.CardSheet.CreateCard" data-action="createCard">
       <i class="fa-solid fa-plus"></i>
       {{localize "CCM.CardSheet.Add"}}
     </a>
+    {{/if}}
   </header>
 
   <ol class="cards">
@@ -22,10 +30,12 @@
       <span class="name">{{name}}</span>
       <span class="type">{{localize type}}</span>
       <span class="suit">{{suit}}</span>
+      {{#if @root.isDeck}}
       <span class="value">{{value}}</span>
       <span class="drawn">
         <input type="checkbox" disabled {{checked drawn}}>
       </span>
+      {{/if}}
       <span class="face">
         <a data-action="nextFace" data-tooltip="CCM.CardSheet.NextFace" {{#unless hasNextFace}}disabled{{/unless}}>
           <i class="fa-solid fa-caret-up"></i>
@@ -34,6 +44,7 @@
           <i class="fa-solid fa-caret-down"></i>
         </a>
       </span>
+      {{#if @root.isDeck}}
       <span class="controls">
         <a data-action="editCard" data-tooltip="CCM.CardSheet.EditCard">
           <i class="fa-solid fa-edit"></i>
@@ -42,6 +53,7 @@
           <i class="fa-solid fa-trash"></i>
         </a>
       </span>
+      {{/if}}
     </li>
     {{/each}}
   </ol>

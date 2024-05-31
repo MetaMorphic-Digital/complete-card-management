@@ -1,8 +1,11 @@
 {
   "CCM": {
     "Sheets": {
-      "Cards": "Complete Card Management Sheet",
-      "Card": "Complete Card Management Sheet"
+      "Cards": "Complete Card Management Cards Sheet",
+      "Card": "Complete Card Management Card Sheet",
+      "Deck": "Complete Card Management Deck Sheet",
+      "Hand": "Complete Card Management Hand Sheet",
+      "Pile": "Complete Card Management Pile Sheet"
     },
 
     "CardSheet": {
