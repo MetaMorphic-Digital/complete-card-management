@@ -29,7 +29,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     super(data, {parent: canvas.scene});
 
     /**
-     * A reference to the card document this takes data from
+     * A reference to the card document this takes data from.
+     * @type {Card}
      */
     this.card = card;
   }
