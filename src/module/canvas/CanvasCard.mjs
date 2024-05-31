@@ -20,7 +20,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     Object.assign(data, {
       sort: card.sort, // possible we want a separate sort value for canvas purposes
       texture: {
-        src: card.currentFace.img
+        src: card.img
       },
       width: card.width * canvas.grid.sizeX,
       height: card.height * canvas.grid.sizeY
