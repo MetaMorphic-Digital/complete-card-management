@@ -104,3 +104,14 @@
   color: var(--color-dark-3);
   &.active { text-shadow: 0 0 8px var(--color-shadow-primary); }
 }
+
+/* Styling for various cards dialogs. */
+.ccm.dialog {
+  &.pass, &.deal {
+    .dialog-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+}
