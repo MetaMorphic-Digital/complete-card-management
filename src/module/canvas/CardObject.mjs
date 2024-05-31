@@ -302,7 +302,7 @@ export default class CardObject extends PlaceableObject {
   }
 
   _resizeMesh(baseWidth, baseHeight, {fit = "fill", scaleX = 1, scaleY = 1} = {}) {
-    if (!((baseWidth >= 0) && (baseHeight >= 0))) {
+    if (!(baseWidth >= 0) || !(baseHeight >= 0)) {
       throw new Error(`Invalid baseWidth/baseHeight passed to ${this.constructor.name}#_resizeMesh.`);
     }
     const {width: textureWidth, height: textureHeight} = this.mesh._texture;
