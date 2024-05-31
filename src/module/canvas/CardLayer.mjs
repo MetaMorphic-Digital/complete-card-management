@@ -1,5 +1,6 @@
 import CardObject from "./CardObject.mjs";
 import {MODULE_ID} from "../helpers.mjs";
+import CanvasCard from "./CanvasCard.mjs";
 
 /**
  * The main Card lay
@@ -42,6 +43,7 @@ export default class CardLayer extends PlaceablesLayer {
     return canvas.hud.canvas;
   }
 
+  // TODO: investigate if there's caching performance improvements
   /** @override */
   get documentCollection() {
     const activeScene = canvas.scene;
@@ -54,14 +56,20 @@ export default class CardLayer extends PlaceablesLayer {
 
   /** @override */
   async _draw(options) {
+    // Setting up the group functionality
+    const itf = this.parent;
+    itf.cardCollection = new foundry.utils.Collection();
+
+    // Layer functionality
+    // Inherited from InteractionLayer
     this.hitArea = canvas.dimensions.rect;
     this.zIndex = this.getZIndex();
 
+    // Re-implementation of PlaceablesLayer._draw
     this.objects = this.addChild(new PIXI.Container());
     this.objects.sortableChildren = true;
     this.objects.visible = false;
-    // const cls = getDocumentClass(this.constructor.documentName);
-    this.objects.sortChildren = null;
+    this.objects.sortChildren = CardLayer.#sortObjectsByElevationAndSort;
     this.objects.on("childAdded", (obj) => {
       if (obj instanceof CardObject) {
         obj._updateQuadtree();
@@ -77,14 +85,31 @@ export default class CardLayer extends PlaceablesLayer {
 
     const documents = this.getDocuments();
     const promises = documents.map((doc) => {
-      // The reference here may cause issues on scene swap
-      const obj = (doc._object = this.createObject(doc));
+      const syntheticDoc = new CanvasCard(doc);
+      const obj = (syntheticDoc._object = this.createObject(syntheticDoc));
       this.objects.addChild(obj);
       return obj.draw();
     });
 
     // Wait for all objects to draw
     await Promise.all(promises);
-    this.objects.visible = this.active;
+    this.objects.visible = true;
   }
+
+  /**
+   * The method to sort the objects elevation and sort before sorting by the z-index.
+   * @type {Function}
+   */
+  static #sortObjectsByElevationAndSort = function() {
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i]._lastSortedIndex = i;
+    }
+    this.children.sort((a, b) => (a.document.elevation - b.document.elevation)
+      || (a.document.sort - b.document.sort)
+      || (a.zIndex - b.zIndex)
+      || (a._lastSortedIndex - b._lastSortedIndex)
+    );
+    this.sortDirty = false;
+  };
+
 }

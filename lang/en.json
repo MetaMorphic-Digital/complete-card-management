@@ -8,6 +8,12 @@
       "Pile": "Complete Card Management Pile Sheet"
     },
 
+    "CardLayer": {
+      "Title": "Card Controls",
+      "Tools": {
+        "SelectTitle": "Select Cards"
+      }
+    },
     "CardSheet": {
       "Add": "Add",
       "Save": "Save Card",
