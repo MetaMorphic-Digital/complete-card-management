@@ -77,6 +77,7 @@ async function handleCardDrop(canvas, data) {
   }
   catch (e) {
     ui.notifications.error("The dropped card must already be in a card stack in the world");
+    return;
   }
   const adjusted_x = data.x - (card.width * canvas.grid.sizeX) / 2;
   const adjusted_y = data.y - (card.height * canvas.grid.sizeY) / 2;
