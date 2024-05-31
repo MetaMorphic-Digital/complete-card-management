@@ -96,7 +96,6 @@ export default class CardLayer extends PlaceablesLayer {
     this.objects.visible = true;
   }
 
-
   /**
    * The method to sort the objects elevation and sort before sorting by the z-index.
    * @type {Function}

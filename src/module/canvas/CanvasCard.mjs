@@ -7,24 +7,24 @@ import {MODULE_ID} from "../helpers.mjs";
 export default class CanvasCard extends foundry.abstract.DataModel {
   constructor(card) {
     if (!(card instanceof Card)) {
-      throw new Error("The card object model takes a Card document as its only argument")
+      throw new Error("The card object model takes a Card document as its only argument");
     }
 
     // TODO: Might need the scene ID to be taken in as an argument? Unclear
-    const data = card.getFlag(MODULE_ID, canvas.scene.id)
+    const data = card.getFlag(MODULE_ID, canvas.scene.id);
 
     if (!data) {
-      throw new Error("The card doesn't have location data for the current scene")
+      throw new Error("The card doesn't have location data for the current scene");
     }
 
     Object.assign(data, {
       sort: card.sort, // possible we want a separate sort value for canvas purposes
       texture: {
-        src: card.currentFace.img,
+        src: card.currentFace.img
       },
       width: card.width * canvas.grid.sizeX,
-      height: card.height * canvas.grid.sizeY,
-    })
+      height: card.height * canvas.grid.sizeY
+    });
 
     super(data, {parent: canvas.scene});
 
@@ -33,7 +33,6 @@ export default class CanvasCard extends foundry.abstract.DataModel {
      */
     this.card = card;
   }
-
 
   static LOCALIZATION_PREFIXES = ["CCM", "CardObjectModel"];
 

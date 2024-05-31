@@ -8,10 +8,10 @@ export default class CardObject extends PlaceableObject {
 
   constructor(canvasCard) {
     if (!(canvasCard instanceof CanvasCard)) {
-      throw new Error("You must provide a CanvasCard to construct a CardObject")
+      throw new Error("You must provide a CanvasCard to construct a CardObject");
     }
     // PlaceableObject checks for both document status and embedded
-    super(canvasCard.card)
+    super(canvasCard.card);
 
     /** @override */
     this.scene = canvasCard.parent;
@@ -56,7 +56,7 @@ export default class CardObject extends PlaceableObject {
     refreshSize: {propagate: ["refreshFrame"]},
     refreshMesh: {},
     refreshFrame: {},
-    refreshElevation: {},
+    refreshElevation: {}
   };
 
   /** @override */
