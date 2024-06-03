@@ -40,7 +40,7 @@ export default class CardLayer extends PlaceablesLayer {
 
   /** @override */
   get hud() {
-    return canvas.hud.canvas;
+    return canvas.hud.cards;
   }
 
   // TODO: investigate if there's caching performance improvements
