@@ -24,7 +24,7 @@ export default class CardHud extends BasePlaceableHUD {
   /** @override */
   getData(options = {}) {
     const data = super.getData(options);
-    console.log(data);
+    // console.log(data);
     return data;
   }
 
