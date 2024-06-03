@@ -165,4 +165,29 @@ export async function dealDialog() {
   });
 }
 
-// todo: reset, play, draw dialogs.
+/**
+ * Display a confirmation dialog for whether or not the user wishes to reset a Cards stack
+ * @see {@link Cards#recall}
+ * @returns {Promise<Cards|false|null>}
+ */
+export async function resetDialog() {
+  return foundry.applications.api.DialogV2.confirm({
+    classes: ["ccm", "dialog", "reset"],
+    window: {
+      title: "CARDS.Reset",
+      icon: "fa-solid fa-cards"
+    },
+    position: {
+      width: 400,
+      height: "auto"
+    },
+    content: `<p>${game.i18n.format(`CARDS.${this.type === "deck" ? "Reset" : "Return"}Confirm`, {name: this.name})}</p>`,
+    rejectClose: false,
+    modal: true,
+    yes: {
+      callback: () => this.recall()
+    }
+  });
+}
+
+// todo: play, draw dialogs.

@@ -45,6 +45,7 @@ export function init() {
   // Hook up new Cards methods.
   Cards.prototype.passDialog = apps.CardsDialogs.passDialog;
   Cards.prototype.dealDialog = apps.CardsDialogs.dealDialog;
+  Cards.prototype.resetDialog = apps.CardsDialogs.resetDialog;
 
   Hooks.callAll("CCMInit");
 }
