@@ -154,8 +154,6 @@ export default class CardObject extends PlaceableObject {
     frame.interaction.eventMode = "auto";
     frame.border = frame.addChild(new PIXI.Graphics());
     frame.border.eventMode = "none";
-    frame.handle = frame.addChild(new ResizeHandle([1, 1]));
-    frame.handle.eventMode = "static";
     return frame;
   }
 
@@ -167,7 +165,7 @@ export default class CardObject extends PlaceableObject {
 
   /**
    * Apply render flags before a render occurs.
-   * @param {Object<boolean>} flags  The render flags which must be applied
+   * @param {Record<string, boolean>} flags  The render flags which must be applied
    * @protected
    */
   _applyRenderFlags(flags) {
@@ -231,7 +229,6 @@ export default class CardObject extends PlaceableObject {
     const colors = CONFIG.Canvas.dispositionColors;
     this.frame.border.tint = this.controlled ? (locked ? colors.HOSTILE : colors.CONTROLLED) : colors.INACTIVE;
     this.frame.border.visible = this.controlled || this.hover || this.layer.highlightObjects;
-    this.frame.handle.visible = this.controlled && !locked;
     const foreground = this.layer.active && !!ui.controls.control.foreground;
     const overhead = elevation >= this.document.parent.foregroundElevation;
     const oldEventMode = this.eventMode;
@@ -297,9 +294,6 @@ export default class CardObject extends PlaceableObject {
       .drawShape(bounds);
     border.lineStyle({width: thickness / 2, color: 0xFFFFFF, join: PIXI.LINE_JOIN.ROUND, alignment: 1})
       .drawShape(bounds);
-
-    // Draw the handle
-    this.frame.handle.refresh(bounds);
   }
 
   /**
@@ -353,136 +347,5 @@ export default class CardObject extends PlaceableObject {
   /** @inheritdoc */
   activateListeners() {
     super.activateListeners();
-    this.frame.handle.off("pointerover").off("pointerout")
-      .on("pointerover", this._onHandleHoverIn.bind(this))
-      .on("pointerout", this._onHandleHoverOut.bind(this));
   }
-
-  /* -------------------------------------------- */
-
-  /** @inheritdoc */
-  _onClickLeft(event) {
-    if (event.target === this.frame.handle) {
-      event.interactionData.dragHandle = true;
-      event.stopPropagation();
-      return;
-    }
-    return super._onClickLeft(event);
-  }
-
-  /* -------------------------------------------- */
-
-  /** @inheritdoc */
-  _onDragLeftStart(event) {
-    if (event.interactionData.dragHandle) return this._onHandleDragStart(event);
-    return super._onDragLeftStart(event);
-  }
-
-  /* -------------------------------------------- */
-
-  /** @inheritdoc */
-  // _onDragLeftMove(event) {
-  //   // if (event.interactionData.dragHandle) return this._onHandleDragMove(event);
-  //   super._onDragLeftMove(event);
-  // }
-
-  // /* -------------------------------------------- */
-
-  // /** @inheritdoc */
-  // _onDragLeftDrop(event) {
-  //   // if (event.interactionData.dragHandle) return this._onHandleDragDrop(event);
-  //   return super._onDragLeftDrop(event);
-  // }
-
-  /* -------------------------------------------- */
-  /*  Resize Handling                             */
-  /* -------------------------------------------- */
-
-  /** @inheritdoc */
-  _onDragLeftCancel(event) {
-    if (event.interactionData.dragHandle) return this._onHandleDragCancel(event);
-    return super._onDragLeftCancel(event);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Handle mouse-over event on a control handle
-   * @param {PIXI.FederatedEvent} event   The mouseover event
-   * @protected
-   */
-  _onHandleHoverIn(event) {
-    const handle = event.target;
-    handle?.scale.set(1.5, 1.5);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Handle mouse-out event on a control handle
-   * @param {PIXI.FederatedEvent} event   The mouseout event
-   * @protected
-   */
-  _onHandleHoverOut(event) {
-    const handle = event.target;
-    handle?.scale.set(1.0, 1.0);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Handle the beginning of a drag event on a resize handle.
-   * @param {PIXI.FederatedEvent} event   The mousedown event
-   * @protected
-   */
-  _onHandleDragStart(event) {
-    const handle = this.frame.handle;
-    const aw = this.document.width;
-    const ah = this.document.height;
-    const x0 = this.document.x + (handle.offset[0] * aw);
-    const y0 = this.document.y + (handle.offset[1] * ah);
-    event.interactionData.origin = {x: x0, y: y0, width: aw, height: ah};
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Handle mousemove while dragging a tile scale handler
-   * @param {PIXI.FederatedEvent} event   The mousemove event
-   * @protected
-   */
-  // _onHandleDragMove(event) {
-  //   canvas._onDragCanvasPan(event);
-  //   const interaction = event.interactionData;
-  //   if (!event.shiftKey) interaction.destination = this.layer.getSnappedPoint(interaction.destination);
-  //   const d = this.#getResizedDimensions(event);
-  //   this.document.x = d.x;
-  //   this.document.y = d.y;
-  //   this.document.width = d.width;
-  //   this.document.height = d.height;
-  //   this.document.rotation = 0;
-
-  //   // Mirror horizontally or vertically
-  //   this.document.texture.scaleX = d.sx;
-  //   this.document.texture.scaleY = d.sy;
-  //   this.renderFlags.set({refreshTransform: true});
-  // }
-
-  // /* -------------------------------------------- */
-
-  // /**
-  //  * Handle mouseup after dragging a tile scale handler
-  //  * @param {PIXI.FederatedEvent} event   The mouseup event
-  //  * @protected
-  //  */
-  // _onHandleDragDrop(event) {
-  //   const interaction = event.interactionData;
-  //   interaction.resetDocument = false;
-  //   if (!event.shiftKey) interaction.destination = this.layer.getSnappedPoint(interaction.destination);
-  //   const d = this.#getResizedDimensions(event);
-  //   this.document.update({
-  //     x: d.x, y: d.y, width: d.width, height: d.height, "texture.scaleX": d.sx, "texture.scaleY": d.sy
-  //   }).then(() => this.renderFlags.set({refreshTransform: true}));
-  // }
-
 }

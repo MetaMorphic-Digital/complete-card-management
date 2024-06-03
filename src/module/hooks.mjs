@@ -119,3 +119,13 @@ export function getSceneControlButtons(controls) {
     activeTool: "select"
   });
 }
+
+/**
+ * A hook called when the canvas HUD is rendered during `Canvas#initialize`
+ * @param {HeadsUpDisplay} app  - The HeadsUpDisplay application
+ * @param {JQuery} jquery       - A JQuery object of the HUD
+ * @param {object} context      - Context passed from HeadsUpDisplay#getData
+ */
+export function renderHeadsUpDisplay(app, [html], context) {
+  if (!app.cards) app.cards = new CONFIG.Card.hudClass;
+}
