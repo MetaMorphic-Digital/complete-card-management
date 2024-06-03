@@ -61,7 +61,7 @@ export default class CardObject extends PlaceableObject {
 
   /** @override */
   get layer() {
-    return "cards";
+    return canvas["cards"];
   }
 
   /** @override */
@@ -161,6 +161,7 @@ export default class CardObject extends PlaceableObject {
 
   /** @override */
   _destroy(options) {
+    canvas.interface.removeCard(this);
     this.texture?.destroy();
   }
 
@@ -344,4 +345,144 @@ export default class CardObject extends PlaceableObject {
     this.mesh._width = Math.abs(sx * textureWidth);
     this.mesh._height = Math.abs(sy * textureHeight);
   }
+
+  /* -------------------------------------------- */
+  /*  Interactivity                               */
+  /* -------------------------------------------- */
+
+  /** @inheritdoc */
+  activateListeners() {
+    super.activateListeners();
+    this.frame.handle.off("pointerover").off("pointerout")
+      .on("pointerover", this._onHandleHoverIn.bind(this))
+      .on("pointerout", this._onHandleHoverOut.bind(this));
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritdoc */
+  _onClickLeft(event) {
+    if (event.target === this.frame.handle) {
+      event.interactionData.dragHandle = true;
+      event.stopPropagation();
+      return;
+    }
+    return super._onClickLeft(event);
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritdoc */
+  _onDragLeftStart(event) {
+    if (event.interactionData.dragHandle) return this._onHandleDragStart(event);
+    return super._onDragLeftStart(event);
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritdoc */
+  // _onDragLeftMove(event) {
+  //   // if (event.interactionData.dragHandle) return this._onHandleDragMove(event);
+  //   super._onDragLeftMove(event);
+  // }
+
+  // /* -------------------------------------------- */
+
+  // /** @inheritdoc */
+  // _onDragLeftDrop(event) {
+  //   // if (event.interactionData.dragHandle) return this._onHandleDragDrop(event);
+  //   return super._onDragLeftDrop(event);
+  // }
+
+  /* -------------------------------------------- */
+  /*  Resize Handling                             */
+  /* -------------------------------------------- */
+
+  /** @inheritdoc */
+  _onDragLeftCancel(event) {
+    if (event.interactionData.dragHandle) return this._onHandleDragCancel(event);
+    return super._onDragLeftCancel(event);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle mouse-over event on a control handle
+   * @param {PIXI.FederatedEvent} event   The mouseover event
+   * @protected
+   */
+  _onHandleHoverIn(event) {
+    const handle = event.target;
+    handle?.scale.set(1.5, 1.5);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle mouse-out event on a control handle
+   * @param {PIXI.FederatedEvent} event   The mouseout event
+   * @protected
+   */
+  _onHandleHoverOut(event) {
+    const handle = event.target;
+    handle?.scale.set(1.0, 1.0);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle the beginning of a drag event on a resize handle.
+   * @param {PIXI.FederatedEvent} event   The mousedown event
+   * @protected
+   */
+  _onHandleDragStart(event) {
+    const handle = this.frame.handle;
+    const aw = this.document.width;
+    const ah = this.document.height;
+    const x0 = this.document.x + (handle.offset[0] * aw);
+    const y0 = this.document.y + (handle.offset[1] * ah);
+    event.interactionData.origin = {x: x0, y: y0, width: aw, height: ah};
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle mousemove while dragging a tile scale handler
+   * @param {PIXI.FederatedEvent} event   The mousemove event
+   * @protected
+   */
+  // _onHandleDragMove(event) {
+  //   canvas._onDragCanvasPan(event);
+  //   const interaction = event.interactionData;
+  //   if (!event.shiftKey) interaction.destination = this.layer.getSnappedPoint(interaction.destination);
+  //   const d = this.#getResizedDimensions(event);
+  //   this.document.x = d.x;
+  //   this.document.y = d.y;
+  //   this.document.width = d.width;
+  //   this.document.height = d.height;
+  //   this.document.rotation = 0;
+
+  //   // Mirror horizontally or vertically
+  //   this.document.texture.scaleX = d.sx;
+  //   this.document.texture.scaleY = d.sy;
+  //   this.renderFlags.set({refreshTransform: true});
+  // }
+
+  // /* -------------------------------------------- */
+
+  // /**
+  //  * Handle mouseup after dragging a tile scale handler
+  //  * @param {PIXI.FederatedEvent} event   The mouseup event
+  //  * @protected
+  //  */
+  // _onHandleDragDrop(event) {
+  //   const interaction = event.interactionData;
+  //   interaction.resetDocument = false;
+  //   if (!event.shiftKey) interaction.destination = this.layer.getSnappedPoint(interaction.destination);
+  //   const d = this.#getResizedDimensions(event);
+  //   this.document.update({
+  //     x: d.x, y: d.y, width: d.width, height: d.height, "texture.scaleX": d.sx, "texture.scaleY": d.sy
+  //   }).then(() => this.renderFlags.set({refreshTransform: true}));
+  // }
+
 }
