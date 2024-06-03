@@ -190,4 +190,63 @@ export async function resetDialog() {
   });
 }
 
+/**
+   * Display a dialog which prompts the user to play a specific Card to some other Cards document
+   * @param {Card} card     The specific card being played as part of this dialog
+   * @returns {Promise<Card[]|null>}
+   */
+export async function playDialog(card) {
+  const cards = game.cards.reduce((acc, c) => {
+    const valid = (c !== this) && (c.type !== "deck") && c.testUserPermission(game.user, "LIMITED");
+    if (valid) acc[c.id] = c.name;
+    return acc;
+  }, {});
+
+  if (foundry.utils.isEmpty(cards)) {
+    ui.notifications.warn("CARDS.PassWarnNoTargets", {localize: true});
+    return null;
+  }
+
+  const to = new foundry.data.fields.StringField({
+    label: "CARDS.PassTo",
+    choices: cards,
+    required: true,
+    blank: false
+  });
+
+  const down = new foundry.data.fields.BooleanField({
+    label: "CARDS.Facedown"
+  });
+
+  const html = await renderTemplate("modules/complete-card-management/templates/card/dialog-play.hbs", {
+    card: card, to: to, down: down
+  });
+
+  return foundry.applications.api.DialogV2.prompt({
+    classes: ["ccm", "dialog", "play"],
+    rejectClose: false,
+    modal: true,
+    content: html,
+    window: {
+      title: "CARD.Play",
+      icon: "fa-solid fa-cards"
+    },
+    position: {
+      width: 400,
+      height: "auto"
+    },
+    ok: {
+      label: "CARD.Play",
+      callback: (event, button, html) => {
+        const fd = new FormDataExtended(button.form).object;
+        const to = game.cards.get(fd.to);
+        const options = {action: "play", updateData: fd.down ? {face: null} : {}};
+        return this.pass(to, [card.id], options).catch(err => {
+          return ui.notifications.error(err.message);
+        });
+      }
+    }
+  });
+}
+
 // todo: play, draw dialogs.

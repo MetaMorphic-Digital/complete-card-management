@@ -127,7 +127,7 @@
 
 /* Styling for various cards dialogs. */
 .ccm.dialog {
-  &.pass, &.deal {
+  &.pass, &.deal, &.play {
     .dialog-content {
       display: flex;
       flex-direction: column;
