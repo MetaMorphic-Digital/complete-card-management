@@ -18,7 +18,8 @@ export default class CardLayer extends PlaceablesLayer {
     return foundry.utils.mergeObject(super.layerOptions, {
       name: "cards",
       controllableObjects: true,
-      rotateableObjects: true
+      rotateableObjects: true,
+      zIndex: 100
     });
   }
 
@@ -111,15 +112,4 @@ export default class CardLayer extends PlaceablesLayer {
     );
     this.sortDirty = false;
   };
-
-  _onClickLeft(event) {
-    console.log(this, event);
-    super._onClickLeft(event);
-  }
-
-  /** @override */
-  _onClickRight(event) {
-    console.log(this, event);
-    super._onClickRight(event);
-  }
 }

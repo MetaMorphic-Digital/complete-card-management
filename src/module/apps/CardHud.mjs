@@ -22,12 +22,6 @@ export default class CardHud extends BasePlaceableHUD {
   }
 
   /** @override */
-  bind(object) {
-    super.bind(object);
-    console.log(this);
-  }
-
-  /** @override */
   getData(options = {}) {
     const data = super.getData(options);
     console.log(data);
@@ -45,7 +39,6 @@ export default class CardHud extends BasePlaceableHUD {
       left: x + this.object.x - c - p,
       top: y + this.object.y - p
     };
-    console.log(position);
     this.element.css(position);
   }
 

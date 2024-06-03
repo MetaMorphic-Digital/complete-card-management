@@ -80,7 +80,7 @@ export default class CardObject extends PlaceableObject {
       y += (h0 - height) / 2;
     }
 
-    // If the tile is rotated, return recomputed bounds according to rotation
+    // If the card is rotated, return recomputed bounds according to rotation
     if (rotation !== 0) return PIXI.Rectangle.fromRotation(x, y, width, height, Math.toRadians(rotation)).normalize();
 
     // Normal case
@@ -88,7 +88,7 @@ export default class CardObject extends PlaceableObject {
   }
 
   /**
-   * Is this Tile currently visible on the Canvas?
+   * Is this Card currently visible on the Canvas?
    * @type {boolean}
    */
   get isVisible() {
@@ -131,7 +131,6 @@ export default class CardObject extends PlaceableObject {
       canvas.interface.removeCard(this);
       this.texture = this.mesh = null;
       this.bg = this.addChild(new PIXI.Graphics());
-      this.bg.eventMode = "none";
     }
 
     // Control Border
@@ -142,7 +141,7 @@ export default class CardObject extends PlaceableObject {
   }
 
   /**
-   * Create elements for the Drawing border and handles
+   * Create elements for the Card border and handles
    * @returns {PIXI.Container}
    */
   #drawFrame() {
@@ -229,11 +228,6 @@ export default class CardObject extends PlaceableObject {
     const colors = CONFIG.Canvas.dispositionColors;
     this.frame.border.tint = this.controlled ? (locked ? colors.HOSTILE : colors.CONTROLLED) : colors.INACTIVE;
     this.frame.border.visible = this.controlled || this.hover || this.layer.highlightObjects;
-    const foreground = this.layer.active && !!ui.controls.control.foreground;
-    const overhead = elevation >= this.document.parent.foregroundElevation;
-    const oldEventMode = this.eventMode;
-    this.eventMode = overhead === foreground ? "static" : "none";
-    if (this.eventMode !== oldEventMode) MouseInteractionManager.emulateMoveEvent();
     const zIndex = this.zIndex = this.controlled ? 2 : this.hover ? 1 : 0;
     if (!this.mesh) return;
     this.mesh.visible = this.visible;
@@ -344,19 +338,4 @@ export default class CardObject extends PlaceableObject {
   /*  Interactivity                               */
   /* -------------------------------------------- */
 
-  _canHUD(user, event) {
-    console.log(this);
-    return super._canHUD(user, event);
-  }
-
-  _onClickLeft(event) {
-    console.log(this, event);
-    super._onClickLeft(event);
-  }
-
-  /** @override */
-  _onClickRight(event) {
-    console.log(this, this.layer.hud);
-    super._onClickRight(event);
-  }
 }
