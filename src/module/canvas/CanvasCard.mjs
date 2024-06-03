@@ -118,6 +118,10 @@ export default class CanvasCard extends foundry.abstract.DataModel {
 
   // update
 
+  get isOwner() {
+    return this.card.isOwner;
+  }
+
   /**
    * Synthetic pass through
    * @param  {...any} args Arguments to Document#canUserModify

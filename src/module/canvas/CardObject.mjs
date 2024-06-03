@@ -344,8 +344,19 @@ export default class CardObject extends PlaceableObject {
   /*  Interactivity                               */
   /* -------------------------------------------- */
 
-  /** @inheritdoc */
-  activateListeners() {
-    super.activateListeners();
+  _canHUD(user, event) {
+    console.log(this);
+    return super._canHUD(user, event);
+  }
+
+  _onClickLeft(event) {
+    console.log(this, event);
+    super._onClickLeft(event);
+  }
+
+  /** @override */
+  _onClickRight(event) {
+    console.log(this, this.layer.hud);
+    super._onClickRight(event);
   }
 }

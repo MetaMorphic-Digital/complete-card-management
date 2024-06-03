@@ -1,0 +1,31 @@
+<form id="{{id}}" class="{{classes}}" data-appid="{{appId}}" autocomplete="off">
+  <div class="col left">
+    <div class="attribute elevation" data-tooltip="HUD.Elevation">
+      <i class="fas fa-angle-up"></i>
+      <input type="text" name="elevation" value="{{elevation}}" {{disabled (or locked (and isGamePaused (not isGM)))}}>
+    </div>
+    <div class="control-icon" data-action="sort-up" data-tooltip="HUD.ToFront">
+      <img src="{{icons.up}}" width="36" height="36" />
+    </div>
+    <div class="control-icon" data-action="sort-down" data-tooltip="HUD.ToBack">
+      <img src="{{icons.down}}" width="36" height="36" />
+    </div>
+  </div>
+
+  <div class="col middle">
+  </div>
+
+  <div class="col right">
+    <div class="control-icon {{visibilityClass}}" data-action="visibility" data-tooltip="HUD.ToggleVis">
+      <img src="{{icons.visibility}}" width="36" height="36" />
+    </div>
+    <div class="control-icon {{lockedClass}}" data-action="locked" data-tooltip="HUD.ToggleLock">
+      <img src="{{icons.lock}}" width="36" height="36" />
+    </div>
+    {{#if isVideo }}
+    <div class="control-icon" data-action="video" data-tooltip="{{videoTitle}}">
+      <i class="{{videoIcon}}"></i>
+    </div>
+    {{/if}}
+  </div>
+</form>

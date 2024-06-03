@@ -135,4 +135,8 @@ export function getSceneControlButtons(controls) {
  */
 export function renderHeadsUpDisplay(app, [html], context) {
   if (!app.cards) app.cards = new CONFIG.Card.hudClass;
+  // Position the CardHUD within the appropriate HTML
+  const cardHudTemplate = document.createElement("template");
+  cardHudTemplate.setAttribute("id", "card-hud");
+  html.appendChild(cardHudTemplate);
 }

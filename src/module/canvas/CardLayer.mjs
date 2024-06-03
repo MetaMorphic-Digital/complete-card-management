@@ -112,4 +112,14 @@ export default class CardLayer extends PlaceablesLayer {
     this.sortDirty = false;
   };
 
+  _onClickLeft(event) {
+    console.log(this, event);
+    super._onClickLeft(event);
+  }
+
+  /** @override */
+  _onClickRight(event) {
+    console.log(this, event);
+    super._onClickRight(event);
+  }
 }
