@@ -249,4 +249,77 @@ export async function playDialog(card) {
   });
 }
 
-// todo: play, draw dialogs.
+/**
+ * Display a dialog which prompts the user to draw cards from some other deck-type Cards documents.
+ * @see {@link Cards#draw}
+ * @returns {Promise<Card[]|null>}
+ */
+export async function drawDialog() {
+  const cards = game.cards.reduce((acc, c) => {
+    if ((c.type === "deck") && c.testUserPermission(game.user, "LIMITED")) acc[c.id] = c.name;
+    return acc;
+  }, {});
+
+  if (foundry.utils.isEmpty(cards)) {
+    ui.notifications.warn("CARDS.DrawWarnNoSources", {localize: true});
+    return null;
+  }
+
+  const from = new foundry.data.fields.StringField({
+    label: "CARDS.DrawFrom",
+    choices: cards,
+    blank: false,
+    required: true
+  });
+
+  const number = new foundry.data.fields.NumberField({
+    label: "CARDS.Number",
+    min: 1,
+    // max: this.cards.size, // TODO: replace this input when 'from' is changed
+    step: 1
+  });
+
+  const how = new foundry.data.fields.NumberField({
+    label: "CARDS.DrawMode",
+    choices: {
+      [CONST.CARD_DRAW_MODES.TOP]: "CARDS.DrawModeTop",
+      [CONST.CARD_DRAW_MODES.BOTTOM]: "CARDS.DrawModeBottom",
+      [CONST.CARD_DRAW_MODES.RANDOM]: "CARDS.DrawModeRandom"
+    }
+  });
+
+  const down = new foundry.data.fields.BooleanField({
+    label: "CARDS.Facedown"
+  });
+
+  const html = await renderTemplate("modules/complete-card-management/templates/card/dialog-draw.hbs", {
+    from: from, number: number, how: how, down: down
+  });
+
+  return foundry.applications.api.DialogV2.prompt({
+    classes: ["ccm", "dialog", "draw"],
+    rejectClose: false,
+    modal: true,
+    content: html,
+    window: {
+      title: "CARDS.DrawTitle",
+      icon: "fa-solid fa-cards"
+    },
+    position: {
+      width: 400,
+      height: "auto"
+    },
+    ok: {
+      label: "CARDS.Draw",
+      callback: (event, button, html) => {
+        const fd = new FormDataExtended(button.form).object;
+        const from = game.cards.get(fd.from);
+        const options = {how: fd.how, updateData: fd.down ? {face: null} : {}};
+        return this.draw(from, fd.number, options).catch(err => {
+          ui.notifications.error(err.message);
+          return [];
+        });
+      }
+    }
+  });
+}
