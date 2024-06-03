@@ -26,7 +26,14 @@
   <ol class="cards">
     {{#each cards}}
     <li class="card" data-card-id="{{id}}">
-      <img src="{{img}}" alt="{{name}}" class="sort">
+      <span class="sort">
+        {{#unless @root.isDeck}}
+        <a data-action="playCard">
+          <i class="fa-solid fa-circle-play"></i>
+        </a>
+        {{/unless}}
+        <img src="{{img}}" alt="{{name}}">
+      </span>
       <span class="name">{{name}}</span>
       <span class="type">{{localize type}}</span>
       <span class="suit">{{suit}}</span>

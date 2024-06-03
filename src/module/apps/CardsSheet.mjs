@@ -20,7 +20,8 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       previousFace: this._onPreviousFace,
       nextFace: this._onNextFace,
       drawCards: this._onDrawCards,
-      passCards: this._onPassCards
+      passCards: this._onPassCards,
+      playCard: this._onPlayCard
     },
     form: {
       submitOnChange: true,
@@ -157,18 +158,24 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   #setupDragDrop() {
     const sheet = this;
     const dd = new DragDrop({
-      dragSelector: "ol.cards li.card",
+      dragSelector: (this.document.type === "deck") ? "ol.cards li.card" : "ol.cards li.card .name",
       dropSelector: "ol.cards",
       permissions: {
         dragstart: () => sheet.isEditable,
         drop: () => sheet.isEditable
       },
       callbacks: {
-        dragstart: CardsConfig.prototype._onDragStart.bind(sheet),
+        dragstart: this._onDragStart.bind(this),
         drop: CardsConfig.prototype._onDrop.bind(sheet)
       }
     });
     dd.bind(this.element);
+  }
+
+  _onDragStart(event) {
+    const id = event.currentTarget.closest("[data-card-id]")?.dataset.cardId;
+    const card = this.document.cards.get(id);
+    if (card) event.dataTransfer.setData("text/plain", JSON.stringify(card.toDragData()));
   }
 
   _onSortCard(event, card) {
@@ -236,6 +243,12 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   static _onPassCards(event, target) {
     this.document.passDialog();
+  }
+
+  static _onPlayCard(event, target) {
+    const id = target.closest("[data-card-id]").dataset.cardId;
+    const card = this.document.cards.get(id);
+    this.document.playDialog(card);
   }
 }
 

@@ -70,6 +70,33 @@
         margin: auto;
       }
 
+      .sort {
+        position: relative;
+        transition: opacity 200ms ease;
+
+        [data-action=playCard] {
+          position: absolute;
+          display: flex;
+          width: 100%;
+          height: 100%;
+          align-items: center;
+          justify-content: center;
+          font-size: 30px;
+          opacity: 0;
+          transition: inherit;
+          z-index: 1;
+
+          &:hover {
+            opacity: 1;
+
+            &+ img {
+              opacity: 0.5;
+              transition: inherit;
+            }
+          }
+        }
+      }
+
       & img {
         width: 40px;
         flex: 0 0 40px;
@@ -103,4 +130,15 @@
 .theme-light :is(.ccm) nav.tabs .item {
   color: var(--color-dark-3);
   &.active { text-shadow: 0 0 8px var(--color-shadow-primary); }
+}
+
+/* Styling for various cards dialogs. */
+.ccm.dialog {
+  &.pass, &.deal, &.play, &.draw {
+    .dialog-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
 }

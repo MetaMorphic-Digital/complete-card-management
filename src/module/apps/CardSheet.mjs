@@ -190,6 +190,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     const confirm = await foundry.applications.api.DialogV2.confirm({
       rejectClose: false,
       content: game.i18n.localize("CCM.CardSheet.DeleteFacePrompt"),
+      modal: true,
       window: {
         icon: "fa-solid fa-cards",
         title: "CCM.CardSheet.DeleteFaceTitle"

@@ -1,0 +1,15 @@
+<p>{{localize "CARDS.DealHint"}}</p>
+
+<div class="form-group">
+  <label>{{localize "CARDS.DealTo"}}</label>
+  <div class="form-fields">
+    <multi-checkbox name="to">
+      {{#each cards}}
+      <option value="{{id}}">{{name}}</option>
+      {{/each}}
+    </multi-checkbox>
+  </div>
+</div>
+{{formGroup number localize=true name="number" value=1}}
+{{formGroup how localize=true name="how"}}
+{{formGroup down localize=true name="down"}}
