@@ -1,3 +1,18 @@
+class CardDialog extends foundry.applications.api.DialogV2 {
+  static DEFAULT_OPTIONS = {
+    classes: ["ccm", "dialog"],
+    modal: true,
+    rejectClose: false,
+    window: {
+      icon: "fa-solid fa-cards"
+    },
+    position: {
+      width: 400,
+      height: "auto"
+    }
+  };
+}
+
 /**
  * Display a dialog which prompts the user to pass cards from this document to some other Cards document.
  * @returns {Promise<Cards|null>}
@@ -52,22 +67,16 @@ export async function passDialog() {
   });
 
   // Display the prompt
-  return foundry.applications.api.DialogV2.prompt({
+  return CardDialog.prompt({
     content: html,
-    classes: ["ccm", "dialog", "pass"],
+    classes: ["pass"],
     window: {
-      title: "CARDS.PassTitle",
-      icon: "fa-solid fa-cards"
-    },
-    position: {
-      width: 400,
-      height: "auto"
+      title: "CARDS.PassTitle"
     },
     ok: {
       label: "CARDS.Pass",
       callback: (event, button, html) => {
-        const form = html.querySelector("form");
-        const fd = new FormDataExtended(form).object;
+        const fd = new FormDataExtended(button.form).object;
         const to = game.cards.get(fd.to);
         const options = {action: "pass", how: fd.how, updateData: fd.down ? {face: null} : {}};
         return this.deal([to], fd.number, options).catch(err => {
@@ -75,9 +84,7 @@ export async function passDialog() {
           return this;
         });
       }
-    },
-    rejectClose: false,
-    modal: true
+    }
   });
 }
 
@@ -130,22 +137,16 @@ export async function dealDialog() {
   });
 
   // Display the prompt
-  return foundry.applications.api.DialogV2.prompt({
+  return CardDialog.prompt({
     content: html,
-    classes: ["ccm", "dialog", "deal"],
+    classes: ["deal"],
     window: {
-      title: "CARDS.DealTitle",
-      icon: "fa-solid fa-cards"
-    },
-    position: {
-      width: 400,
-      height: "auto"
+      title: "CARDS.DealTitle"
     },
     ok: {
       label: "CARDS.Deal",
       callback: (event, button, html) => {
-        const form = html.querySelector("form");
-        const fd = new FormDataExtended(form).object;
+        const fd = new FormDataExtended(button.form).object;
         if (!fd.to) return this;
         const toIds = fd.to instanceof Array ? fd.to : [fd.to];
         const to = toIds.reduce((arr, id) => {
@@ -159,9 +160,7 @@ export async function dealDialog() {
           return this;
         });
       }
-    },
-    rejectClose: false,
-    modal: true
+    }
   });
 }
 
@@ -171,19 +170,12 @@ export async function dealDialog() {
  * @returns {Promise<Cards|false|null>}
  */
 export async function resetDialog() {
-  return foundry.applications.api.DialogV2.confirm({
-    classes: ["ccm", "dialog", "reset"],
+  return CardDialog.confirm({
+    classes: ["reset"],
     window: {
-      title: "CARDS.Reset",
-      icon: "fa-solid fa-cards"
-    },
-    position: {
-      width: 400,
-      height: "auto"
+      title: "CARDS.Reset"
     },
     content: `<p>${game.i18n.format(`CARDS.${this.type === "deck" ? "Reset" : "Return"}Confirm`, {name: this.name})}</p>`,
-    rejectClose: false,
-    modal: true,
     yes: {
       callback: () => this.recall()
     }
@@ -222,18 +214,11 @@ export async function playDialog(card) {
     card: card, to: to, down: down
   });
 
-  return foundry.applications.api.DialogV2.prompt({
-    classes: ["ccm", "dialog", "play"],
-    rejectClose: false,
-    modal: true,
+  return CardDialog.prompt({
+    classes: ["play"],
     content: html,
     window: {
-      title: "CARD.Play",
-      icon: "fa-solid fa-cards"
-    },
-    position: {
-      width: 400,
-      height: "auto"
+      title: "CARD.Play"
     },
     ok: {
       label: "CARD.Play",
@@ -296,18 +281,11 @@ export async function drawDialog() {
     from: from, number: number, how: how, down: down
   });
 
-  return foundry.applications.api.DialogV2.prompt({
-    classes: ["ccm", "dialog", "draw"],
-    rejectClose: false,
-    modal: true,
+  return CardDialog.prompt({
+    classes: ["draw"],
     content: html,
     window: {
-      title: "CARDS.DrawTitle",
-      icon: "fa-solid fa-cards"
-    },
-    position: {
-      width: 400,
-      height: "auto"
+      title: "CARDS.DrawTitle"
     },
     ok: {
       label: "CARDS.Draw",
