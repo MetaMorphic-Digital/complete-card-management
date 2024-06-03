@@ -72,6 +72,7 @@
 
       .sort {
         position: relative;
+        transition: opacity 200ms ease;
 
         [data-action=playCard] {
           position: absolute;
@@ -82,10 +83,16 @@
           justify-content: center;
           font-size: 30px;
           opacity: 0;
-          transition: opacity 300ms ease;
+          transition: inherit;
+          z-index: 1;
 
           &:hover {
             opacity: 1;
+
+            &+ img {
+              opacity: 0.5;
+              transition: inherit;
+            }
           }
         }
       }
