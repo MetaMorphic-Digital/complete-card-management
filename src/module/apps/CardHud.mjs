@@ -1,3 +1,5 @@
+import {MODULE_ID, processUpdates} from "../helpers.mjs";
+
 /**
  * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for {@link CardObject}.
  * This interface provides controls for visibility...
@@ -13,12 +15,10 @@ export default class CardHud extends BasePlaceableHUD {
   }
 
   /**
-   * Alias for the linked CanvasCard synthetic document
-   *
-   * @type {import('../canvas/CanvasCard.mjs').default}
+   * Getter for the source Card document
    */
   get card() {
-    return this.document;
+    return this.document.card;
   }
 
   /** @override */
@@ -41,9 +41,50 @@ export default class CardHud extends BasePlaceableHUD {
     this.element.css(position);
   }
 
+  /**
+   * Actions
+   */
+
   /** @override */
   activateListeners(jq) {
     super.activateListeners(jq);
     // const html = jq[0]; // For if we want to use base html event listeners
+  }
+
+  async _onToggleVisibility(event) {
+    event.preventDefault();
+
+    const updates = this.#generateUpdates(`flags.${MODULE_ID}.${this.object.scene.id}.hidden`, !this.object.document.hidden);
+
+    await processUpdates(updates);
+    // There's probably a more performant method that uses render() with a bunch of other handling
+    canvas.interface.draw();
+  }
+
+  async _onToggleLocked(event) {
+    event.preventDefault();
+
+    const updates = this.#generateUpdates(`flags.${MODULE_ID}.${this.object.scene.id}.locked`, !this.object.document.locked);
+
+    await processUpdates(updates);
+    // There's probably a more performant method that uses render() with a bunch of other handling
+    canvas.interface.draw();
+  }
+
+  #generateUpdates(targetPath, newValue) {
+
+    const updates = this.layer.controlled.reduce((cards, o) => {
+      const d = fromUuidSync(o.id);
+      const parentSlot = cards[d.parent.id];
+      const updateData = {
+        _id: d.id
+      };
+      foundry.utils.setProperty(updateData, targetPath, newValue);
+      if (parentSlot) parentSlot.push(updateData);
+      else cards[d.parent.id] = [updateData];
+      return cards;
+    }, {});
+
+    return updates;
   }
 }
