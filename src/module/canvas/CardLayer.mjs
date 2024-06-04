@@ -18,7 +18,8 @@ export default class CardLayer extends PlaceablesLayer {
     return foundry.utils.mergeObject(super.layerOptions, {
       name: "cards",
       controllableObjects: true,
-      rotateableObjects: true
+      rotateableObjects: true,
+      zIndex: 100
     });
   }
 
@@ -40,7 +41,7 @@ export default class CardLayer extends PlaceablesLayer {
 
   /** @override */
   get hud() {
-    return canvas.hud.canvas;
+    return canvas.hud.cards;
   }
 
   // TODO: investigate if there's caching performance improvements
@@ -111,5 +112,4 @@ export default class CardLayer extends PlaceablesLayer {
     );
     this.sortDirty = false;
   };
-
 }

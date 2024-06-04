@@ -61,7 +61,7 @@ export default class CardObject extends PlaceableObject {
 
   /** @override */
   get layer() {
-    return "cards";
+    return canvas["cards"];
   }
 
   /** @override */
@@ -80,7 +80,7 @@ export default class CardObject extends PlaceableObject {
       y += (h0 - height) / 2;
     }
 
-    // If the tile is rotated, return recomputed bounds according to rotation
+    // If the card is rotated, return recomputed bounds according to rotation
     if (rotation !== 0) return PIXI.Rectangle.fromRotation(x, y, width, height, Math.toRadians(rotation)).normalize();
 
     // Normal case
@@ -88,7 +88,7 @@ export default class CardObject extends PlaceableObject {
   }
 
   /**
-   * Is this Tile currently visible on the Canvas?
+   * Is this Card currently visible on the Canvas?
    * @type {boolean}
    */
   get isVisible() {
@@ -131,7 +131,6 @@ export default class CardObject extends PlaceableObject {
       canvas.interface.removeCard(this);
       this.texture = this.mesh = null;
       this.bg = this.addChild(new PIXI.Graphics());
-      this.bg.eventMode = "none";
     }
 
     // Control Border
@@ -142,7 +141,7 @@ export default class CardObject extends PlaceableObject {
   }
 
   /**
-   * Create elements for the Drawing border and handles
+   * Create elements for the Card border and handles
    * @returns {PIXI.Container}
    */
   #drawFrame() {
@@ -154,19 +153,18 @@ export default class CardObject extends PlaceableObject {
     frame.interaction.eventMode = "auto";
     frame.border = frame.addChild(new PIXI.Graphics());
     frame.border.eventMode = "none";
-    frame.handle = frame.addChild(new ResizeHandle([1, 1]));
-    frame.handle.eventMode = "static";
     return frame;
   }
 
   /** @override */
   _destroy(options) {
+    canvas.interface.removeCard(this);
     this.texture?.destroy();
   }
 
   /**
    * Apply render flags before a render occurs.
-   * @param {Object<boolean>} flags  The render flags which must be applied
+   * @param {Record<string, boolean>} flags      The render flags which must be applied
    * @protected
    */
   _applyRenderFlags(flags) {
@@ -230,12 +228,6 @@ export default class CardObject extends PlaceableObject {
     const colors = CONFIG.Canvas.dispositionColors;
     this.frame.border.tint = this.controlled ? (locked ? colors.HOSTILE : colors.CONTROLLED) : colors.INACTIVE;
     this.frame.border.visible = this.controlled || this.hover || this.layer.highlightObjects;
-    this.frame.handle.visible = this.controlled && !locked;
-    const foreground = this.layer.active && !!ui.controls.control.foreground;
-    const overhead = elevation >= this.document.parent.foregroundElevation;
-    const oldEventMode = this.eventMode;
-    this.eventMode = overhead === foreground ? "static" : "none";
-    if (this.eventMode !== oldEventMode) MouseInteractionManager.emulateMoveEvent();
     const zIndex = this.zIndex = this.controlled ? 2 : this.hover ? 1 : 0;
     if (!this.mesh) return;
     this.mesh.visible = this.visible;
@@ -296,9 +288,6 @@ export default class CardObject extends PlaceableObject {
       .drawShape(bounds);
     border.lineStyle({width: thickness / 2, color: 0xFFFFFF, join: PIXI.LINE_JOIN.ROUND, alignment: 1})
       .drawShape(bounds);
-
-    // Draw the handle
-    this.frame.handle.refresh(bounds);
   }
 
   /**
@@ -344,4 +333,9 @@ export default class CardObject extends PlaceableObject {
     this.mesh._width = Math.abs(sx * textureWidth);
     this.mesh._height = Math.abs(sy * textureHeight);
   }
+
+  /* -------------------------------------------- */
+  /*  Interactivity                               */
+  /* -------------------------------------------- */
+
 }
