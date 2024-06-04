@@ -136,9 +136,16 @@ export default class CardLayer extends PlaceablesLayer {
       if (this.options.confirmDeleteKey) {
         const confirmed = await foundry.applications.api.DialogV2.confirm({
           window: {
-            title: game.i18n.format("DOCUMENT.Delete", {type: this.constructor.documentName})
+            title: game.i18n.format("DOCUMENT.Delete", {type: this.constructor.documentName}),
+            icon: "fa-solid fa-cards"
           },
-          content: `<p>${game.i18n.localize("AreYouSure")}</p>`
+          position: {
+            width: 400,
+            height: "auto"
+          },
+          content: `<p>${game.i18n.localize("AreYouSure")}</p>`,
+          rejectClose: false,
+          modal: true
         });
         if (!confirmed) return;
       }
@@ -150,8 +157,11 @@ export default class CardLayer extends PlaceablesLayer {
       const deletedCards = new Set(uuids);
       await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection.difference(deletedCards)));
 
-      if (uuids.length !== 1) ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects",
-        {count: uuids.length, type: this.constructor.documentName}));
+      if (uuids.length !== 1) {
+        ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects", {
+          count: uuids.length, type: this.constructor.documentName
+        }));
+      }
       canvas.interface.draw();
     }
   }
