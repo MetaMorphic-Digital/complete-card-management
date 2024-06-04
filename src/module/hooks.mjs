@@ -121,6 +121,14 @@ export function getSceneControlButtons(controls) {
         name: "select",
         title: "CCM.CardLayer.Tools.SelectTitle",
         icon: "fa-solid fa-expand"
+      },
+      {
+        name: "snap",
+        title: "CONTROLS.CommonForceSnap",
+        icon: "fa-solid fa-plus",
+        toggle: true,
+        active: canvas.forceSnapVertices,
+        onClick: toggled => canvas.forceSnapVertices = toggled
       }
     ],
     activeTool: "select"
