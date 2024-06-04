@@ -34,13 +34,37 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   };
 
   /** @override */
-  tabGroups = {};
+  tabGroups = {
+    primary: "cards"
+  };
 
   /**
    * Tabs that are present on this sheet.
    * @enum {TabConfiguration}
    */
-  static TABS = {};
+  static TABS = {
+    configuration: {
+      id: "configuration",
+      group: "primary",
+      label: "CCM.CardSheet.TabConfiguration",
+      icon: "fa-solid fa-cogs"
+    },
+    cards: {
+      id: "cards",
+      group: "primary",
+      label: "CCM.CardSheet.TabCards",
+      icon: "fa-solid fa-id-badge"
+    }
+  };
+
+  /** @override */
+  static PARTS = {
+    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
+    navigation: {template: "modules/complete-card-management/templates/card/nav.hbs"},
+    configuration: {template: "modules/complete-card-management/templates/card/configuration.hbs"},
+    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
+    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
+  };
 
   /**
    * The allowed sorting methods which can be used for this sheet.
@@ -50,9 +74,6 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     STANDARD: "standard",
     SHUFFLED: "shuffled"
   };
-
-  /** @override */
-  static PARTS = {};
 
   /** @override */
   async _prepareContext(options) {
@@ -278,31 +299,6 @@ export class DeckSheet extends CardsSheet {
   };
 
   /** @override */
-  static TABS = {
-    configuration: {
-      id: "configuration",
-      group: "primary",
-      label: "CCM.CardSheet.TabConfiguration",
-      icon: "fa-solid fa-cogs"
-    },
-    cards: {
-      id: "cards",
-      group: "primary",
-      label: "CCM.CardSheet.TabCards",
-      icon: "fa-solid fa-id-badge"
-    }
-  };
-
-  /** @override */
-  static PARTS = {
-    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
-    navigation: {template: "modules/complete-card-management/templates/card/nav.hbs"},
-    configuration: {template: "modules/complete-card-management/templates/card/configuration.hbs"},
-    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
-    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
-  };
-
-  /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.isDeck = true;
@@ -320,21 +316,10 @@ export class HandSheet extends CardsSheet {
   };
 
   /** @override */
-  static PARTS = {
-    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
-    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
-    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
-  };
-
-  /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-
-    // Hands hide cards' value, drawn, and the controls.
     context.isHand = true;
-    foundry.utils.setProperty(context, "tabs.cards.tabCssClass", "scrollable");
     if (!this.document.cards.size) context.footer.pass = context.footer.reset = true;
-
     return context;
   }
 }
@@ -346,21 +331,10 @@ export class PileSheet extends CardsSheet {
   };
 
   /** @override */
-  static PARTS = {
-    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
-    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
-    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
-  };
-
-  /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-
-    // Piles hide cards' value, drawn, and the controls.
     context.isPile = true;
-    foundry.utils.setProperty(context, "tabs.cards.tabCssClass", "scrollable");
     if (!this.document.cards.size) context.footer.pass = context.footer.reset = context.footer.shuffle = true;
-
     return context;
   }
 }
