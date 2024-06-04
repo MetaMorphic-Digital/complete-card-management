@@ -361,7 +361,7 @@ export default class CardObject extends PlaceableObject {
 
   /**
    * Perform database updates using the result of a drag-left-drop operation.
-   * @param {DragUpdate[]} updates      The database updates for documents in this collection
+   * @param {DragUpdate[]} updates      The database updates
    * @returns {Promise<void>}
    */
   async #commitDragLeftDropUpdates(updates) {
