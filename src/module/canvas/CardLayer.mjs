@@ -142,9 +142,17 @@ export default class CardLayer extends PlaceablesLayer {
         });
         if (!confirmed) return;
       }
-      const deleted = await canvas.scene.deleteEmbeddedDocuments(this.constructor.documentName, ids);
-      if (deleted.length !== 1) ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects",
-        {count: deleted.length, type: this.constructor.documentName}));
+      for (const uuid of ids) {
+        const d = fromUuidSync(uuid);
+        await d.unsetFlag(MODULE_ID, canvas.scene.id);
+      }
+      const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
+      const deletedCards = new Set(ids);
+      await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection.difference(deletedCards)));
+
+      if (ids.length !== 1) ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects",
+        {count: ids.length, type: this.constructor.documentName}));
+      canvas.interface.draw();
     }
   }
 }
