@@ -1,3 +1,4 @@
+import {MODULE_ID} from "../helpers.mjs";
 import CanvasCard from "./CanvasCard.mjs";
 
 /**
@@ -337,5 +338,57 @@ export default class CardObject extends PlaceableObject {
   /* -------------------------------------------- */
   /*  Interactivity                               */
   /* -------------------------------------------- */
+
+  /** @override */
+  _onDragLeftDrop(event) {
+    // Ensure that we landed in bounds
+    const {clones, destination} = event.interactionData;
+    if (!clones || !canvas.dimensions.rect.contains(destination.x, destination.y)) return false;
+    event.interactionData.clearPreviewContainer = false;
+
+    // Perform database updates using dropped data
+    const updates = this._prepareDragLeftDropUpdates(event);
+    if (updates) this.#commitDragLeftDropUpdates(updates);
+  }
+
+  /**
+   * @typedef DragUpdate
+   * @prop {number} x - The new x coordinate
+   * @prop {number} y - The new y coordinate
+   * @prop {number} rotation - The new rotation
+   * @prop {string} _id - The canvas card's UUID
+   */
+
+  /**
+   * Perform database updates using the result of a drag-left-drop operation.
+   * @param {DragUpdate[]} updates      The database updates for documents in this collection
+   * @returns {Promise<void>}
+   */
+  async #commitDragLeftDropUpdates(updates) {
+    const processedUpdates = updates.reduce((cards, u) => {
+      const d = fromUuidSync(u._id);
+      const parentSlot = cards[d.parent.id];
+      const updateData = {
+        flags: {
+          [MODULE_ID]: {
+            [this.scene.id]: {
+              x: u.x,
+              y: u.y,
+              rotation: u.rotation
+            }
+          }
+        },
+        _id: d.id
+      };
+      if (parentSlot) parentSlot.push(updateData);
+      else cards[d.parent.id] = [updateData];
+      return cards;
+    }, {});
+
+    for (const [id, updates] of Object.entries(processedUpdates)) {
+      await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
+    }
+    this.layer.draw();
+  }
 
 }
