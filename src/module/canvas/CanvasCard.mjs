@@ -114,7 +114,11 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return this.card.sheet;
   }
 
-  // clone
+  /** @override */
+  clone(data = {}, context = {}) {
+    // TODO: Possible refactor actually using the data and context object?
+    return new this.constructor(this.card);
+  }
 
   // update
 
