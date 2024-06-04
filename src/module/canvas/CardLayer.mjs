@@ -118,4 +118,57 @@ export default class CardLayer extends PlaceablesLayer {
     );
     this.sortDirty = false;
   };
+
+  /** @override */
+  async _onDeleteKey(event) {
+    if (game.paused && !game.user.isGM) {
+      ui.notifications.warn("GAME.PausedWarning", {localize: true});
+      return;
+    }
+
+    // Identify objects which are candidates for deletion
+    const objects = this.controlled;
+    if (!objects.length) return;
+
+    // Restrict to objects which can be deleted
+    const uuids = objects.reduce((objIds, o) => {
+      const isDragged = (o.interactionState === MouseInteractionManager.INTERACTION_STATES.DRAG);
+      if (isDragged || o.document.locked || !o.document.canUserModify(game.user, "delete")) return objIds;
+      if (this.hover === o) this.hover = null;
+      objIds.push(o.id);
+      return objIds;
+    }, []);
+    if (uuids.length) {
+      if (this.options.confirmDeleteKey) {
+        const confirmed = await foundry.applications.api.DialogV2.confirm({
+          window: {
+            title: game.i18n.format("DOCUMENT.Delete", {type: this.constructor.documentName}),
+            icon: "fa-solid fa-cards"
+          },
+          position: {
+            width: 400,
+            height: "auto"
+          },
+          content: `<p>${game.i18n.localize("AreYouSure")}</p>`,
+          rejectClose: false,
+          modal: true
+        });
+        if (!confirmed) return;
+      }
+      for (const uuid of uuids) {
+        const d = fromUuidSync(uuid);
+        await d.unsetFlag(MODULE_ID, canvas.scene.id);
+      }
+      const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
+      const deletedCards = new Set(uuids);
+      await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection.difference(deletedCards)));
+
+      if (uuids.length !== 1) {
+        ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects", {
+          count: uuids.length, type: this.constructor.documentName
+        }));
+      }
+      canvas.interface.draw();
+    }
+  }
 }
