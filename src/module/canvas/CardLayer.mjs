@@ -55,6 +55,12 @@ export default class CardLayer extends PlaceablesLayer {
     );
   }
 
+  /** @inheritDoc */
+  getSnappedPoint(point) {
+    if (canvas.forceSnapVertices) return canvas.grid.getSnappedPoint(point, {mode: CONST.GRID_SNAPPING_MODES.VERTEX});
+    return super.getSnappedPoint(point);
+  }
+
   /** @override */
   async _draw(options) {
     // Setting up the group functionality
