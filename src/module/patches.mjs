@@ -23,5 +23,5 @@ export function removeCard(card) {
   const name = card.objectId;
   const mesh = this.cards.get(name);
   if (mesh?.destroyed === false) mesh.destroy({children: true});
-  this.tiles.delete(name);
+  this.cardCollection.delete(name);
 }
