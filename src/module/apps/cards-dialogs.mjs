@@ -258,7 +258,9 @@ export async function playDialog(card) {
  */
 export async function drawDialog() {
   const cards = game.cards.reduce((acc, c) => {
-    if ((c.type === "deck") && c.testUserPermission(game.user, "LIMITED")) acc[c.id] = c.name;
+    if ((c.type === "deck") && c.testUserPermission(game.user, "LIMITED") && !!c.availableCards.length) {
+      acc[c.id] = c.name;
+    }
     return acc;
   }, {});
 
@@ -276,8 +278,9 @@ export async function drawDialog() {
 
   const number = new foundry.data.fields.NumberField({
     label: "CARDS.Number",
+    initial: 1,
     min: 1,
-    // max: this.cards.size, // TODO: replace this input when 'from' is changed
+    max: 1,
     step: 1
   });
 
@@ -315,6 +318,21 @@ export async function drawDialog() {
           return [];
         });
       }
+    },
+    changeListener: (html) => {
+      const number = html.querySelector("[name=number]");
+      const from = html.querySelector("[name=from]");
+
+      const update = (id) => {
+        const initial = game.cards.get(id).availableCards.length;
+        number.value = Math.min(parseInt(number.value), initial);
+        for (const k of [number, ...number.children]) k.setAttribute("max", initial);
+      };
+
+      // Set initial maximum.
+      update(from.value);
+
+      from.addEventListener("change", (event) => update(event.currentTarget.value));
     }
   });
 }
