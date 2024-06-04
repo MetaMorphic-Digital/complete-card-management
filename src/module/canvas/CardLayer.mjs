@@ -112,4 +112,39 @@ export default class CardLayer extends PlaceablesLayer {
     );
     this.sortDirty = false;
   };
+
+  /** @override */
+  async _onDeleteKey(event) {
+    if (game.paused && !game.user.isGM) {
+      ui.notifications.warn("GAME.PausedWarning", {localize: true});
+      return;
+    }
+
+    // Identify objects which are candidates for deletion
+    const objects = this.options.controllableObjects ? this.controlled : (this.hover ? [this.hover] : []);
+    if (!objects.length) return;
+
+    // Restrict to objects which can be deleted
+    const ids = objects.reduce((ids, o) => {
+      const isDragged = (o.interactionState === MouseInteractionManager.INTERACTION_STATES.DRAG);
+      if (isDragged || o.document.locked || !o.document.canUserModify(game.user, "delete")) return ids;
+      if (this.hover === o) this.hover = null;
+      ids.push(o.id);
+      return ids;
+    }, []);
+    if (ids.length) {
+      if (this.options.confirmDeleteKey) {
+        const confirmed = await foundry.applications.api.DialogV2.confirm({
+          window: {
+            title: game.i18n.format("DOCUMENT.Delete", {type: this.constructor.documentName})
+          },
+          content: `<p>${game.i18n.localize("AreYouSure")}</p>`
+        });
+        if (!confirmed) return;
+      }
+      const deleted = await canvas.scene.deleteEmbeddedDocuments(this.constructor.documentName, ids);
+      if (deleted.length !== 1) ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects",
+        {count: deleted.length, type: this.constructor.documentName}));
+    }
+  }
 }
