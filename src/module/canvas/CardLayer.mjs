@@ -121,7 +121,7 @@ export default class CardLayer extends PlaceablesLayer {
     }
 
     // Identify objects which are candidates for deletion
-    const objects = this.options.controllableObjects ? this.controlled : (this.hover ? [this.hover] : []);
+    const objects = this.controlled;
     if (!objects.length) return;
 
     // Restrict to objects which can be deleted
