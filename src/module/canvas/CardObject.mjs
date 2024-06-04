@@ -388,7 +388,7 @@ export default class CardObject extends PlaceableObject {
     for (const [id, updates] of Object.entries(processedUpdates)) {
       await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
     }
-    this.layer.draw();
+    canvas.interface.draw();
   }
 
 }
