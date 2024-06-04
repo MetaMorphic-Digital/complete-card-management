@@ -11,6 +11,12 @@ class CardDialog extends foundry.applications.api.DialogV2 {
       height: "auto"
     }
   };
+
+  /** @override */
+  _onRender(...T) {
+    super._onRender(...T);
+    if (this.options.changeListener) this.options.changeListener.call(this, this.element);
+  }
 }
 
 /**
@@ -160,6 +166,17 @@ export async function dealDialog() {
           return this;
         });
       }
+    },
+    changeListener: (html) => {
+      const number = html.querySelector("[name=number]");
+      const targets = html.querySelector("[name=to]");
+      targets.addEventListener("change", event => {
+        const size = Math.max(1, event.currentTarget.value.length);
+        const max = Math.max(1, Math.floor(dealable / size));
+        const value = Math.min(parseInt(number.value), max);
+        number.value = value;
+        for (const k of [number, ...number.children]) k.setAttribute("max", max);
+      });
     }
   });
 }
