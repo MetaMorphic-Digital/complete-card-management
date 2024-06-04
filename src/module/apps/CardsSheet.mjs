@@ -34,13 +34,37 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   };
 
   /** @override */
-  tabGroups = {};
+  tabGroups = {
+    primary: "cards"
+  };
 
   /**
    * Tabs that are present on this sheet.
    * @enum {TabConfiguration}
    */
-  static TABS = {};
+  static TABS = {
+    configuration: {
+      id: "configuration",
+      group: "primary",
+      label: "CCM.CardSheet.TabConfiguration",
+      icon: "fa-solid fa-cogs"
+    },
+    cards: {
+      id: "cards",
+      group: "primary",
+      label: "CCM.CardSheet.TabCards",
+      icon: "fa-solid fa-id-badge"
+    }
+  };
+
+  /** @override */
+  static PARTS = {
+    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
+    navigation: {template: "modules/complete-card-management/templates/card/nav.hbs"},
+    configuration: {template: "modules/complete-card-management/templates/card/configuration.hbs"},
+    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
+    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
+  };
 
   /**
    * The allowed sorting methods which can be used for this sheet.
@@ -50,9 +74,6 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     STANDARD: "standard",
     SHUFFLED: "shuffled"
   };
-
-  /** @override */
-  static PARTS = {};
 
   /** @override */
   async _prepareContext(options) {
@@ -89,7 +110,7 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     // Configuration
     context.img = makeField("img", {
       placeholder: "icons/svg/card-hand.svg",
-      value: src.img || null
+      value: src.img || ""
     });
     context.description = makeField("description", {
       enriched: await TextEditor.enrichHTML(this.document.description, {relativeTo: this.document})
@@ -98,7 +119,7 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     context.height = makeField("height", {placeholder: game.i18n.localize("Height")});
     context.rotation = makeField("rotation", {
       placeholder: game.i18n.localize("Rotation"),
-      value: this.document.rotation || null
+      value: this.document.rotation || ""
     });
 
     // Cards
@@ -106,11 +127,25 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       standard: this.document.sortStandard,
       shuffled: this.document.sortShuffled
     }[this.sort || "standard"];
-    const cards = this.document.cards.contents.sort((a, b) => sortFn.call(this.document, a, b));
+    const cards = this.document.cards.contents.sort((a, b) => sortFn.call(this.document, a, b)).map(card => {
+      const show = (this.document.type === "deck") || !!card.currentFace;
+      return {
+        card: card,
+        type: show ? game.i18n.localize(CONFIG.Card.typeLabels[card.type]) : null,
+        suit: show ? card.suit : null,
+        value: show ? card.value : null
+      };
+    });
     context.cards = cards;
 
     // Footer
-    // ...
+    context.footer = {
+      pass: false,
+      reset: false,
+      shuffle: false,
+      deal: false,
+      draw: false
+    };
 
     return context;
   }
@@ -264,34 +299,12 @@ export class DeckSheet extends CardsSheet {
   };
 
   /** @override */
-  static TABS = {
-    configuration: {
-      id: "configuration",
-      group: "primary",
-      label: "CCM.CardSheet.TabConfiguration",
-      icon: "fa-solid fa-cogs"
-    },
-    cards: {
-      id: "cards",
-      group: "primary",
-      label: "CCM.CardSheet.TabCards",
-      icon: "fa-solid fa-id-badge"
-    }
-  };
-
-  /** @override */
-  static PARTS = {
-    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
-    navigation: {template: "modules/complete-card-management/templates/card/nav.hbs"},
-    configuration: {template: "modules/complete-card-management/templates/card/configuration.hbs"},
-    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
-    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
-  };
-
-  /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.isDeck = true;
+    if (!this.document.cards.size) context.footer.shuffle;
+    if (!this.document.drawnCards.length) context.footer.reset = true;
+    if (!this.document.availableCards.length) context.footer.deal = true;
     return context;
   }
 }
@@ -303,20 +316,10 @@ export class HandSheet extends CardsSheet {
   };
 
   /** @override */
-  static PARTS = {
-    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
-    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
-    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
-  };
-
-  /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-
-    // Hands hide cards' value, drawn, and the controls.
     context.isHand = true;
-    foundry.utils.setProperty(context, "tabs.cards.tabCssClass", "scrollable");
-
+    if (!this.document.cards.size) context.footer.pass = context.footer.reset = true;
     return context;
   }
 }
@@ -328,20 +331,10 @@ export class PileSheet extends CardsSheet {
   };
 
   /** @override */
-  static PARTS = {
-    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
-    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
-    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
-  };
-
-  /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-
-    // Piles hide cards' value, drawn, and the controls.
     context.isPile = true;
-    foundry.utils.setProperty(context, "tabs.cards.tabCssClass", "scrollable");
-
+    if (!this.document.cards.size) context.footer.pass = context.footer.reset = context.footer.shuffle = true;
     return context;
   }
 }

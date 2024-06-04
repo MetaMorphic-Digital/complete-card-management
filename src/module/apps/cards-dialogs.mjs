@@ -11,6 +11,12 @@ class CardDialog extends foundry.applications.api.DialogV2 {
       height: "auto"
     }
   };
+
+  /** @override */
+  _onRender(...T) {
+    super._onRender(...T);
+    if (this.options.onRender) this.options.onRender.call(this, this.element);
+  }
 }
 
 /**
@@ -160,6 +166,17 @@ export async function dealDialog() {
           return this;
         });
       }
+    },
+    onRender: (html) => {
+      const number = html.querySelector("[name=number]");
+      const targets = html.querySelector("[name=to]");
+      targets.addEventListener("change", event => {
+        const size = Math.max(1, event.currentTarget.value.length);
+        const max = Math.max(1, Math.floor(dealable / size));
+        const value = Math.min(parseInt(number.value), max);
+        number.value = value;
+        for (const k of [number, ...number.children]) k.setAttribute("max", max);
+      });
     }
   });
 }
@@ -241,7 +258,9 @@ export async function playDialog(card) {
  */
 export async function drawDialog() {
   const cards = game.cards.reduce((acc, c) => {
-    if ((c.type === "deck") && c.testUserPermission(game.user, "LIMITED")) acc[c.id] = c.name;
+    if ((c.type === "deck") && c.testUserPermission(game.user, "LIMITED") && !!c.availableCards.length) {
+      acc[c.id] = c.name;
+    }
     return acc;
   }, {});
 
@@ -259,8 +278,9 @@ export async function drawDialog() {
 
   const number = new foundry.data.fields.NumberField({
     label: "CARDS.Number",
+    initial: 1,
     min: 1,
-    // max: this.cards.size, // TODO: replace this input when 'from' is changed
+    max: 1,
     step: 1
   });
 
@@ -298,6 +318,21 @@ export async function drawDialog() {
           return [];
         });
       }
+    },
+    onRender: (html) => {
+      const number = html.querySelector("[name=number]");
+      const from = html.querySelector("[name=from]");
+
+      const update = (id) => {
+        const initial = game.cards.get(id).availableCards.length;
+        number.value = Math.min(parseInt(number.value), initial);
+        for (const k of [number, ...number.children]) k.setAttribute("max", initial);
+      };
+
+      // Set initial maximum.
+      update(from.value);
+
+      from.addEventListener("change", (event) => update(event.currentTarget.value));
     }
   });
 }
