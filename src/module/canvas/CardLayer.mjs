@@ -1,5 +1,5 @@
 import CardObject from "./CardObject.mjs";
-import {MODULE_ID} from "../helpers.mjs";
+import {MODULE_ID, processUpdates} from "../helpers.mjs";
 import CanvasCard from "./CanvasCard.mjs";
 
 /**
@@ -53,6 +53,39 @@ export default class CardLayer extends PlaceablesLayer {
     return new foundry.utils.Collection(
       uuids.map((uuid) => [uuid, fromUuidSync(uuid)])
     );
+  }
+
+  /** @override */
+  async _sendToBackOrBringToFront(front) {
+    if (!this.controlled.length) return true;
+
+    // Determine to-be-updated objects and the minimum/maximum sort value of the other objects
+    const toUpdate = [];
+    let target = front ? -Infinity : Infinity;
+    for (const document of this.documentCollection) {
+      if (document.object?.controlled && !document.locked) toUpdate.push(document);
+      else target = (front ? Math.max : Math.min)(target, document.sort);
+    }
+    if (!Number.isFinite(target)) return true;
+    target += (front ? 1 : -toUpdate.length);
+
+    // Sort the to-be-updated objects by sort in ascending order
+    toUpdate.sort((a, b) => a.sort - b.sort);
+
+    // Update the to-be-updated objects
+    const updates = toUpdate.reduce((cards, canvasCard, i) => {
+      const d = fromUuidSync(canvasCard.id);
+      const parentSlot = cards[d.parent.id];
+      const updateData = {_id: d.id};
+      foundry.utils.setProperty(updateData, `flags.${MODULE_ID}.${canvas.scene}.sort`, target + i);
+      if (parentSlot) parentSlot.push(updateData);
+      else cards[d.parent.id] = [updateData];
+      return cards;
+    }, {});
+
+    await processUpdates(updates);
+
+    return true;
   }
 
   /** @inheritDoc */

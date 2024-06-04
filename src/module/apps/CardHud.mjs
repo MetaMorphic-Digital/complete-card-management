@@ -71,15 +71,20 @@ export default class CardHud extends BasePlaceableHUD {
     canvas.interface.draw();
   }
 
-  #generateUpdates(targetPath, newValue) {
-
+  /**
+   * Generates a record that can be forwarded to processUpdates
+   * @param {string} valuePath - Path for the value in dot notation
+   * @param {any} newValue     - Value to set all documents to
+   * @returns {Record<string, Array<{ _id: string } & Record<string, unknown>>>} A record with the _id and update info
+   */
+  #generateUpdates(valuePath, newValue) {
     const updates = this.layer.controlled.reduce((cards, o) => {
       const d = fromUuidSync(o.id);
       const parentSlot = cards[d.parent.id];
       const updateData = {
         _id: d.id
       };
-      foundry.utils.setProperty(updateData, targetPath, newValue);
+      foundry.utils.setProperty(updateData, valuePath, newValue);
       if (parentSlot) parentSlot.push(updateData);
       else cards[d.parent.id] = [updateData];
       return cards;

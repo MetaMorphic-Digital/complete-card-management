@@ -18,7 +18,6 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     }
 
     Object.assign(data, {
-      sort: card.sort, // possible we want a separate sort value for canvas purposes
       texture: {
         src: card.img
       },
@@ -38,7 +37,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   static LOCALIZATION_PREFIXES = ["CCM", "CardObjectModel"];
 
   static defineSchema() {
-    const {NumberField, AngleField, BooleanField} = foundry.data.fields;
+    const {NumberField, AngleField, IntegerSortField, BooleanField} = foundry.data.fields;
     return {
       x: new NumberField({
         required: true,
@@ -57,12 +56,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         nullable: false,
         initial: 0
       }),
-      sort: new NumberField({
-        required: true,
-        integer: true,
-        nullable: false,
-        initial: 0
-      }),
+      sort: new IntegerSortField(),
       rotation: new AngleField(),
       hidden: new BooleanField(),
       locked: new BooleanField(),
