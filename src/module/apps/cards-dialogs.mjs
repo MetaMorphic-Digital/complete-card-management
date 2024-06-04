@@ -15,7 +15,7 @@ class CardDialog extends foundry.applications.api.DialogV2 {
   /** @override */
   _onRender(...T) {
     super._onRender(...T);
-    if (this.options.changeListener) this.options.changeListener.call(this, this.element);
+    if (this.options.onRender) this.options.onRender.call(this, this.element);
   }
 }
 
@@ -167,7 +167,7 @@ export async function dealDialog() {
         });
       }
     },
-    changeListener: (html) => {
+    onRender: (html) => {
       const number = html.querySelector("[name=number]");
       const targets = html.querySelector("[name=to]");
       targets.addEventListener("change", event => {
@@ -319,7 +319,7 @@ export async function drawDialog() {
         });
       }
     },
-    changeListener: (html) => {
+    onRender: (html) => {
       const number = html.querySelector("[name=number]");
       const from = html.querySelector("[name=from]");
 
