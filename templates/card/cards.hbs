@@ -25,29 +25,29 @@
 
   <ol class="cards">
     {{#each cards}}
-    <li class="card" data-card-id="{{id}}">
+    <li class="card" data-card-id="{{card.id}}">
       <span class="sort">
         {{#unless @root.isDeck}}
         <a data-action="playCard">
           <i class="fa-solid fa-circle-play"></i>
         </a>
         {{/unless}}
-        <img src="{{img}}" alt="{{name}}">
+        <img src="{{card.img}}" alt="{{card.name}}">
       </span>
-      <span class="name">{{name}}</span>
-      <span class="type">{{localize type}}</span>
+      <span class="name">{{card.name}}</span>
+      <span class="type">{{type}}</span>
       <span class="suit">{{suit}}</span>
       <span class="value">{{value}}</span>
       {{#if @root.isDeck}}
       <span class="drawn">
-        <input type="checkbox" disabled {{checked drawn}}>
+        <input type="checkbox" disabled {{checked card.drawn}}>
       </span>
       {{/if}}
       <span class="face">
-        <a data-action="nextFace" data-tooltip="CCM.CardSheet.NextFace" {{#unless hasNextFace}}disabled{{/unless}}>
+        <a data-action="nextFace" data-tooltip="CCM.CardSheet.NextFace" {{#unless card.hasNextFace}}disabled{{/unless}}>
           <i class="fa-solid fa-caret-up"></i>
         </a>
-        <a data-action="previousFace" data-tooltip="CCM.CardSheet.PreviousFace" {{#unless hasPreviousFace}}disabled{{/unless}}>
+        <a data-action="previousFace" data-tooltip="CCM.CardSheet.PreviousFace" {{#unless card.hasPreviousFace}}disabled{{/unless}}>
           <i class="fa-solid fa-caret-down"></i>
         </a>
       </span>

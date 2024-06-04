@@ -106,7 +106,15 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       standard: this.document.sortStandard,
       shuffled: this.document.sortShuffled
     }[this.sort || "standard"];
-    const cards = this.document.cards.contents.sort((a, b) => sortFn.call(this.document, a, b));
+    const cards = this.document.cards.contents.sort((a, b) => sortFn.call(this.document, a, b)).map(card => {
+      const show = (this.document.type === "deck") || !!card.currentFace;
+      return {
+        card: card,
+        type: show ? game.i18n.localize(CONFIG.Card.typeLabels[card.type]) : null,
+        suit: show ? card.suit : null,
+        value: show ? card.value : null
+      };
+    });
     context.cards = cards;
 
     // Footer
