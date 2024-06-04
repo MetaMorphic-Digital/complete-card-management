@@ -1,33 +1,33 @@
 <footer class="form-footer flexrow">
   {{#unless isHand}}
-  <button type="button" data-action="shuffleCards">
+  <button type="button" data-action="shuffleCards" {{disabled footer.shuffle}}>
     <i class="fa-solid fa-random"></i>
     <label>{{localize "CARDS.Shuffle"}}</label>
   </button>
   {{/unless}}
 
   {{#if isHand}}
-  <button type="button" data-action="drawCards">
+  <button type="button" data-action="drawCards" {{disabled footer.draw}}>
     <i class="fa-solid fa-plus"></i>
     <label>{{localize "CARDS.Draw"}}</label>
   </button>
   {{/if}}
 
   {{#unless isDeck}}
-  <button type="button" data-action="passCards">
+  <button type="button" data-action="passCards" {{disabled footer.pass}}>
     <i class="fa-solid fa-share-square"></i>
     <label>{{localize "CARDS.Pass"}}</label>
   </button>
   {{/unless}}
 
   {{#if isDeck}}
-  <button type="button" data-action="dealCards">
+  <button type="button" data-action="dealCards" {{disabled footer.deal}}>
     <i class="fa-solid fa-share-square"></i>
     <label>{{localize "CARDS.Deal"}}</label>
   </button>
   {{/if}}
 
-  <button type="button" data-action="resetCards">
+  <button type="button" data-action="resetCards" {{disabled footer.reset}}>
     <i class="fa-solid fa-undo"></i>
     <label>{{localize "CARDS.Reset"}}</label>
   </button>

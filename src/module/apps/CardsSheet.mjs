@@ -118,7 +118,13 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     context.cards = cards;
 
     // Footer
-    // ...
+    context.footer = {
+      pass: false,
+      reset: false,
+      shuffle: false,
+      deal: false,
+      draw: false
+    };
 
     return context;
   }
@@ -300,6 +306,9 @@ export class DeckSheet extends CardsSheet {
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.isDeck = true;
+    if (!this.document.cards.size) context.footer.shuffle;
+    if (!this.document.drawnCards.length) context.footer.reset = true;
+    if (!this.document.availableCards.length) context.footer.deal = true;
     return context;
   }
 }
@@ -324,6 +333,7 @@ export class HandSheet extends CardsSheet {
     // Hands hide cards' value, drawn, and the controls.
     context.isHand = true;
     foundry.utils.setProperty(context, "tabs.cards.tabCssClass", "scrollable");
+    if (!this.document.cards.size) context.footer.pass = context.footer.reset = true;
 
     return context;
   }
@@ -349,6 +359,7 @@ export class PileSheet extends CardsSheet {
     // Piles hide cards' value, drawn, and the controls.
     context.isPile = true;
     foundry.utils.setProperty(context, "tabs.cards.tabCssClass", "scrollable");
+    if (!this.document.cards.size) context.footer.pass = context.footer.reset = context.footer.shuffle = true;
 
     return context;
   }
