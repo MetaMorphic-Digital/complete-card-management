@@ -125,14 +125,14 @@ export default class CardLayer extends PlaceablesLayer {
     if (!objects.length) return;
 
     // Restrict to objects which can be deleted
-    const ids = objects.reduce((ids, o) => {
+    const uuids = objects.reduce((objIds, o) => {
       const isDragged = (o.interactionState === MouseInteractionManager.INTERACTION_STATES.DRAG);
-      if (isDragged || o.document.locked || !o.document.canUserModify(game.user, "delete")) return ids;
+      if (isDragged || o.document.locked || !o.document.canUserModify(game.user, "delete")) return objIds;
       if (this.hover === o) this.hover = null;
-      ids.push(o.id);
-      return ids;
+      objIds.push(o.id);
+      return objIds;
     }, []);
-    if (ids.length) {
+    if (uuids.length) {
       if (this.options.confirmDeleteKey) {
         const confirmed = await foundry.applications.api.DialogV2.confirm({
           window: {
@@ -142,16 +142,16 @@ export default class CardLayer extends PlaceablesLayer {
         });
         if (!confirmed) return;
       }
-      for (const uuid of ids) {
+      for (const uuid of uuids) {
         const d = fromUuidSync(uuid);
         await d.unsetFlag(MODULE_ID, canvas.scene.id);
       }
       const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
-      const deletedCards = new Set(ids);
+      const deletedCards = new Set(uuids);
       await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection.difference(deletedCards)));
 
-      if (ids.length !== 1) ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects",
-        {count: ids.length, type: this.constructor.documentName}));
+      if (uuids.length !== 1) ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects",
+        {count: uuids.length, type: this.constructor.documentName}));
       canvas.interface.draw();
     }
   }

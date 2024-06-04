@@ -97,10 +97,7 @@ async function handleCardDrop(canvas, data) {
 
   await card.setFlag(MODULE_ID, canvas.scene.id, {x: adjusted_x, y: adjusted_y, rotation: card.rotation});
 
-  const currentCards =
-    new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
-
-  currentCards.add(card.uuid);
+  const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(card.uuid);
 
   await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
   await canvas.interface.draw();
