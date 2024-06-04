@@ -10,8 +10,8 @@
     <span class="name">{{localize "Name"}}</span>
     <span class="type">{{localize "CCM.CardSheet.CardType"}}</span>
     <span class="suit">{{localize "CCM.CardSheet.CardSuit"}}</span>
-    {{#if isDeck}}
     <span class="value">{{localize "CCM.CardSheet.CardValue"}}</span>
+    {{#if isDeck}}
     <span class="drawn">{{localize "CCM.CardSheet.CardDrawn"}}</span>
     {{/if}}
     <span class="face">{{localize "CCM.CardSheet.CardFace"}}</span>
@@ -37,8 +37,8 @@
       <span class="name">{{name}}</span>
       <span class="type">{{localize type}}</span>
       <span class="suit">{{suit}}</span>
-      {{#if @root.isDeck}}
       <span class="value">{{value}}</span>
+      {{#if @root.isDeck}}
       <span class="drawn">
         <input type="checkbox" disabled {{checked drawn}}>
       </span>
