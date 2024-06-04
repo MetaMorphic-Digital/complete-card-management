@@ -110,7 +110,7 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     // Configuration
     context.img = makeField("img", {
       placeholder: "icons/svg/card-hand.svg",
-      value: src.img || null
+      value: src.img || ""
     });
     context.description = makeField("description", {
       enriched: await TextEditor.enrichHTML(this.document.description, {relativeTo: this.document})
@@ -119,7 +119,7 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     context.height = makeField("height", {placeholder: game.i18n.localize("Height")});
     context.rotation = makeField("rotation", {
       placeholder: game.i18n.localize("Rotation"),
-      value: this.document.rotation || null
+      value: this.document.rotation || ""
     });
 
     // Cards
