@@ -157,8 +157,11 @@ export default class CardLayer extends PlaceablesLayer {
       const deletedCards = new Set(ids);
       await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection.difference(deletedCards)));
 
-      if (ids.length !== 1) ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects",
-        {count: ids.length, type: this.constructor.documentName}));
+      if (ids.length !== 1) {
+        ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects", {
+          count: ids.length, type: this.constructor.documentName
+        }));
+      }
       canvas.interface.draw();
     }
   }
