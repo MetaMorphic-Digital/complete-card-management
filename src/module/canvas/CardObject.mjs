@@ -164,7 +164,7 @@ export default class CardObject extends PlaceableObject {
 
   /**
    * Apply render flags before a render occurs.
-   * @param {Record<string, boolean>} flags  The render flags which must be applied
+   * @param {Record<string, boolean>} flags      The render flags which must be applied
    * @protected
    */
   _applyRenderFlags(flags) {

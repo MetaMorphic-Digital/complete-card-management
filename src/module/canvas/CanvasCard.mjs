@@ -118,6 +118,10 @@ export default class CanvasCard extends foundry.abstract.DataModel {
 
   // update
 
+  /**
+   * Synthetic passthrough
+   * @returns {boolean}
+   */
   get isOwner() {
     return this.card.isOwner;
   }
