@@ -57,8 +57,6 @@ export default class CardHud extends BasePlaceableHUD {
     const updates = this.#generateUpdates(`flags.${MODULE_ID}.${this.object.scene.id}.hidden`, !this.object.document.hidden);
 
     await processUpdates(updates);
-    // There's probably a more performant method that uses render() with a bunch of other handling
-    canvas.interface.draw();
   }
 
   async _onToggleLocked(event) {
@@ -68,7 +66,7 @@ export default class CardHud extends BasePlaceableHUD {
 
     await processUpdates(updates);
     // There's probably a more performant method that uses render() with a bunch of other handling
-    canvas.interface.draw();
+    // canvas.interface.draw();
   }
 
   /**
