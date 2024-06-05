@@ -36,7 +36,7 @@ export default class CardObject extends PlaceableObject {
   mesh;
 
   /**
-   * The border frame and resizing handles for the drawing.
+   * The border frame for the CardObject.
    * @type {PIXI.Container}
    */
   frame;
@@ -347,7 +347,7 @@ export default class CardObject extends PlaceableObject {
       refreshPosition: ("x" in changed) || ("y" in changed),
       refreshRotation: "rotation" in changed,
       refreshSize: ("width" in changed) || ("height" in changed),
-      refreshMesh: ("alpha" in changed) || ("occlusion" in changed) || ("texture" in changed),
+      refreshMesh: ("texture" in changed),
       refreshElevation: "elevation" in changed,
       refreshPerception: ("occlusion" in changed) && ("mode" in changed.occlusion)
     });
@@ -406,6 +406,7 @@ export default class CardObject extends PlaceableObject {
     for (const [id, updates] of Object.entries(processedUpdates)) {
       await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
     }
+    this.layer.clearPreviewContainer();
   }
 
 }

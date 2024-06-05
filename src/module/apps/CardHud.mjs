@@ -65,8 +65,6 @@ export default class CardHud extends BasePlaceableHUD {
     const updates = this.#generateUpdates(`flags.${MODULE_ID}.${this.object.scene.id}.locked`, !this.object.document.locked);
 
     await processUpdates(updates);
-    // There's probably a more performant method that uses render() with a bunch of other handling
-    // canvas.interface.draw();
   }
 
   /**
