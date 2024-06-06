@@ -161,6 +161,7 @@ export default class CardObject extends PlaceableObject {
   _destroy(options) {
     canvas.interface.removeCard(this);
     this.texture?.destroy();
+    this.frame?.destroy(); // Unsure if needed? Possibly resolves multi-select frame issue
   }
 
   /**
