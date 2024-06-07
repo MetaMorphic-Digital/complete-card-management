@@ -95,12 +95,38 @@ async function handleCardDrop(canvas, data) {
   const adjusted_x = data.x - (card.width * canvas.grid.sizeX) / 2;
   const adjusted_y = data.y - (card.height * canvas.grid.sizeY) / 2;
 
-  await card.setFlag(MODULE_ID, canvas.scene.id, {x: adjusted_x, y: adjusted_y, rotation: card.rotation});
+  await card.setFlag(MODULE_ID, canvas.scene.id, {x: adjusted_x, y: adjusted_y, rotation: card.rotation, sort: card.sort});
 
   const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(card.uuid);
 
   await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
-  await canvas.interface.draw();
+}
+
+/**
+ * A hook event that fires for every Document type after conclusion of an update workflow.
+ * Substitute the Document name in the hook event to target a specific Document type, for example "updateActor".
+ * This hook fires for all connected clients after the update has been processed.
+ * @param {Card & { canvasCard?: ccm_canvas.CanvasCard}} card  The existing Document which was updated
+ * @param {object} changed                                     Differential data that was used to update the document
+ * @param {Partial<DatabaseUpdateOperation>} options           Additional options which modified the update request
+ * @param {string} userId                                      The ID of the User who triggered the update workflow
+ */
+export async function updateCard(card, changed, options, userId) {
+  const moduleFlags = foundry.utils.getProperty(changed, `flags.${MODULE_ID}`) ?? {};
+  /** @type {ccm_canvas.CanvasCard} */
+  let synthetic = card.canvasCard;
+  if (synthetic) { // A synthetic card exists
+    if (synthetic.parent === canvas.scene) { // That card is on the canvas
+      synthetic.update(changed, options, userId);
+    }
+  }
+  else if (canvas.scene.id in moduleFlags) { // New cards
+    const synthetic = new ccm_canvas.CanvasCard(card);
+    const obj = (synthetic._object = canvas.cards.createObject(synthetic));
+    canvas.cards.objects.addChild(obj);
+    await obj.draw();
+    obj._onCreate(card.toObject(), options, userId); // Doesn't currently do anything
+  }
 }
 
 /**

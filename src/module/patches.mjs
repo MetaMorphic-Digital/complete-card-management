@@ -21,7 +21,7 @@ export function addCard(card) {
  */
 export function removeCard(card) {
   const name = card.objectId;
-  const mesh = this.cards.get(name);
+  const mesh = this.cardCollection.get(name);
   if (mesh?.destroyed === false) mesh.destroy({children: true});
   this.cardCollection.delete(name);
 }

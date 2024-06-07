@@ -18,7 +18,6 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     }
 
     Object.assign(data, {
-      sort: card.sort, // possible we want a separate sort value for canvas purposes
       texture: {
         src: card.img
       },
@@ -35,10 +34,16 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     this.card = card;
   }
 
+  /**
+   * Attached object
+   * @type {import('./CardObject.mjs').CardObject}
+   */
+  _object = this._object ?? null;
+
   static LOCALIZATION_PREFIXES = ["CCM", "CardObjectModel"];
 
   static defineSchema() {
-    const {NumberField, AngleField, BooleanField} = foundry.data.fields;
+    const {NumberField, AngleField, IntegerSortField, BooleanField} = foundry.data.fields;
     return {
       x: new NumberField({
         required: true,
@@ -57,12 +62,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         nullable: false,
         initial: 0
       }),
-      sort: new NumberField({
-        required: true,
-        integer: true,
-        nullable: false,
-        initial: 0
-      }),
+      sort: new IntegerSortField(),
       rotation: new AngleField(),
       hidden: new BooleanField(),
       locked: new BooleanField(),
@@ -97,18 +97,22 @@ export default class CanvasCard extends foundry.abstract.DataModel {
 
   static derivedProps = ["height", "width", "texture"];
 
+  /** @override */
   get id() {
     return this.card.id;
   }
 
+  /** @override */
   get documentName() {
     return this.card.documentName;
   }
 
+  /** @override */
   get layer() {
     return canvas.cards;
   }
 
+  /** @override */
   get sheet() {
     // TODO: Custom sheet? I think?
     return this.card.sheet;
@@ -120,7 +124,30 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return new this.constructor(this.card);
   }
 
-  // update
+  /**
+   * Translate update operations on the original card to this synthetic document
+   * @param {object} changed  Differential data that was used to update the document
+   * @param {Partial<DatabaseUpdateOperation>} options Additional options which modified the update request
+   */
+  update(changed, options, userId) {
+    const flatChanges = foundry.utils.flattenObject(changed);
+    const updates = {};
+    const baseProps = ["height", "width"];
+    const flagProps = ["x", "y", "elevation", "sort", "rotation", "hidden", "locked"];
+    for (const p of baseProps) {
+      if (p in flatChanges) updates[p] = flatChanges[p];
+    }
+    for (const p of flagProps) {
+      const translatedProp = `flags.${MODULE_ID}.${canvas.scene.id}.${p}`;
+      if (translatedProp in flatChanges) updates[p] = flatChanges[translatedProp];
+    }
+    // Face handling
+    if (("face" in flatChanges) || (`faces.${this.card.face}.img` in flatChanges)) {
+      updates["texture"] = {src: this.card.img};
+    }
+    this.updateSource(updates);
+    this._object._onUpdate(updates, options, userId);
+  }
 
   /**
    * Synthetic passthrough

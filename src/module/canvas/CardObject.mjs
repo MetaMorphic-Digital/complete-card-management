@@ -36,7 +36,7 @@ export default class CardObject extends PlaceableObject {
   mesh;
 
   /**
-   * The border frame and resizing handles for the drawing.
+   * The border frame for the CardObject.
    * @type {PIXI.Container}
    */
   frame;
@@ -161,6 +161,7 @@ export default class CardObject extends PlaceableObject {
   _destroy(options) {
     canvas.interface.removeCard(this);
     this.texture?.destroy();
+    this.frame?.destroy(); // Unsure if needed? Possibly resolves multi-select frame issue
   }
 
   /**
@@ -222,7 +223,7 @@ export default class CardObject extends PlaceableObject {
    * @protected
    */
   _refreshState() {
-    const {hidden, locked, elevation, sort} = this.document;
+    const {hidden, locked, sort} = this.document;
     this.visible = this.isVisible;
     this.alpha = this._getTargetAlpha();
     if (this.bg) this.bg.visible = this.layer.active;
@@ -335,6 +336,26 @@ export default class CardObject extends PlaceableObject {
     this.mesh._height = Math.abs(sy * textureHeight);
   }
 
+  /** @override */
+  _onUpdate(changed, options, userId) {
+    super._onUpdate(changed, options, userId);
+    const restrictionsChanged = ("restrictions" in changed) && !foundry.utils.isEmpty(changed.restrictions);
+
+    // Refresh the Drawing
+    this.renderFlags.set({
+      redraw: ("texture" in changed) && ("src" in changed.texture),
+      refreshState: ("sort" in changed) || ("hidden" in changed) || ("locked" in changed) || restrictionsChanged,
+      refreshPosition: ("x" in changed) || ("y" in changed),
+      refreshRotation: "rotation" in changed,
+      refreshSize: ("width" in changed) || ("height" in changed),
+      refreshMesh: ("texture" in changed),
+      refreshElevation: "elevation" in changed,
+      refreshPerception: ("occlusion" in changed) && ("mode" in changed.occlusion)
+    });
+
+    if (this.hasActiveHUD) canvas.cards.hud.render();
+  }
+
   /* -------------------------------------------- */
   /*  Interactivity                               */
   /* -------------------------------------------- */
@@ -388,8 +409,7 @@ export default class CardObject extends PlaceableObject {
     for (const [id, updates] of Object.entries(processedUpdates)) {
       await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
     }
-    // There's probably a more performant method that uses render() with a bunch of other handling
-    canvas.interface.draw();
+    this.layer.clearPreviewContainer();
   }
 
 }
