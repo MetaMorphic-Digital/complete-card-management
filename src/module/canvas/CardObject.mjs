@@ -177,6 +177,8 @@ export default class CardObject extends PlaceableObject {
     if (flags.refreshMesh) this._refreshMesh();
     if (flags.refreshFrame) this._refreshFrame();
     if (flags.refreshElevation) this._refreshElevation();
+
+    if (this.hasActiveHUD) canvas.cards.hud.render();
   }
 
   /**
@@ -352,8 +354,6 @@ export default class CardObject extends PlaceableObject {
       refreshElevation: "elevation" in changed,
       refreshPerception: ("occlusion" in changed) && ("mode" in changed.occlusion)
     });
-
-    if (this.hasActiveHUD) canvas.cards.hud.render();
   }
 
   /* -------------------------------------------- */
