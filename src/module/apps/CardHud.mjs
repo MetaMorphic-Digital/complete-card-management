@@ -1,9 +1,13 @@
+import CanvasCard from "../canvas/CanvasCard.mjs";
+import CardLayer from "../canvas/CardLayer.mjs";
+import CardObject from "../canvas/CardObject.mjs";
 import {MODULE_ID, processUpdates} from "../helpers.mjs";
 
 /**
  * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for {@link CardObject}.
  * This interface provides controls for visibility...
  * The CardHUD implementation is stored at {@link CONFIG.Card.hudClass}.
+ * @extends {BasePlaceableHUD<CardObject, CanvasCard, CardLayer>}
  */
 export default class CardHud extends BasePlaceableHUD {
   /** @override */
@@ -24,6 +28,8 @@ export default class CardHud extends BasePlaceableHUD {
   /** @override */
   getData(options = {}) {
     const data = super.getData(options);
+    data.lockedClass = this.document.locked ? "active" : "";
+    data.visibilityClass = this.document.hidden ? "active" : "";
     return data;
   }
 

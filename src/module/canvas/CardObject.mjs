@@ -352,6 +352,8 @@ export default class CardObject extends PlaceableObject {
       refreshElevation: "elevation" in changed,
       refreshPerception: ("occlusion" in changed) && ("mode" in changed.occlusion)
     });
+
+    if (this.hasActiveHUD) canvas.cards.hud.render();
   }
 
   /* -------------------------------------------- */
