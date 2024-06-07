@@ -15,9 +15,9 @@ export function generateUpdates(valuePath, valueMod, {object = {}, targetPath = 
     const d = fromUuidSync(o.id);
     const parentSlot = cards[d.parent.id];
     const updateData = {
-      _id: d.id
+      _id: d.id,
+      [valuePath]: valueMod(fetchedValue)
     };
-    foundry.utils.setProperty(updateData, valuePath, valueMod(fetchedValue));
     if (parentSlot) parentSlot.push(updateData);
     else cards[d.parent.id] = [updateData];
     return cards;

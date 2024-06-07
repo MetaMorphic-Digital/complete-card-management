@@ -12,26 +12,25 @@ export function init() {
   console.log("Complete Card Management | Initializing");
   CONFIG.CCM = CCM_CONFIG;
 
-  foundry.utils.mergeObject(CONFIG.Canvas, {
-    layers: {
-      cards: {
-        group: "interface",
-        layerClass: ccm_canvas.CardLayer
-      }
-    }
-  });
-
+  // Non-class-assignment CONFIG merge handling
   foundry.utils.mergeObject(CONFIG, {
+    Canvas: {
+      layers: {
+        cards: {
+          group: "interface"
+        }
+      }
+    },
     controlIcons: {
       flip: "modules/complete-card-management/assets/icons/vertical-flip.svg",
       rotate: "modules/complete-card-management/assets/icons/clockwise-rotation.svg"
-    },
-    Card: {
-      objectClass: ccm_canvas.CardObject,
-      layerClass: ccm_canvas.CardLayer,
-      hudClass: apps.CardHud
     }
   });
+  // Avoiding risks related to static properties and interaction with mergeObject
+  CONFIG.Canvas.layers.cards.layerClass = ccm_canvas.CardLayer;
+  CONFIG.Card.objectClass = ccm_canvas.CardObject;
+  CONFIG.Card.layerClass = ccm_canvas.CardLayer;
+  CONFIG.Card.hudClass = apps.CardHud;
 
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
     label: "CCM.Sheets.Deck", types: ["deck"]
