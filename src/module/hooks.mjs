@@ -21,9 +21,16 @@ export function init() {
     }
   });
 
-  CONFIG.Card.objectClass = ccm_canvas.CardObject;
-  CONFIG.Card.layerClass = ccm_canvas.CardLayer;
-  CONFIG.Card.hudClass = apps.CardHud;
+  foundry.utils.mergeObject(CONFIG, {
+    controlIcons: {
+      rotate: "modules/complete-card-management/assets/icons/clockwise-rotation.svg"
+    },
+    Card: {
+      objectClass: ccm_canvas.CardObject,
+      layerClass: ccm_canvas.CardLayer,
+      hudClass: apps.CardHud
+    }
+  });
 
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
     label: "CCM.Sheets.Deck", types: ["deck"]

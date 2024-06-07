@@ -1,7 +1,7 @@
 import CanvasCard from "../canvas/CanvasCard.mjs";
 import CardLayer from "../canvas/CardLayer.mjs";
 import CardObject from "../canvas/CardObject.mjs";
-import {MODULE_ID, processUpdates} from "../helpers.mjs";
+import {MODULE_ID, generateUpdates, processUpdates} from "../helpers.mjs";
 
 /**
  * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for {@link CardObject}.
@@ -20,9 +20,14 @@ export default class CardHud extends BasePlaceableHUD {
 
   /**
    * Getter for the source Card document
+   * @type {Card}
    */
   get card() {
     return this.document.card;
+  }
+
+  get _flagPath() {
+    return `flags.${MODULE_ID}.${this.object.scene.id}`;
   }
 
   /** @override */
@@ -54,44 +59,54 @@ export default class CardHud extends BasePlaceableHUD {
   /** @override */
   activateListeners(jq) {
     super.activateListeners(jq);
-    // const html = jq[0]; // For if we want to use base html event listeners
+    jq.on("contextmenu", "[data-action='rotate']", this._onRotate.bind(this));
+    // /** @type {HTMLElement} */
+    // const html = jq[0];
+  }
+
+  /** @override */
+  _onClickControl(event) {
+    super._onClickControl(event);
+    const button = event.currentTarget;
+    switch (button.dataset.action) {
+      case "flip":
+        return this._onFlip(event);
+      case "rotate":
+        return this._onRotate(event);
+    }
   }
 
   async _onToggleVisibility(event) {
     event.preventDefault();
-
-    const updates = this.#generateUpdates(`flags.${MODULE_ID}.${this.object.scene.id}.hidden`, !this.object.document.hidden);
-
+    const updates = generateUpdates(this._flagPath + ".hidden", o => !o, this.document, "hidden");
     await processUpdates(updates);
   }
 
   async _onToggleLocked(event) {
     event.preventDefault();
-
-    const updates = this.#generateUpdates(`flags.${MODULE_ID}.${this.object.scene.id}.locked`, !this.object.document.locked);
-
+    const updates = generateUpdates(this._flagPath + ".locked", o => !o, this.document, "locked");
     await processUpdates(updates);
   }
 
   /**
-   * Generates a record that can be forwarded to processUpdates
-   * @param {string} valuePath - Path for the value in dot notation
-   * @param {any} newValue     - Value to set all documents to
-   * @returns {Record<string, Array<{ _id: string } & Record<string, unknown>>>} A record with the _id and update info
+   * Flips the selected card and all other controlled cards to match
+   * @param {PointerEvent} event The originating click event
    */
-  #generateUpdates(valuePath, newValue) {
-    const updates = this.layer.controlled.reduce((cards, o) => {
-      const d = fromUuidSync(o.id);
-      const parentSlot = cards[d.parent.id];
-      const updateData = {
-        _id: d.id
-      };
-      foundry.utils.setProperty(updateData, valuePath, newValue);
-      if (parentSlot) parentSlot.push(updateData);
-      else cards[d.parent.id] = [updateData];
-      return cards;
-    }, {});
+  async _onFlip(event) {
+    event.preventDefault();
+    const updates = generateUpdates("face", (o) => o === null ? 0 : null, this.card, "face");
+    await processUpdates(updates);
+  }
 
-    return updates;
+  /**
+   * Rotate the selected card 90 degrees and all other controlled cards to match
+   * Left click rotates clockwise, right click rotates counter-clockwise
+   * @param {PointerEvent} event The originating click event
+   */
+  async _onRotate(event) {
+    event.preventDefault();
+    const rotateValue = event.type === "click" ? 90 : -90;
+    const updates = generateUpdates(this._flagPath + ".rotation", (o) => (o ?? 0) + rotateValue, this.document, "rotation");
+    await processUpdates(updates);
   }
 }
