@@ -23,6 +23,7 @@ export function init() {
 
   foundry.utils.mergeObject(CONFIG, {
     controlIcons: {
+      flip: "modules/complete-card-management/assets/icons/vertical-flip.svg",
       rotate: "modules/complete-card-management/assets/icons/clockwise-rotation.svg"
     },
     Card: {

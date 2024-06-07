@@ -5,11 +5,13 @@ export const MODULE_ID = "complete-card-management";
  * @param {(original?: any) => any} valueMod - Callback to transform the fetched value
  * @param {object} [object] - Object to fetch values from
  * @param {string} [targetPath] - Path of value to fetch
+ * @param {boolean} [ignoreLock=false] - Whether to allow updating a locked card
  * @returns
  */
-export function generateUpdates(valuePath, valueMod, object = {}, targetPath = "") {
+export function generateUpdates(valuePath, valueMod, object = {}, targetPath = "", ignoreLock = false) {
   const fetchedValue = foundry.utils.getProperty(object, targetPath);
   const updates = canvas.cards.controlled.reduce((cards, o) => {
+    if (!ignoreLock && o.document.locked) return cards;
     const d = fromUuidSync(o.id);
     const parentSlot = cards[d.parent.id];
     const updateData = {

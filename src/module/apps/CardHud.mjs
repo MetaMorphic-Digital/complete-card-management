@@ -84,7 +84,7 @@ export default class CardHud extends BasePlaceableHUD {
 
   async _onToggleLocked(event) {
     event.preventDefault();
-    const updates = generateUpdates(this._flagPath + ".locked", o => !o, this.document, "locked");
+    const updates = generateUpdates(this._flagPath + ".locked", o => !o, this.document, "locked", true);
     await processUpdates(updates);
   }
 
@@ -94,6 +94,7 @@ export default class CardHud extends BasePlaceableHUD {
    */
   async _onFlip(event) {
     event.preventDefault();
+    // TODO: Improve handling for multi-faced cards
     const updates = generateUpdates("face", (o) => o === null ? 0 : null, this.card, "face");
     await processUpdates(updates);
   }
