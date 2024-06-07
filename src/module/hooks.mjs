@@ -130,6 +130,7 @@ export async function updateCard(card, changed, options, userId) {
   }
   else if (canvas.scene.id in moduleFlags) { // New cards
     const synthetic = new ccm_canvas.CanvasCard(card);
+    card.canvasCard = synthetic;
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
     canvas.cards.objects.addChild(obj);
     await obj.draw();
