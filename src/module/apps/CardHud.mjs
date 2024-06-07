@@ -59,9 +59,9 @@ export default class CardHud extends BasePlaceableHUD {
   /** @override */
   activateListeners(jq) {
     super.activateListeners(jq);
-    jq.on("contextmenu", "[data-action='rotate']", this._onRotate.bind(this));
-    // /** @type {HTMLElement} */
-    // const html = jq[0];
+    /** @type {HTMLElement} */
+    const html = jq[0];
+    html.querySelector("[data-action='rotate']").addEventListener("contextmenu", this._onRotate.bind(this));
   }
 
   /** @override */
