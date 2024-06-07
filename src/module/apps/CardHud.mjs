@@ -78,13 +78,21 @@ export default class CardHud extends BasePlaceableHUD {
 
   async _onToggleVisibility(event) {
     event.preventDefault();
-    const updates = generateUpdates(this._flagPath + ".hidden", o => !o, this.document, "hidden");
+    const updates = generateUpdates(
+      this._flagPath + ".hidden",
+      o => !o,
+      {object: this.document, targetPath: "hidden", ignoreLock: true}
+    );
     await processUpdates(updates);
   }
 
   async _onToggleLocked(event) {
     event.preventDefault();
-    const updates = generateUpdates(this._flagPath + ".locked", o => !o, this.document, "locked", true);
+    const updates = generateUpdates(
+      this._flagPath + ".locked",
+      o => !o,
+      {object: this.document, targetPath: "locked", ignoreLock: true}
+    );
     await processUpdates(updates);
   }
 
@@ -95,7 +103,7 @@ export default class CardHud extends BasePlaceableHUD {
   async _onFlip(event) {
     event.preventDefault();
     // TODO: Improve handling for multi-faced cards
-    const updates = generateUpdates("face", (o) => o === null ? 0 : null, this.card, "face");
+    const updates = generateUpdates("face", (o) => o === null ? 0 : null, {object: this.card, targetPath: "face"});
     await processUpdates(updates);
   }
 
@@ -107,7 +115,11 @@ export default class CardHud extends BasePlaceableHUD {
   async _onRotate(event) {
     event.preventDefault();
     const rotateValue = event.type === "click" ? 90 : -90;
-    const updates = generateUpdates(this._flagPath + ".rotation", (o) => (o ?? 0) + rotateValue, this.document, "rotation");
+    const updates = generateUpdates(
+      this._flagPath + ".rotation",
+      (o) => (o ?? 0) + rotateValue,
+      {object: this.document, targetPath: "rotation"}
+    );
     await processUpdates(updates);
   }
 }

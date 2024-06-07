@@ -8,7 +8,7 @@ export const MODULE_ID = "complete-card-management";
  * @param {boolean} [ignoreLock=false] - Whether to allow updating a locked card
  * @returns
  */
-export function generateUpdates(valuePath, valueMod, object = {}, targetPath = "", ignoreLock = false) {
+export function generateUpdates(valuePath, valueMod, {object = {}, targetPath = "", ignoreLock = false} = {}) {
   const fetchedValue = foundry.utils.getProperty(object, targetPath);
   const updates = canvas.cards.controlled.reduce((cards, o) => {
     if (!ignoreLock && o.document.locked) return cards;
