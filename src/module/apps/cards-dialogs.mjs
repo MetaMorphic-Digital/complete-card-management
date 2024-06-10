@@ -1,8 +1,8 @@
 class CardDialog extends foundry.applications.api.DialogV2 {
+  /** @override */
   static DEFAULT_OPTIONS = {
     classes: ["ccm", "dialog"],
     modal: true,
-    rejectClose: false,
     window: {
       icon: "fa-solid fa-cards"
     },
@@ -11,6 +11,11 @@ class CardDialog extends foundry.applications.api.DialogV2 {
       height: "auto"
     }
   };
+
+  /** @override */
+  static async wait({rejectClose = false, ...options} = {}) {
+    return super.wait({rejectClose, ...options});
+  }
 }
 
 /**
