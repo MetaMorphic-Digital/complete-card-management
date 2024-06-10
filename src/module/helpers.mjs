@@ -1,4 +1,5 @@
 export const MODULE_ID = "complete-card-management";
+export const MoveCardType = MODULE_ID + ".moveCard";
 
 /**
  * @param {string} valuePath    - Path on the Card document

@@ -7,6 +7,14 @@
       "Hand": "Complete Card Management Hand Sheet",
       "Pile": "Complete Card Management Pile Sheet"
     },
+    "MoveCardBehavior": {
+      "FIELDS": {
+        "targetStack": {
+          "hint": "The Deck, Hand, or List to move a card into",
+          "label": "Target Stack"
+        }
+      }
+    },
     "REGION_EVENTS": {
       "CardMoveIn": {
         "label": "Card Moved In"
@@ -52,9 +60,9 @@
       "NextFace": "Next Face",
       "PreviousFace": "Previous Face"
     },
-
     "Warning": {
       "NoCardsAvailable": "This {type} has no cards available."
     }
-  }
+  },
+  "TYPES.RegionBehavior.complete-card-management.moveCard": "Move Card"
 }

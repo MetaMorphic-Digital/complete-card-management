@@ -1,7 +1,7 @@
 import * as apps from "./apps/_module.mjs";
 import * as ccm_canvas from "./canvas/_module.mjs";
 import CCM_CONFIG from "./config.mjs";
-import {MODULE_ID} from "./helpers.mjs";
+import {MODULE_ID, MoveCardType} from "./helpers.mjs";
 import {addCard, removeCard} from "./patches.mjs";
 
 /**
@@ -20,6 +20,7 @@ export function init() {
   CONFIG.Card.objectClass = ccm_canvas.CardObject;
   CONFIG.Card.layerClass = ccm_canvas.CardLayer;
   CONFIG.Card.hudClass = apps.CardHud;
+  CONFIG.RegionBehavior.dataModels[MoveCardType] = ccm_canvas.MoveCardBehavior;
   CONFIG.controlIcons.flip = "modules/complete-card-management/assets/icons/vertical-flip.svg";
   CONFIG.controlIcons.rotate = "modules/complete-card-management/assets/icons/clockwise-rotation.svg";
 
