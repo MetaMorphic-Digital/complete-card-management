@@ -7,7 +7,14 @@
       "Hand": "Complete Card Management Hand Sheet",
       "Pile": "Complete Card Management Pile Sheet"
     },
-
+    "REGION_EVENTS": {
+      "CardMoveIn": {
+        "label": "Card Moved In"
+      },
+      "CardMoveOut": {
+        "label": "Card Moved Out"
+      }
+    },
     "CardLayer": {
       "Title": "Card Controls",
       "Tools": {

@@ -1,9 +1,8 @@
 const CCM_CONFIG = {
-  DEFAULTS: {
-    CardObject: {}
+  REGION_EVENTS: {
+    CARD_MOVE_IN: "cardMoveIn",
+    CARD_MOVE_OUT: "cardMoveOut"
   }
 };
-
-// CCM_CONFIG.DEFAULTS.CardObject = {};
 
 export default CCM_CONFIG;

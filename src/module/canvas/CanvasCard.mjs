@@ -35,8 +35,24 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   }
 
   /**
+   * Synthetic parent
+   * @type {Scene}
+   */
+  parent;
+
+  /**
+   * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
+   * @type {import('./CardObject.mjs').default}
+   */
+  get object() {
+    if (this._object || this._destroyed) return this._object;
+    if (!this.parent?.isView || !this.layer) return null;
+    return this._object = this.layer.createObject(this);
+  }
+
+  /**
    * Attached object
-   * @type {import('./CardObject.mjs').CardObject}
+   * @type {import('./CardObject.mjs').default}
    */
   _object = this._object ?? null;
 
@@ -144,14 +160,44 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     }
     for (const p of flagProps) {
       const translatedProp = `flags.${MODULE_ID}.${canvas.scene.id}.${p}`;
-      if (translatedProp in flatChanges) updates[p] = flatChanges[translatedProp];
+      if (translatedProp in flatChanges) {
+        updates[p] = flatChanges[translatedProp];
+      }
     }
     // Face handling
     if (("face" in flatChanges) || (`faces.${this.card.face}.img` in flatChanges)) {
       updates["texture"] = {src: this.card.img};
     }
+    if (updates.x || updates.y) this.#checkRegionTrigger(updates, userId);
     this.updateSource(updates);
-    this._object._onUpdate(updates, options, userId);
+    this.object?._onUpdate(updates, options, userId);
+  }
+
+  /**
+   * Trigger leave and enter region behaviors for the custom region type & event triggers
+   * Uses the incoming update data to compare to current document properties
+   * @param {{x?: number, y?: number}} updates
+   * @param {string} userId
+   */
+  #checkRegionTrigger(updates, userId) {
+    const origin = {x: this.x, y: this.y};
+    const destination = {x: updates.x ?? this.x, y: updates.x ?? this.y};
+    const eventData = {
+      card: this.card,
+      origin,
+      destination
+    };
+    for (const region of this.parent.regions) {
+      if (!region.object) continue;
+      const triggeredBehaviors = region.behaviors.filter(b => !b.disabled &&
+        (b.hasEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT) || b.hasEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN))
+      );
+      if (!triggeredBehaviors.length) continue;
+      const originInside = region.object.testPoint(origin);
+      const destinationInside = region.object.testPoint(destination);
+      if (originInside && !destinationInside) region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT, eventData);
+      else if (!originInside && destinationInside) region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN, eventData);
+    }
   }
 
   /**
