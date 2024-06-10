@@ -164,7 +164,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    */
   delete(options, userId) {
     this._object?._onDelete(options, userId);
-    this.card.canvasCard === undefined;
+    this.card.canvasCard = undefined;
   }
 
   /**
