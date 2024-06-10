@@ -114,10 +114,8 @@ export async function updateCard(card, changed, options, userId) {
   const moduleFlags = foundry.utils.getProperty(changed, `flags.${MODULE_ID}`) ?? {};
   /** @type {ccm_canvas.CanvasCard} */
   let synthetic = card.canvasCard;
-  if (synthetic) { // A synthetic card exists
-    if (synthetic.parent === canvas.scene) { // That card is on the canvas
-      synthetic.update(changed, options, userId);
-    }
+  if (synthetic && (synthetic.parent === canvas.scene)) { // A synthetic card exists & exists on the canvas
+    synthetic.update(changed, options, userId);
   }
   else if (canvas.scene.id in moduleFlags) { // New cards
     const synthetic = new ccm_canvas.CanvasCard(card);
