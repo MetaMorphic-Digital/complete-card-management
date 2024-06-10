@@ -26,8 +26,8 @@
   ],
   "version": "AUTOMATIC",
   "compatibility": {
-    "minimum": "12",
-    "verified": "12.324"
+    "minimum": "12.327",
+    "verified": "12.327"
   },
   "relationships": {
     "systems": [

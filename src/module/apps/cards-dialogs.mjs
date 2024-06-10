@@ -1,8 +1,8 @@
 class CardDialog extends foundry.applications.api.DialogV2 {
+  /** @override */
   static DEFAULT_OPTIONS = {
     classes: ["ccm", "dialog"],
     modal: true,
-    rejectClose: false,
     window: {
       icon: "fa-solid fa-cards"
     },
@@ -13,9 +13,8 @@ class CardDialog extends foundry.applications.api.DialogV2 {
   };
 
   /** @override */
-  _onRender(...T) {
-    super._onRender(...T);
-    if (this.options.onRender) this.options.onRender.call(this, this.element);
+  static async wait({rejectClose = false, ...options} = {}) {
+    return super.wait({rejectClose, ...options});
   }
 }
 
@@ -167,7 +166,7 @@ export async function dealDialog() {
         });
       }
     },
-    onRender: (html) => {
+    render: (event, html) => {
       const number = html.querySelector("[name=number]");
       const targets = html.querySelector("[name=to]");
       targets.addEventListener("change", event => {
@@ -319,7 +318,7 @@ export async function drawDialog() {
         });
       }
     },
-    onRender: (html) => {
+    render: (event, html) => {
       const number = html.querySelector("[name=number]");
       const from = html.querySelector("[name=from]");
 
