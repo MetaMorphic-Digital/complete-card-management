@@ -51,10 +51,10 @@ export default class CardObject extends PlaceableObject {
     redraw: {propagate: ["refresh"]},
     refresh: {propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshElevation"], alias: true},
     refreshState: {},
-    refreshTransform: {propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true},
-    refreshPosition: {},
+    refreshTransform: {propagate: ["refreshRotation", "refreshSize"], alias: true},
     refreshRotation: {propagate: ["refreshFrame"]},
-    refreshSize: {propagate: ["refreshFrame"]},
+    refreshSize: {propagate: ["refreshFrame", "refreshPosition"]},
+    refreshPosition: {},
     refreshMesh: {},
     refreshFrame: {},
     refreshElevation: {}
@@ -171,9 +171,9 @@ export default class CardObject extends PlaceableObject {
    */
   _applyRenderFlags(flags) {
     if (flags.refreshState) this._refreshState();
-    if (flags.refreshPosition) this._refreshPosition();
     if (flags.refreshRotation) this._refreshRotation();
     if (flags.refreshSize) this._refreshSize();
+    if (flags.refreshPosition) this._refreshPosition();
     if (flags.refreshMesh) this._refreshMesh();
     if (flags.refreshFrame) this._refreshFrame();
     if (flags.refreshElevation) this._refreshElevation();
@@ -181,43 +181,7 @@ export default class CardObject extends PlaceableObject {
     if (this.hasActiveHUD) canvas.cards.hud.render();
   }
 
-  /**
-   * Refresh the position.
-   * @protected
-   */
-  _refreshPosition() {
-    const {x, y, width, height} = this.document;
-    if ((this.position.x !== x) || (this.position.y !== y)) MouseInteractionManager.emulateMoveEvent();
-    this.position.set(x, y);
-    if (!this.mesh) {
-      this.bg.position.set(width / 2, height / 2);
-      this.bg.pivot.set(width / 2, height / 2);
-      return;
-    }
-    this.mesh.position.set(x + (width / 2), y + (height / 2));
-  }
-
   /* -------------------------------------------- */
-
-  /**
-   * Refresh the rotation.
-   * @protected
-   */
-  _refreshRotation() {
-    const rotation = this.document.rotation;
-    if (!this.mesh) return this.bg.angle = rotation;
-    this.mesh.angle = rotation;
-  }
-
-  /**
-   * Refresh the size.
-   * @protected
-   */
-  _refreshSize() {
-    const {width, height, texture: {fit, scaleX, scaleY}} = this.document;
-    if (!this.mesh) return this.bg.clear().beginFill(0xFFFFFF, 0.5).drawRect(0, 0, width, height).endFill();
-    this._resizeMesh(width, height, {fit, scaleX, scaleY});
-  }
 
   /**
    * Refresh the displayed state of the CardObject.
@@ -241,7 +205,41 @@ export default class CardObject extends PlaceableObject {
     this.mesh.hidden = hidden;
   }
 
-  /* -------------------------------------------- */
+  /**
+   * Refresh the rotation.
+   * @protected
+   */
+  _refreshRotation() {
+    const rotation = this.document.rotation;
+    if (!this.mesh) return this.bg.angle = rotation;
+    this.mesh.angle = rotation;
+  }
+
+  /**
+   * Refresh the size.
+   * @protected
+   */
+  _refreshSize() {
+    const {width, height, texture: {fit, scaleX, scaleY}} = this.document;
+    if (!this.mesh) return this.bg.clear().beginFill(0xFFFFFF, 0.5).drawRect(0, 0, width, height).endFill();
+    this._resizeMesh(width, height, {fit, scaleX, scaleY});
+  }
+
+  /**
+   * Refresh the position.
+   * @protected
+   */
+  _refreshPosition() {
+    const {x, y, width, height} = this.document;
+    if ((this.position.x !== x) || (this.position.y !== y)) MouseInteractionManager.emulateMoveEvent();
+    this.position.set(x, y);
+    if (!this.mesh) {
+      this.bg.position.set(width / 2, height / 2);
+      this.bg.pivot.set(width / 2, height / 2);
+      return;
+    }
+    this.mesh.position.set(x + (width / 2), y + (height / 2));
+  }
 
   /**
    * Refresh the appearance of the CardObject.
@@ -266,8 +264,6 @@ export default class CardObject extends PlaceableObject {
     if (!this.mesh) return;
     this.mesh.elevation = this.document.elevation;
   }
-
-  /* -------------------------------------------- */
 
   /**
    * Refresh the border frame that encloses the CardObject.
@@ -337,6 +333,8 @@ export default class CardObject extends PlaceableObject {
     this.mesh._width = Math.abs(sx * textureWidth);
     this.mesh._height = Math.abs(sy * textureHeight);
   }
+
+  /* -------------------------------------------- */
 
   /** @override */
   _onUpdate(changed, options, userId) {
