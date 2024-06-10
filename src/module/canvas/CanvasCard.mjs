@@ -185,13 +185,15 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * @param {string} userId
    */
   #checkRegionTrigger(updates, userId) {
-    const origin = {x: this.x, y: this.y};
-    const destination = {x: updates.x ?? this.x, y: updates.x ?? this.y};
+    console.log(updates);
+    const origin = {x: this.x - this.width / 2, y: this.y};
+    const destination = {x: (updates.x ?? this.x) - this.width / 2, y: (updates.x ?? this.y)};
     const eventData = {
       card: this.card,
       origin,
       destination
     };
+    console.log(eventData);
     for (const region of this.parent.regions) {
       if (!region.object) continue;
       const triggeredBehaviors = region.behaviors.filter(b => !b.disabled &&
@@ -200,6 +202,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       if (!triggeredBehaviors.length) continue;
       const originInside = region.object.testPoint(origin);
       const destinationInside = region.object.testPoint(destination);
+      console.log("Triggering event with originInside", originInside, "and destinationInside", destinationInside);
       if (originInside && !destinationInside) region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT, eventData);
       else if (!originInside && destinationInside) region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN, eventData);
     }

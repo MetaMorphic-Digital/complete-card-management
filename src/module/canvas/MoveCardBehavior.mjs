@@ -3,7 +3,7 @@ const fields = foundry.data.fields;
 
 export default class MoveCardBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
 
-  static LOCALIZATION_PREFIXES = ["CCM", "MoveCardBehavior"];
+  static LOCALIZATION_PREFIXES = ["CCM.MoveCardBehavior"];
 
   static defineSchema() {
     return {
