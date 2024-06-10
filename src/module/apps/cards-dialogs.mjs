@@ -99,9 +99,12 @@ export async function passDialog() {
  * @returns {Promise<Cards|null>}
  */
 export async function dealDialog() {
-  const cards = game.cards.filter(c => {
-    return (c.type !== "deck") && c.testUserPermission(game.user, "LIMITED");
-  });
+  const cards = game.cards.reduce((acc, c) => {
+    if ((c.type !== "deck") && c.testUserPermission(game.user, "LIMITED")) {
+      acc.push({value: c.id, label: c.name});
+    }
+    return acc;
+  }, []);
 
   if (foundry.utils.isEmpty(cards)) {
     ui.notifications.warn("CARDS.DealWarnNoTargets", {localize: true});
@@ -117,14 +120,20 @@ export async function dealDialog() {
     return null;
   }
 
-  const number = new foundry.data.fields.NumberField({
+  const {SetField, StringField, NumberField, BooleanField} = foundry.data.fields;
+
+  const to = new SetField(new StringField(), {
+    label: "CARDS.DealTo"
+  });
+
+  const number = new NumberField({
     label: "CARDS.Number",
     min: 1,
     max: dealable,
     step: 1
   });
 
-  const how = new foundry.data.fields.NumberField({
+  const how = new NumberField({
     label: "CARDS.DrawMode",
     choices: {
       [CONST.CARD_DRAW_MODES.TOP]: "CARDS.DrawModeTop",
@@ -133,13 +142,13 @@ export async function dealDialog() {
     }
   });
 
-  const down = new foundry.data.fields.BooleanField({
+  const down = new BooleanField({
     label: "CARDS.Facedown"
   });
 
   // Construct the dialog HTML
   const html = await renderTemplate("modules/complete-card-management/templates/card/dialog-deal.hbs", {
-    cards: cards, number: number, how: how, down: down
+    to: to, cards: cards, number: number, how: how, down: down
   });
 
   // Display the prompt
