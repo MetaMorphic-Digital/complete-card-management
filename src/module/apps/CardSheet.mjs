@@ -105,7 +105,10 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     context.value = makeField("value");
     context.width = makeField("width", {placeholder: game.i18n.localize("Width")});
     context.height = makeField("height", {placeholder: game.i18n.localize("Height")});
-    context.rotation = makeField("rotation", {value: this.document.rotation || null, placeholder: game.i18n.localize("Rotation")});
+    context.rotation = makeField("rotation", {
+      value: this.document.rotation || "",
+      placeholder: game.i18n.localize("Rotation")
+    });
     context.description = makeField("description", {
       enriched: await TextEditor.enrichHTML(this.document.description, {relativeTo: this.document})
     });
