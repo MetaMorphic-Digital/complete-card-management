@@ -131,6 +131,9 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    */
   update(changed, options, userId) {
     const flatChanges = foundry.utils.flattenObject(changed);
+    if (flatChanges[`flags.${MODULE_ID}.-=${canvas.scene.id}`] === null) {
+      return this.delete(options, userId);
+    }
     const updates = {};
     const baseProps = ["height", "width"];
     const flagProps = ["x", "y", "elevation", "sort", "rotation", "hidden", "locked"];
@@ -152,6 +155,16 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     }
     this.updateSource(updates);
     this._object._onUpdate(updates, options, userId);
+  }
+
+  /**
+   * Handles the deletion process for this synthetic document
+   * @param {*} options
+   * @param {*} userId
+   */
+  delete(options, userId) {
+    this._object?._onDelete(options, userId);
+    this.card.canvasCard === undefined;
   }
 
   /**
