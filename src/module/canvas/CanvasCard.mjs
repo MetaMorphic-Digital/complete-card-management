@@ -135,7 +135,12 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     const baseProps = ["height", "width"];
     const flagProps = ["x", "y", "elevation", "sort", "rotation", "hidden", "locked"];
     for (const p of baseProps) {
-      if (p in flatChanges) updates[p] = flatChanges[p];
+      if (p in flatChanges) {
+        let newValue = flatChanges[p];
+        if (p === "height") newValue *= canvas.grid.sizeY;
+        else if (p === "width") newValue *= canvas.grid.sizeX;
+        updates[p] = newValue;
+      }
     }
     for (const p of flagProps) {
       const translatedProp = `flags.${MODULE_ID}.${canvas.scene.id}.${p}`;
