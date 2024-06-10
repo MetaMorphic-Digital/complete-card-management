@@ -38,7 +38,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * Synthetic parent
    * @type {Scene}
    */
-  parent;
+  // Using the this.parent so that way it sticks after constructor
+  parent = this.parent ?? null;
 
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
@@ -54,6 +55,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * Attached object
    * @type {import('./CardObject.mjs').default}
    */
+  // Using the this._object so that way it sticks after constructor
   _object = this._object ?? null;
 
   static LOCALIZATION_PREFIXES = ["CCM", "CardObjectModel"];
