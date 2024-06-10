@@ -10,6 +10,9 @@
     <div class="control-icon" data-action="sort-down" data-tooltip="HUD.ToBack">
       <img src="{{icons.down}}" width="36" height="36" />
     </div>
+    <div class="control-icon" data-action="rotate" data-tooltip="CCM.CardLayer.HUD.Rotate">
+      <img src="{{icons.rotate}}" width="36" height="36" />
+    </div>
   </div>
 
   <div class="col middle">
@@ -22,10 +25,8 @@
     <div class="control-icon {{lockedClass}}" data-action="locked" data-tooltip="HUD.ToggleLock">
       <img src="{{icons.lock}}" width="36" height="36" />
     </div>
-    {{#if isVideo }}
-    <div class="control-icon" data-action="video" data-tooltip="{{videoTitle}}">
-      <i class="{{videoIcon}}"></i>
+    <div class="control-icon" data-action="flip" data-tooltip="CCM.CardLayer.HUD.Flip">
+      <img src="{{icons.flip}}" width="36" height="36" />
     </div>
-    {{/if}}
   </div>
 </form>

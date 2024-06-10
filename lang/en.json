@@ -12,6 +12,10 @@
       "Title": "Card Controls",
       "Tools": {
         "SelectTitle": "Select Cards"
+      },
+      "HUD": {
+        "Flip": "Flip Card",
+        "Rotate": "Rotate 90 degrees"
       }
     },
     "CardSheet": {
