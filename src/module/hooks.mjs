@@ -103,6 +103,28 @@ async function handleCardDrop(canvas, data) {
 }
 
 /**
+ * A hook event that fires for every embedded Document type after conclusion of a creation workflow.
+ * Substitute the Document name in the hook event to target a specific type, for example "createToken".
+ * This hook fires for all connected clients after the creation has been processed.
+ *
+ * @event createDocument
+ * @category Document
+ * @param {Document} card                       The new Document instance which has been created
+ * @param {Partial<DatabaseCreateOperation>} options Additional options which modified the creation request
+ * @param {string} userId                           The ID of the User who triggered the creation workflow
+ */
+export async function createCard(card, options, userId) {
+  if (card.getFlag(MODULE_ID, canvas.scene.id)) {
+    const synthetic = new ccm_canvas.CanvasCard(card);
+    card.canvasCard = synthetic;
+    const obj = (synthetic._object = canvas.cards.createObject(synthetic));
+    // canvas.cards.objects.addChild(obj);
+    // await obj.draw();
+    obj._onCreate(card.toObject(), options, userId); // does not currently do anything
+  }
+}
+
+/**
  * A hook event that fires for every Document type after conclusion of an update workflow.
  * Substitute the Document name in the hook event to target a specific Document type, for example "updateActor".
  * This hook fires for all connected clients after the update has been processed.
@@ -122,28 +144,28 @@ export async function updateCard(card, changed, options, userId) {
     const synthetic = new ccm_canvas.CanvasCard(card);
     card.canvasCard = synthetic;
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
-    canvas.cards.objects.addChild(obj);
-    await obj.draw();
-    obj._onCreate(card.toObject(), options, userId); // Doesn't currently do anything
+    // canvas.cards.objects.addChild(obj);
+    // await obj.draw();
+    obj._onCreate(card.toObject(), options, userId);
     synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
   }
 }
 
 /**
- * A hook event that fires when Cards are passed from one stack to another.
- * @event passCards
- * @category Cards
- * @param {Cards} origin                The origin Cards document
- * @param {Cards} destination           The destination Cards document
- * @param {object} context              Additional context which describes the operation
- * @param {string} context.action       The action name being performed, i.e. "pass", "play", "discard", "draw"
- * @param {object[]} context.toCreate     Card creation operations to be performed in the destination Cards document
- * @param {object[]} context.toUpdate     Card update operations to be performed in the destination Cards document
- * @param {object[]} context.fromUpdate   Card update operations to be performed in the origin Cards document
- * @param {object[]} context.fromDelete   Card deletion operations to be performed in the origin Cards document
+ * A hook event that fires for every Document type after conclusion of an deletion workflow.
+ * Substitute the Document name in the hook event to target a specific Document type, for example "deleteActor".
+ * This hook fires for all connected clients after the deletion has been processed.
+ *
+ * @event deleteDocument
+ * @category Document
+ * @param {Document} card                       The existing Document which was deleted
+ * @param {Partial<DatabaseDeleteOperation>} options Additional options which modified the deletion request
+ * @param {string} userId                           The ID of the User who triggered the deletion workflow
  */
-export async function passCards(origin, target, context) {
-  console.log(origin, target, context);
+export async function deleteCard(card, options, userId) {
+  if (card.canvasCard) {
+    card.canvasCard.object._onDelete(options, userId);
+  }
 }
 
 /**

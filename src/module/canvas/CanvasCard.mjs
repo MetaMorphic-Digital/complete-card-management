@@ -186,6 +186,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * @param {boolean} [newCard=false]           If this is a freshly dropped card
    */
   _checkRegionTrigger(updates, userId, newCard = false) {
+    if (game.user.id !== userId) return;
     const centerX = this.width / 2;
     const centerY = this.height / 2;
     const origin = {x: this.x + centerX, y: this.y + centerY};

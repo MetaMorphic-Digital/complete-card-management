@@ -40,18 +40,16 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
    * @param {RegionEvent} event
    */
   static async #onCardMoveIn(event) {
+    const userCanUpdate = canvas.scene.testUserPermission(event.user, "update");
+    const isResponsible = (userCanUpdate && event.user.isSelf) || (!userCanUpdate && game.users.activeGM.isSelf);
+    if (!userCanUpdate && !game.users.activeGM) return ui.notifications.error("No active GM to manage scene data!");
     const {card} = event.data;
-    if (this.targetStack && (this.targetStack !== card.parent)) {
+    if (this.targetStack && (this.targetStack !== card.parent) && isResponsible) {
       ui.notifications.info(`Adding ${card.name} to ${this.targetStack.name}`);
       const newCard = await card.pass(this.targetStack);
-      const synthetic = card.canvasCard;
-      synthetic.card = newCard;
-      newCard.canvasCard = synthetic;
       const sceneCards = canvas.scene.getFlag(MODULE_ID, "cardCollection") ?? [];
       sceneCards.findSplice(uuid => uuid === card.uuid);
       sceneCards.push(newCard.uuid);
-      canvas.interface.removeCard({objectId: card.uuid});
-      await newCard.canvasCard.object.draw();
       canvas.scene.setFlag(MODULE_ID, "cardCollection", sceneCards);
     }
   }
@@ -62,6 +60,9 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
    * @param {RegionEvent} event
    */
   static async #onCardMoveOut(event) {
-    ui.notifications.info(`Removing ${event.data.card.name} from ${this.targetStack.name}`);
+    const {card} = event.data;
+    if (this.targetStack && (this.targetStack !== card.parent) && event.user.isSelf) {
+      ui.notifications.info(`Removing ${event.data.card.name} from ${this.targetStack.name}`);
+    }
   }
 }
