@@ -10,7 +10,7 @@
     "MoveCardBehavior": {
       "FIELDS": {
         "targetStack": {
-          "hint": "The Deck, Hand, or List to move a card into",
+          "hint": "The 16-character ID of the Deck, Hand, or List to move a card into.",
           "label": "Target Stack"
         }
       }

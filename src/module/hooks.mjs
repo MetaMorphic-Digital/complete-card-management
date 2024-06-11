@@ -120,13 +120,30 @@ export async function updateCard(card, changed, options, userId) {
   }
   else if (canvas.scene.id in moduleFlags) { // New cards
     const synthetic = new ccm_canvas.CanvasCard(card);
-    synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
     card.canvasCard = synthetic;
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
     canvas.cards.objects.addChild(obj);
     await obj.draw();
     obj._onCreate(card.toObject(), options, userId); // Doesn't currently do anything
+    synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
   }
+}
+
+/**
+ * A hook event that fires when Cards are passed from one stack to another.
+ * @event passCards
+ * @category Cards
+ * @param {Cards} origin                The origin Cards document
+ * @param {Cards} destination           The destination Cards document
+ * @param {object} context              Additional context which describes the operation
+ * @param {string} context.action       The action name being performed, i.e. "pass", "play", "discard", "draw"
+ * @param {object[]} context.toCreate     Card creation operations to be performed in the destination Cards document
+ * @param {object[]} context.toUpdate     Card update operations to be performed in the destination Cards document
+ * @param {object[]} context.fromUpdate   Card update operations to be performed in the origin Cards document
+ * @param {object[]} context.fromDelete   Card deletion operations to be performed in the origin Cards document
+ */
+export async function passCards(origin, target, context) {
+  console.log(origin, target, context);
 }
 
 /**

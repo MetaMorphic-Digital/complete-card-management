@@ -13,3 +13,5 @@ Hooks.on("getSceneControlButtons", hooks.getSceneControlButtons);
 Hooks.on("renderHeadsUpDisplay", hooks.renderHeadsUpDisplay);
 
 Hooks.on("updateCard", hooks.updateCard);
+
+Hooks.on("passCards", hooks.passCards);

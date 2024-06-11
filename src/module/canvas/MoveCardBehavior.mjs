@@ -1,4 +1,5 @@
 import CCM_CONFIG from "../config.mjs";
+import {MODULE_ID} from "../helpers.mjs";
 const fields = foundry.data.fields;
 
 export default class MoveCardBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
@@ -40,9 +41,18 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
    */
   static async #onCardMoveIn(event) {
     const {card} = event.data;
-    if (this.targetStack) {
+    if (this.targetStack && (this.targetStack !== card.parent)) {
       ui.notifications.info(`Adding ${card.name} to ${this.targetStack.name}`);
-      await card.pass(this.targetStack);
+      const newCard = await card.pass(this.targetStack);
+      const synthetic = card.canvasCard;
+      synthetic.card = newCard;
+      newCard.canvasCard = synthetic;
+      const sceneCards = canvas.scene.getFlag(MODULE_ID, "cardCollection") ?? [];
+      sceneCards.findSplice(uuid => uuid === card.uuid);
+      sceneCards.push(newCard.uuid);
+      canvas.interface.removeCard({objectId: card.uuid});
+      await newCard.canvasCard.object.draw();
+      canvas.scene.setFlag(MODULE_ID, "cardCollection", sceneCards);
     }
   }
 
