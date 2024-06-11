@@ -39,7 +39,11 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
    * @param {RegionEvent} event
    */
   static async #onCardMoveIn(event) {
-    console.log("Card moved in", event, this);
+    const {card} = event.data;
+    if (this.targetStack) {
+      ui.notifications.info(`Adding ${card.name} to ${this.targetStack.name}`);
+      await card.pass(this.targetStack);
+    }
   }
 
   /**
@@ -48,6 +52,6 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
    * @param {RegionEvent} event
    */
   static async #onCardMoveOut(event) {
-    console.log("Card moved out", event, this);
+    ui.notifications.info(`Removing ${event.data.card.name} from ${this.targetStack.name}`);
   }
 }

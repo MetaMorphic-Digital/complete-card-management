@@ -173,7 +173,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     if (("face" in flatChanges) || (`faces.${this.card.face}.img` in flatChanges)) {
       updates["texture"] = {src: this.card.img};
     }
-    if (updates.x || updates.y) this.#checkRegionTrigger(updates, userId);
+    if (updates.x || updates.y) this._checkRegionTrigger(updates, userId);
     this.updateSource(updates);
     this.object?._onUpdate(updates, options, userId);
   }
@@ -182,9 +182,10 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * Trigger leave and enter region behaviors for the custom region type & event triggers
    * Uses the incoming update data to compare to current document properties
    * @param {{x?: number, y?: number}} updates
-   * @param {string} userId
+   * @param {string} userId                     The ID of the user performing the check
+   * @param {boolean} [newCard=false]           If this is a freshly dropped card
    */
-  #checkRegionTrigger(updates, userId) {
+  _checkRegionTrigger(updates, userId, newCard = false) {
     const centerX = this.width / 2;
     const centerY = this.height / 2;
     const origin = {x: this.x + centerX, y: this.y + centerY};
@@ -203,7 +204,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       const originInside = region.object.testPoint(origin);
       const destinationInside = region.object.testPoint(destination);
       if (originInside && !destinationInside) region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT, eventData);
-      else if (!originInside && destinationInside) region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN, eventData);
+      else if ((!originInside || newCard) && destinationInside) region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN, eventData);
     }
   }
 

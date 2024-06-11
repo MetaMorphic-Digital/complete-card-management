@@ -21,6 +21,7 @@ export function init() {
   CONFIG.Card.layerClass = ccm_canvas.CardLayer;
   CONFIG.Card.hudClass = apps.CardHud;
   CONFIG.RegionBehavior.dataModels[MoveCardType] = ccm_canvas.MoveCardBehavior;
+  CONFIG.RegionBehavior.typeIcons[MoveCardType] = "fa-solid fa-cards";
   CONFIG.controlIcons.flip = "modules/complete-card-management/assets/icons/vertical-flip.svg";
   CONFIG.controlIcons.rotate = "modules/complete-card-management/assets/icons/clockwise-rotation.svg";
 
@@ -119,6 +120,7 @@ export async function updateCard(card, changed, options, userId) {
   }
   else if (canvas.scene.id in moduleFlags) { // New cards
     const synthetic = new ccm_canvas.CanvasCard(card);
+    synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
     card.canvasCard = synthetic;
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
     canvas.cards.objects.addChild(obj);
