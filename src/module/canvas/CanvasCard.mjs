@@ -198,14 +198,20 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     };
     for (const region of this.parent.regions) {
       if (!region.object) continue;
-      const triggeredBehaviors = region.behaviors.filter(b => !b.disabled &&
-        (b.hasEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT) || b.hasEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN))
+      const triggeredBehaviors = region.behaviors.filter(b => 
+        !b.disabled && (
+          b.hasEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT)
+          || b.hasEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN)
+        )
       );
       if (!triggeredBehaviors.length) continue;
       const originInside = region.object.testPoint(origin);
       const destinationInside = region.object.testPoint(destination);
-      if (originInside && !destinationInside) region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT, eventData);
-      else if ((!originInside || newCard) && destinationInside) region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN, eventData);
+      if (originInside && !destinationInside) {
+        region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT, eventData);
+      } else if ((!originInside || newCard) && destinationInside) {
+        region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN, eventData);
+      }
     }
   }
 
