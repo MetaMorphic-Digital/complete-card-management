@@ -13,7 +13,10 @@
           "hint": "The 16-character ID of the Deck, Hand, or List to move a card into.",
           "label": "Target Stack"
         }
-      }
+      },
+      "NoGM": "No active GM to manage scene data!",
+      "AddCard": "Adding {name} to {stack}",
+      "RemoveCard": "Removing {name} from {stack}"
     },
     "REGION_EVENTS": {
       "CardMoveIn": {

@@ -173,7 +173,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     if (("face" in flatChanges) || (`faces.${this.card.face}.img` in flatChanges)) {
       updates["texture"] = {src: this.card.img};
     }
-    if (updates.x || updates.y) this._checkRegionTrigger(updates, userId);
+    if (("x" in updates) || ("y" in updates)) this._checkRegionTrigger(updates, userId);
     this.updateSource(updates);
     this.object?._onUpdate(updates, options, userId);
   }
@@ -198,7 +198,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     };
     for (const region of this.parent.regions) {
       if (!region.object) continue;
-      const triggeredBehaviors = region.behaviors.filter(b => 
+      const triggeredBehaviors = region.behaviors.filter(b =>
         !b.disabled && (
           b.hasEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT)
           || b.hasEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN)

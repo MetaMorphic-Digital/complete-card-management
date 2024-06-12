@@ -42,10 +42,15 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
   static async #onCardMoveIn(event) {
     const userCanUpdate = canvas.scene.testUserPermission(event.user, "update");
     const isResponsible = (userCanUpdate && event.user.isSelf) || (!userCanUpdate && game.users.activeGM.isSelf);
-    if (!userCanUpdate && !game.users.activeGM) return ui.notifications.error("No active GM to manage scene data!");
+    if (!userCanUpdate && !game.users.activeGM) {
+      ui.notifications.error("CCM.MoveCardBehavior.NoGM", {localize: true});
+      return;
+    }
     const {card} = event.data;
     if (this.targetStack && (this.targetStack !== card.parent) && isResponsible) {
-      ui.notifications.info(`Adding ${card.name} to ${this.targetStack.name}`);
+      ui.notifications.info(game.i18n.format("CCM.MoveCardBehavior.AddCard",
+        {name: card.name, stack: this.targetStack.name})
+      );
       const newCard = await card.pass(this.targetStack);
       const sceneCards = foundry.utils.deepClone(canvas.scene.getFlag(MODULE_ID, "cardCollection") ?? []);
       sceneCards.findSplice(uuid => uuid === card.uuid, newCard.uuid);
@@ -61,7 +66,9 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
   static async #onCardMoveOut(event) {
     const {card} = event.data;
     if (this.targetStack && (this.targetStack !== card.parent) && event.user.isSelf) {
-      ui.notifications.info(`Removing ${event.data.card.name} from ${this.targetStack.name}`);
+      ui.notifications.info(game.i18n.format("CCM.MoveCardBehavior.RemoveCard",
+        {name: card.name, stack: this.targetStack.name})
+      );
     }
   }
 }
