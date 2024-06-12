@@ -160,7 +160,10 @@ export default class CardLayer extends PlaceablesLayer {
       throw new Error(`You do not have permission to delete ${type} objects from the Scene.`);
     }
     const proceed = await foundry.applications.api.DialogV2.confirm({
-      title: game.i18n.localize("CONTROLS.ClearAll"),
+      window: {
+        title: "CONTROLS.ClearAll",
+        icon: "fa-solid fa-cards"
+      },
       content: game.i18n.format("CONTROLS.ClearAllHint", {type}),
       rejectClose: false,
       modal: true
