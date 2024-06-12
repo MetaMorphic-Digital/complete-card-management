@@ -41,7 +41,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
    */
   static async #onCardMoveIn(event) {
     const userCanUpdate = canvas.scene.testUserPermission(event.user, "update");
-    const isResponsible = (userCanUpdate && event.user.isSelf) || (!userCanUpdate && game.users.activeGM.isSelf);
+    const isResponsible = (userCanUpdate && event.user.isSelf) || (!userCanUpdate && !!game.users.activeGM?.isSelf);
     if (!userCanUpdate && !game.users.activeGM) {
       ui.notifications.error("CCM.MoveCardBehavior.NoGM", {localize: true});
       return;
