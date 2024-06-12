@@ -47,7 +47,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
     if (this.targetStack && (this.targetStack !== card.parent) && isResponsible) {
       ui.notifications.info(`Adding ${card.name} to ${this.targetStack.name}`);
       const newCard = await card.pass(this.targetStack);
-      const sceneCards = canvas.scene.getFlag(MODULE_ID, "cardCollection") ?? [];
+      const sceneCards = foundry.utils.deepClone(canvas.scene.getFlag(MODULE_ID, "cardCollection") ?? []);
       sceneCards.findSplice(uuid => uuid === card.uuid);
       sceneCards.push(newCard.uuid);
       canvas.scene.setFlag(MODULE_ID, "cardCollection", sceneCards);
