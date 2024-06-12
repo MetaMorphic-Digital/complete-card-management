@@ -163,6 +163,10 @@ export async function updateCard(card, changed, options, userId) {
     synthetic.update(changed, options, userId);
   }
   else if (canvas.scene.id in moduleFlags) { // New cards
+    if (card.drawn) {
+      ui.notifications.error("CCM.Warning.CardDrawn", {localize: true});
+      return;
+    }
     const synthetic = new ccm_canvas.CanvasCard(card);
     card.canvasCard = synthetic;
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));

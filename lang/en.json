@@ -65,7 +65,8 @@
       "PreviousFace": "Previous Face"
     },
     "Warning": {
-      "NoCardsAvailable": "This {type} has no cards available."
+      "NoCardsAvailable": "This {type} has no cards available.",
+      "CardDrawn": "This card cannot be added to the canvas as it has already been drawn and added to a pile or hand"
     }
   },
   "TYPES.RegionBehavior.complete-card-management.moveCard": "Move Card"

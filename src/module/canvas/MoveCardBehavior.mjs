@@ -77,7 +77,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
   static async #onCardMoveOut(event) {
     const {card} = event.data;
     if (this.targetStack && (this.targetStack !== card.parent) && event.user.isSelf) {
-      ui.notifications.info(game.i18n.format("CCM.MoveCardBehavior.RemoveCard",
+      console.log(game.i18n.format("CCM.MoveCardBehavior.RemoveCard",
         {name: card.name, stack: this.targetStack.name})
       );
     }
