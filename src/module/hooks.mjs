@@ -103,6 +103,30 @@ async function handleCardDrop(canvas, data) {
 }
 
 /**
+ * A hook event that fires when Cards are passed from one stack to another.
+ * @event passCards
+ * @category Cards
+ * @param {Cards} origin                The origin Cards document
+ * @param {Cards} destination           The destination Cards document
+ * @param {object} context              Additional context which describes the operation
+ * @param {string} context.action       The action name being performed, i.e. "pass", "play", "discard", "draw"
+ * @param {object[]} context.toCreate     Card creation operations to be performed in the destination Cards document
+ * @param {object[]} context.toUpdate     Card update operations to be performed in the destination Cards document
+ * @param {object[]} context.fromUpdate   Card update operations to be performed in the origin Cards document
+ * @param {object[]} context.fromDelete   Card deletion operations to be performed in the origin Cards document
+ */
+export function passCards(origin, destination, context) {
+  for (const changes of context.fromUpdate) { // origin type is a deck
+    const card = origin.cards.get(changes.id);
+    const moduleFlags = foundry.utils.getProperty(card, `flags.${MODULE_ID}`);
+    if (!moduleFlags || !changes["drawn"]) continue;
+    for (const sceneId of Object.keys(moduleFlags)) {
+      foundry.utils.setProperty(changes, `flags.${MODULE_ID}.-=${sceneId}`, null);
+    }
+  }
+}
+
+/**
  * A hook event that fires for every embedded Document type after conclusion of a creation workflow.
  * Substitute the Document name in the hook event to target a specific type, for example "createToken".
  * This hook fires for all connected clients after the creation has been processed.
@@ -118,9 +142,7 @@ export async function createCard(card, options, userId) {
     const synthetic = new ccm_canvas.CanvasCard(card);
     card.canvasCard = synthetic;
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
-    // canvas.cards.objects.addChild(obj);
-    // await obj.draw();
-    obj._onCreate(card.toObject(), options, userId); // does not currently do anything
+    obj._onCreate(card.toObject(), options, userId);
   }
 }
 
@@ -144,8 +166,6 @@ export async function updateCard(card, changed, options, userId) {
     const synthetic = new ccm_canvas.CanvasCard(card);
     card.canvasCard = synthetic;
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
-    // canvas.cards.objects.addChild(obj);
-    // await obj.draw();
     obj._onCreate(card.toObject(), options, userId);
     synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
   }

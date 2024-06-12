@@ -53,7 +53,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
       );
       const newCard = await card.pass(this.targetStack);
       const sceneCards = foundry.utils.deepClone(canvas.scene.getFlag(MODULE_ID, "cardCollection") ?? []);
-      sceneCards.findSplice(uuid => uuid === card.uuid, newCard.uuid);
+      sceneCards.findSplice(uuid => uuid === card.uuid, newCard?.uuid);
       canvas.scene.setFlag(MODULE_ID, "cardCollection", sceneCards);
     }
   }
