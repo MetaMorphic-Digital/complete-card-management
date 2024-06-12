@@ -12,8 +12,7 @@
       "Title": "Card Controls",
       "Tools": {
         "SelectTitle": "Select Cards",
-        "ClearTitle": "Clear Cards",
-        "ClearConfirm": "Remove all canvas cards from the scene?"
+        "ClearTitle": "Clear Cards"
       },
       "HUD": {
         "Flip": "Flip Card",
