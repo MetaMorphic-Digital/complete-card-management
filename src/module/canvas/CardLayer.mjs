@@ -170,7 +170,7 @@ export default class CardLayer extends PlaceablesLayer {
     });
     if (proceed) {
       const cardCollection = canvas.scene.getFlag(MODULE_ID, "cardCollection");
-      if (!cardCollection) return ui.notifications.warn();
+      if (!cardCollection) return ui.notifications.warn("CARDS.NoCards", {localize: true});
       for (const uuid of cardCollection) {
         const card = fromUuidSync(uuid);
         await card.unsetFlag(MODULE_ID, canvas.scene.id);
