@@ -11,7 +11,9 @@
     "CardLayer": {
       "Title": "Card Controls",
       "Tools": {
-        "SelectTitle": "Select Cards"
+        "SelectTitle": "Select Cards",
+        "ClearTitle": "Clear Cards",
+        "ClearConfirm": "Remove all canvas cards from the scene?"
       },
       "HUD": {
         "Flip": "Flip Card",

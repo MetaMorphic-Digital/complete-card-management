@@ -149,6 +149,14 @@ export function getSceneControlButtons(controls) {
         toggle: true,
         active: canvas.forceSnapVertices,
         onClick: toggled => canvas.forceSnapVertices = toggled
+      },
+      {
+        name: "delete",
+        title: "CCM.CardLayer.Tools.ClearTitle",
+        icon: "fa-solid fa-trash",
+        visible: game.user.isGM,
+        button: true,
+        onClick: () => canvas.cards.deleteAll()
       }
     ],
     activeTool: "select"

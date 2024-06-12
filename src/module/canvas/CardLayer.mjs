@@ -154,6 +154,30 @@ export default class CardLayer extends PlaceablesLayer {
   };
 
   /** @override */
+  async deleteAll() {
+    const type = this.constructor.documentName;
+    if (!game.user.isGM) {
+      throw new Error(`You do not have permission to delete ${type} objects from the Scene.`);
+    }
+    const proceed = await foundry.applications.api.DialogV2.confirm({
+      title: game.i18n.localize("CONTROLS.ClearAll"),
+      content: game.i18n.format("CONTROLS.ClearAllHint", {type}),
+      rejectClose: false,
+      modal: true
+    });
+    if (proceed) {
+      const cardCollection = canvas.scene.getFlag(MODULE_ID, "cardCollection");
+      if (!cardCollection) return ui.notifications.warn();
+      for (const uuid of cardCollection) {
+        const card = fromUuidSync(uuid);
+        await card.unsetFlag(MODULE_ID, canvas.scene.id);
+      }
+      ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects", {count: cardCollection.length, type}));
+      return canvas.scene.unsetFlag(MODULE_ID, "cardCollection");
+    }
+  }
+
+  /** @override */
   async _onDeleteKey(event) {
     if (game.paused && !game.user.isGM) {
       ui.notifications.warn("GAME.PausedWarning", {localize: true});
