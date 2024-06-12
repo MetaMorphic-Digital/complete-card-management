@@ -8,8 +8,15 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
 
   static defineSchema() {
     return {
-      targetStack: new fields.ForeignDocumentField(getDocumentClass("Cards"))
+      targetStack: new fields.ForeignDocumentField(getDocumentClass("Cards"), {choices: this.#getStackChoices})
     };
+  }
+
+  static #getStackChoices() {
+    return game.cards.reduce((choices, stack) => {
+      choices[stack.id] = stack.name;
+      return choices;
+    }, {});
   }
 
   /** @override */
