@@ -38,7 +38,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * Synthetic parent
    * @type {Scene}
    */
-  // Using the this.parent so that way it sticks after constructor
+  // Using this.parent so that way it sticks after constructor.
   parent = this.parent ?? null;
 
   /**
