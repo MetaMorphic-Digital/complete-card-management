@@ -67,6 +67,11 @@
   },
   "packs": [],
   "packFolders": [],
+  "documentTypes": {
+    "RegionBehavior": {
+      "moveCard": {}
+    }
+  },
   "manifest": "https://github.com/MetaMorphic-Digital/complete-card-management/releases/latest/download/system.json",
   "download": "AUTOMATIC"
 }

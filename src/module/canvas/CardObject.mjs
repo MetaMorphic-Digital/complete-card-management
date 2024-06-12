@@ -337,6 +337,12 @@ export default class CardObject extends PlaceableObject {
   /* -------------------------------------------- */
 
   /** @override */
+  _onCreate(data, options, userId) {
+    canvas.cards.objects.addChild(this);
+    this.draw();
+  }
+
+  /** @override */
   _onUpdate(changed, options, userId) {
     super._onUpdate(changed, options, userId);
     const restrictionsChanged = ("restrictions" in changed) && !foundry.utils.isEmpty(changed.restrictions);

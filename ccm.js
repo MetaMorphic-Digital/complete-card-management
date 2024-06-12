@@ -12,4 +12,10 @@ Hooks.on("getSceneControlButtons", hooks.getSceneControlButtons);
 
 Hooks.on("renderHeadsUpDisplay", hooks.renderHeadsUpDisplay);
 
+Hooks.on("passCards", hooks.passCards);
+
+Hooks.on("createCard", hooks.createCard);
+
 Hooks.on("updateCard", hooks.updateCard);
+
+Hooks.on("deleteCard", hooks.deleteCard);

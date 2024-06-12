@@ -7,7 +7,26 @@
       "Hand": "Complete Card Management Hand Sheet",
       "Pile": "Complete Card Management Pile Sheet"
     },
-
+    "MoveCardBehavior": {
+      "FIELDS": {
+        "targetStack": {
+          "hint": "The Deck, Hand, or Pile to move a card into.",
+          "label": "Target Stack"
+        }
+      },
+      "NoGM": "No active GM to manage scene data!",
+      "NoStack": "Could not find a valid Cards document for this region",
+      "AddCard": "Adding {name} to {stack}",
+      "RemoveCard": "Removing {name} from {stack}"
+    },
+    "REGION_EVENTS": {
+      "CardMoveIn": {
+        "label": "Card Moved In"
+      },
+      "CardMoveOut": {
+        "label": "Card Moved Out"
+      }
+    },
     "CardLayer": {
       "Title": "Card Controls",
       "Tools": {
@@ -46,9 +65,11 @@
       "NextFace": "Next Face",
       "PreviousFace": "Previous Face"
     },
-
     "Warning": {
-      "NoCardsAvailable": "This {type} has no cards available."
+      "NoCardsAvailable": "This {type} has no cards available.",
+      "CardDrawn": "This card cannot be added to the canvas as it has already been drawn and added to a pile or hand."
+
     }
-  }
+  },
+  "TYPES.RegionBehavior.complete-card-management.moveCard": "Move Card"
 }
