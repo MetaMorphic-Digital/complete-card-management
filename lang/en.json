@@ -10,11 +10,12 @@
     "MoveCardBehavior": {
       "FIELDS": {
         "targetStack": {
-          "hint": "The 16-character ID of the Deck, Hand, or List to move a card into.",
+          "hint": "The Deck, Hand, or Pile to move a card into.",
           "label": "Target Stack"
         }
       },
       "NoGM": "No active GM to manage scene data!",
+      "NoStack": "Could not find a valid Cards document for this region",
       "AddCard": "Adding {name} to {stack}",
       "RemoveCard": "Removing {name} from {stack}"
     },

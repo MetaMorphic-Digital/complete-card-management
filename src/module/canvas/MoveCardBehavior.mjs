@@ -53,8 +53,12 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
       ui.notifications.error("CCM.MoveCardBehavior.NoGM", {localize: true});
       return;
     }
+    if (!this.targetStack) {
+      ui.notifications.error("CCM.MoveCardBehavior.NoStack", {localize: true});
+      return;
+    }
     const {card} = event.data;
-    if (this.targetStack && (this.targetStack !== card.parent) && isResponsible) {
+    if ((this.targetStack !== card.parent) && isResponsible) {
       ui.notifications.info(game.i18n.format("CCM.MoveCardBehavior.AddCard",
         {name: card.name, stack: this.targetStack.name})
       );

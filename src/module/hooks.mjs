@@ -117,7 +117,7 @@ async function handleCardDrop(canvas, data) {
  */
 export function passCards(origin, destination, context) {
   for (const changes of context.fromUpdate) { // origin type is a deck
-    const card = origin.cards.get(changes.id);
+    const card = origin.cards.get(changes._id);
     const moduleFlags = foundry.utils.getProperty(card, `flags.${MODULE_ID}`);
     if (!moduleFlags || !changes["drawn"]) continue;
     for (const sceneId of Object.keys(moduleFlags)) {
