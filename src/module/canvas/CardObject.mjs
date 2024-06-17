@@ -417,7 +417,6 @@ export default class CardObject extends PlaceableObject {
         _id: d.id
       };
       if (d instanceof Cards) {
-        u._id = d.id;
         cardStackUpdates.push(updateData);
       }
       else {
