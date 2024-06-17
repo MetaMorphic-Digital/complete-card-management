@@ -428,8 +428,6 @@ export default class CardObject extends PlaceableObject {
       return cards;
     }, {});
 
-    console.log(cardStackUpdates);
-
     await Cards.updateDocuments(cardStackUpdates);
 
     for (const [id, updates] of Object.entries(processedUpdates)) {

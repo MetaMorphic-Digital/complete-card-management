@@ -111,7 +111,6 @@ async function handleCardDrop(canvas, data) {
  * @param {import("./_types.mjs").CanvasDropData} data - Drop data
  */
 async function handleCardStackDrop(canvas, data) {
-  console.log(data);
   let cards = await fromUuidSync(data.uuid);
   if (cards.pack) {
     // We can import Cards documents from compendiums because they're primary documents
