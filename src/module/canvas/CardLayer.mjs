@@ -125,6 +125,9 @@ export default class CardLayer extends PlaceablesLayer {
 
     const documents = this.getDocuments();
     const promises = documents.map((doc) => {
+      // Preemptively filtering out drawings that would fail
+      const data = doc.getFlag(MODULE_ID, canvas.scene.id);
+      if (!data) return;
       const syntheticDoc = new CanvasCard(doc);
       doc.canvasCard = syntheticDoc;
       const obj = (syntheticDoc._object = this.createObject(syntheticDoc));
