@@ -201,7 +201,7 @@ export async function updateCard(card, changed, options, userId) {
     card.canvasCard = synthetic;
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
     obj._onCreate(card.toObject(), options, userId);
-    synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
+    if (card instanceof Card) synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
   }
 }
 
