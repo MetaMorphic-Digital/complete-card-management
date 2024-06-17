@@ -5,12 +5,14 @@ import {MODULE_ID} from "../helpers.mjs";
  * Contains many properties to enable functionality as a synthetic document
  */
 export default class CanvasCard extends foundry.abstract.DataModel {
+  /**
+   * @param {Card | Cards} card The document represented by this data model
+   */
   constructor(card) {
-    if (!(card instanceof Card)) {
+    if (!((card instanceof Card) || (card instanceof Cards))) {
       throw new Error("The card object model takes a Card document as its only argument");
     }
 
-    // TODO: Might need the scene ID to be taken in as an argument? Unclear
     const data = card.getFlag(MODULE_ID, canvas.scene.id);
 
     if (!data) {
@@ -21,15 +23,15 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       texture: {
         src: card.img
       },
-      width: card.width * canvas.grid.sizeX,
-      height: card.height * canvas.grid.sizeY
+      width: (card.width ?? 2) * canvas.grid.sizeX,
+      height: (card.height ?? 3) * canvas.grid.sizeY
     });
 
     super(data, {parent: canvas.scene});
 
     /**
-     * A reference to the card document this takes data from.
-     * @type {Card}
+     * A reference to the card or cards document this takes data from.
+     * @type {Card | Cards}
      */
     this.card = card;
   }
@@ -173,7 +175,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     if (("face" in flatChanges) || (`faces.${this.card.face}.img` in flatChanges)) {
       updates["texture"] = {src: this.card.img};
     }
-    if (("x" in updates) || ("y" in updates)) this._checkRegionTrigger(updates, userId);
+    if ((this.card instanceof Card) && (("x" in updates) || ("y" in updates))) this._checkRegionTrigger(updates, userId);
     this.updateSource(updates);
     this.object?._onUpdate(updates, options, userId);
   }
