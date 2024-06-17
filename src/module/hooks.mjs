@@ -74,6 +74,9 @@ export function dropCanvasData(canvas, data) {
     case "Card":
       handleCardDrop(canvas, data);
       break;
+    case "Cards":
+      handleCardStackDrop(canvas, data);
+      break;
   }
 }
 
@@ -98,6 +101,34 @@ async function handleCardDrop(canvas, data) {
   await card.setFlag(MODULE_ID, canvas.scene.id, {x: adjusted_x, y: adjusted_y, rotation: card.rotation, sort: card.sort});
 
   const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(card.uuid);
+
+  await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+}
+
+/**
+ *
+ * @param {Canvas} canvas - The Game Canvas
+ * @param {import("./_types.mjs").CanvasDropData} data - Drop data
+ */
+async function handleCardStackDrop(canvas, data) {
+  console.log(data);
+  let cards = await fromUuidSync(data.uuid);
+  if (cards.pack) {
+    // We can import Cards documents from compendiums because they're primary documents
+    const CardsCls = getDocumentClass("Cards");
+    cards = await CardsCls.create(cards);
+  }
+
+  const adjusted_x = data.x - (cards.width * canvas.grid.sizeX) / 2;
+  const adjusted_y = data.y - (cards.height * canvas.grid.sizeY) / 2;
+
+  await cards.setFlag(
+    MODULE_ID,
+    canvas.scene.id,
+    {x: adjusted_x, y: adjusted_y, rotation: cards.rotation, sort: cards.sort}
+  );
+
+  const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(cards.uuid);
 
   await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
 }
