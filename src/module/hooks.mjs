@@ -288,7 +288,8 @@ export function renderHeadsUpDisplay(app, [html], context) {
 export async function createScene(scene, options, userId) {
   if (userId !== game.userId) return; // guaranteed to be GM level user
   const cardCollection = scene.getFlag(MODULE_ID, "cardCollection");
-  if (!cardCollection || !scene._stats.duplicateSource) return;
+  const sourceScene = fromUuidSync(scene._stats.duplicateSource);
+  if (!cardCollection || !sourceScene || !(sourceScene instanceof Scene) || sourceScene.pack) return;
   const cardStackUpdates = [];
   const cardUpdates = cardCollection.reduce((cards, uuid) => {
     const d = fromUuidSync(uuid);
@@ -296,7 +297,7 @@ export async function createScene(scene, options, userId) {
     const updateData = {
       flags: {
         [MODULE_ID]: {
-          [scene.id]: d.getFlag(MODULE_ID, scene._stats.duplicateSource.slice(6))
+          [scene.id]: d.getFlag(MODULE_ID, sourceScene.id)
         }
       },
       _id: d.id
