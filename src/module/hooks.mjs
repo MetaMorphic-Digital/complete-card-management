@@ -292,6 +292,7 @@ export async function createScene(scene, options, userId) {
   const cardStackUpdates = [];
   const cardUpdates = cardCollection.reduce((cards, uuid) => {
     const d = fromUuidSync(uuid);
+    if (!d) return cards;
     const updateData = {
       flags: {
         [MODULE_ID]: {
