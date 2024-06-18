@@ -20,8 +20,7 @@ export function generateUpdates(valuePath, valueMod, {object = {}, targetPath = 
     };
     if (d instanceof Cards) {
       cards.cardStackUpdates.push(updateData);
-    }
-    else {
+    } else {
       const parentSlot = cards[d.parent.id];
       if (parentSlot) parentSlot.push(updateData);
       else cards[d.parent.id] = [updateData];
