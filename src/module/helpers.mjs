@@ -20,8 +20,7 @@ export function generateUpdates(valuePath, valueMod, {object = {}, targetPath = 
     };
     if (d instanceof Cards) {
       cards.cardStackUpdates.push(updateData);
-    }
-    else {
+    } else {
       const parentSlot = cards[d.parent.id];
       if (parentSlot) parentSlot.push(updateData);
       else cards[d.parent.id] = [updateData];
@@ -38,7 +37,7 @@ export function generateUpdates(valuePath, valueMod, {object = {}, targetPath = 
  */
 export async function processUpdates(processedUpdates) {
   for (const [id, updates] of Object.entries(processedUpdates)) {
-    if (id === "cardStackUpdates") await Cards.updateDocuments(updates);
+    if (id === "cardStackUpdates") await Cards.implementation.updateDocuments(updates);
     else await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
   }
 }

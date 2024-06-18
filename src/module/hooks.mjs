@@ -121,11 +121,12 @@ async function handleCardStackDrop(canvas, data) {
   const adjusted_x = data.x - (cards.width * canvas.grid.sizeX) / 2;
   const adjusted_y = data.y - (cards.height * canvas.grid.sizeY) / 2;
 
-  await cards.setFlag(
-    MODULE_ID,
-    canvas.scene.id,
-    {x: adjusted_x, y: adjusted_y, rotation: cards.rotation, sort: cards.sort}
-  );
+  await cards.setFlag(MODULE_ID, canvas.scene.id, {
+    x: adjusted_x,
+    y: adjusted_y,
+    rotation: cards.rotation,
+    sort: cards.sort
+  });
 
   const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(cards.uuid);
 

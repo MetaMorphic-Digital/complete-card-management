@@ -418,8 +418,7 @@ export default class CardObject extends PlaceableObject {
       };
       if (d instanceof Cards) {
         cardStackUpdates.push(updateData);
-      }
-      else {
+      } else {
         const parentSlot = cards[d.parent.id];
         if (parentSlot) parentSlot.push(updateData);
         else cards[d.parent.id] = [updateData];
@@ -427,7 +426,7 @@ export default class CardObject extends PlaceableObject {
       return cards;
     }, {});
 
-    await Cards.updateDocuments(cardStackUpdates);
+    await Cards.implementation.updateDocuments(cardStackUpdates);
 
     for (const [id, updates] of Object.entries(processedUpdates)) {
       await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
