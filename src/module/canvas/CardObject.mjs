@@ -418,8 +418,7 @@ export default class CardObject extends PlaceableObject {
       };
       if (d instanceof Cards) {
         cardStackUpdates.push(updateData);
-      }
-      else {
+      } else {
         const parentSlot = cards[d.parent.id];
         if (parentSlot) parentSlot.push(updateData);
         else cards[d.parent.id] = [updateData];
