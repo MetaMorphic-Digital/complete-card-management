@@ -6,13 +6,23 @@ import CanvasCard from "./CanvasCard.mjs";
  * CardObjects are drawn inside of the {@link CardLayer} container
  */
 export default class CardObject extends PlaceableObject {
-
   constructor(canvasCard) {
     if (!(canvasCard instanceof CanvasCard)) {
       throw new Error("You must provide a CanvasCard to construct a CardObject");
     }
-    // PlaceableObject checks for both document status and embedded
-    super(canvasCard.card);
+
+    // PlaceableObject constructor checks for both document status and embedded
+    let document = canvasCard.card;
+    if (canvasCard.card instanceof Cards) {
+      const handler = {
+        get(target, prop, receiver) {
+          if (prop === "isEmbedded") return true;
+          return Reflect.get(...arguments);
+        }
+      };
+      document = new Proxy(document, handler);
+    }
+    super(document);
 
     /** @override */
     this.scene = canvasCard.parent;
@@ -390,9 +400,10 @@ export default class CardObject extends PlaceableObject {
    * @returns {Promise<void>}
    */
   async #commitDragLeftDropUpdates(updates) {
+    const cardStackUpdates = [];
+
     const processedUpdates = updates.reduce((cards, u) => {
       const d = fromUuidSync(u._id);
-      const parentSlot = cards[d.parent.id];
       const updateData = {
         flags: {
           [MODULE_ID]: {
@@ -405,10 +416,17 @@ export default class CardObject extends PlaceableObject {
         },
         _id: d.id
       };
-      if (parentSlot) parentSlot.push(updateData);
-      else cards[d.parent.id] = [updateData];
+      if (d instanceof Cards) {
+        cardStackUpdates.push(updateData);
+      } else {
+        const parentSlot = cards[d.parent.id];
+        if (parentSlot) parentSlot.push(updateData);
+        else cards[d.parent.id] = [updateData];
+      }
       return cards;
     }, {});
+
+    await Cards.implementation.updateDocuments(cardStackUpdates);
 
     for (const [id, updates] of Object.entries(processedUpdates)) {
       await game.cards.get(id).updateEmbeddedDocuments("Card", updates);

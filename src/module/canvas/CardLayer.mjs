@@ -50,9 +50,11 @@ export default class CardLayer extends PlaceablesLayer {
     const activeScene = canvas.scene;
     if (!activeScene) return null;
     const uuids = activeScene.getFlag(MODULE_ID, "cardCollection") ?? [];
-    return new foundry.utils.Collection(
-      uuids.map((uuid) => [uuid, fromUuidSync(uuid)])
-    );
+    return uuids.reduce((coll, uuid) => {
+      const doc = fromUuidSync(uuid);
+      if (doc) coll.set(uuid, doc);
+      return coll;
+    }, new foundry.utils.Collection());
   }
 
   /** @override */
@@ -123,8 +125,15 @@ export default class CardLayer extends PlaceablesLayer {
 
     this.preview = this.addChild(new PIXI.Container());
 
+    /** @type {Array<Card | Cards>} */
     const documents = this.getDocuments();
     const promises = documents.map((doc) => {
+      // Preemptively filtering out drawings that would fail
+      const data = doc.getFlag(MODULE_ID, canvas.scene.id);
+      if (!data) {
+        console.warn("No canvas data found for", doc.name);
+        return;
+      }
       const syntheticDoc = new CanvasCard(doc);
       doc.canvasCard = syntheticDoc;
       const obj = (syntheticDoc._object = this.createObject(syntheticDoc));

@@ -14,15 +14,19 @@ export function generateUpdates(valuePath, valueMod, {object = {}, targetPath = 
   const updates = canvas.cards.controlled.reduce((cards, o) => {
     if (!ignoreLock && o.document.locked) return cards;
     const d = fromUuidSync(o.id);
-    const parentSlot = cards[d.parent.id];
     const updateData = {
       _id: d.id,
       [valuePath]: valueMod(fetchedValue)
     };
-    if (parentSlot) parentSlot.push(updateData);
-    else cards[d.parent.id] = [updateData];
+    if (d instanceof Cards) {
+      cards.cardStackUpdates.push(updateData);
+    } else {
+      const parentSlot = cards[d.parent.id];
+      if (parentSlot) parentSlot.push(updateData);
+      else cards[d.parent.id] = [updateData];
+    }
     return cards;
-  }, {});
+  }, {cardStackUpdates: []});
 
   return updates;
 }
@@ -33,6 +37,7 @@ export function generateUpdates(valuePath, valueMod, {object = {}, targetPath = 
  */
 export async function processUpdates(processedUpdates) {
   for (const [id, updates] of Object.entries(processedUpdates)) {
-    await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
+    if (id === "cardStackUpdates") await Cards.implementation.updateDocuments(updates);
+    else await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
   }
 }
