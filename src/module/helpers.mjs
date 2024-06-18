@@ -37,7 +37,7 @@ export function generateUpdates(valuePath, valueMod, {object = {}, targetPath = 
  */
 export async function processUpdates(processedUpdates) {
   for (const [id, updates] of Object.entries(processedUpdates)) {
-    if (id === "cardStackUpdates") await Cards.updateDocuments(updates);
+    if (id === "cardStackUpdates") await Cards.implementation.updateDocuments(updates);
     else await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
   }
 }
