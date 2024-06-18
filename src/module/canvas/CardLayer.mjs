@@ -50,9 +50,11 @@ export default class CardLayer extends PlaceablesLayer {
     const activeScene = canvas.scene;
     if (!activeScene) return null;
     const uuids = activeScene.getFlag(MODULE_ID, "cardCollection") ?? [];
-    return new foundry.utils.Collection(
-      uuids.map((uuid) => [uuid, fromUuidSync(uuid)]).filter(kvPair => kvPair[1])
-    );
+    return uuids.reduce((coll, uuid) => {
+      const doc = fromUuidSync(uuid);
+      if (doc) coll.set(uuid, doc);
+      return coll;
+    }, new foundry.utils.Collection());
   }
 
   /** @override */
