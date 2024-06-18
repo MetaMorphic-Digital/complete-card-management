@@ -194,7 +194,7 @@ export async function updateCard(card, changed, options, userId) {
     synthetic.update(changed, options, userId);
   }
   else if (canvas.scene.id in moduleFlags) { // New cards
-    if (card.drawn) {
+    if (card.drawn && card.isHome) {
       ui.notifications.error("CCM.Warning.CardDrawn", {localize: true});
       return;
     }
