@@ -273,3 +273,47 @@ export function renderHeadsUpDisplay(app, [html], context) {
   cardHudTemplate.setAttribute("id", "card-hud");
   html.appendChild(cardHudTemplate);
 }
+
+/**
+ * A hook event that fires for every embedded Document type after conclusion of a creation workflow.
+ * Substitute the Document name in the hook event to target a specific type, for example "createToken".
+ * This hook fires for all connected clients after the creation has been processed.
+ *
+ * @event createDocument
+ * @category Document
+ * @param {Scene} scene                       The new Document instance which has been created
+ * @param {Partial<DatabaseCreateOperation>} options Additional options which modified the creation request
+ * @param {string} userId                           The ID of the User who triggered the creation workflow
+ */
+export async function createScene(scene, options, userId) {
+  if (userId !== game.userId) return; // guaranteed to be GM level user
+  const cardCollection = scene.getFlag(MODULE_ID, "cardCollection");
+  const sourceScene = fromUuidSync(scene._stats.duplicateSource);
+  if (!cardCollection || !sourceScene || !(sourceScene instanceof Scene) || sourceScene.pack) return;
+  const cardStackUpdates = [];
+  const cardUpdates = cardCollection.reduce((cards, uuid) => {
+    const d = fromUuidSync(uuid);
+    if (!d) return cards;
+    const updateData = {
+      flags: {
+        [MODULE_ID]: {
+          [scene.id]: d.getFlag(MODULE_ID, sourceScene.id)
+        }
+      },
+      _id: d.id
+    };
+    if (d instanceof Cards) cardStackUpdates.push(updateData);
+    else {
+      const parentSlot = cards[d.parent.id];
+      if (parentSlot) parentSlot.push(updateData);
+      else cards[d.parent.id] = [updateData];
+    }
+    return cards;
+  }, {});
+
+  await Cards.implementation.updateDocuments(cardStackUpdates);
+
+  for (const [id, updates] of Object.entries(cardUpdates)) {
+    await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
+  }
+}

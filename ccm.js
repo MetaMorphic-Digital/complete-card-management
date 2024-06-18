@@ -22,3 +22,5 @@ Hooks.on("updateCards", hooks.updateCard);
 
 Hooks.on("deleteCard", hooks.deleteCard);
 Hooks.on("deleteCards", hooks.deleteCard);
+
+Hooks.on("createScene", hooks.createScene);
