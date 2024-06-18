@@ -426,7 +426,7 @@ export default class CardObject extends PlaceableObject {
       return cards;
     }, {});
 
-    await Cards.updateDocuments(cardStackUpdates);
+    await Cards.implementation.updateDocuments(cardStackUpdates);
 
     for (const [id, updates] of Object.entries(processedUpdates)) {
       await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
