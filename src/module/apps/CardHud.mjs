@@ -76,7 +76,7 @@ export default class CardHud extends BasePlaceableHUD {
       case "rotate":
         return this._onRotate(event);
       case "shuffle":
-        if (!(this.document.card instanceof Cards)) console.error("You can only shuffle a card stack");
+        if (!(this.document.card instanceof Cards)) throw new Error("You can only shuffle a card stack");
         return this.document.card.shuffle();
     }
   }
