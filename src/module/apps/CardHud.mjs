@@ -33,7 +33,8 @@ export default class CardHud extends BasePlaceableHUD {
   /** @override */
   getData(options = {}) {
     const data = super.getData(options);
-    data.cardStack = this.object.document.card instanceof Cards;
+    data.card = this.object.document.card;
+    data.isCardStack = this.object.document.card instanceof Cards;
     data.lockedClass = this.document.locked ? "active" : "";
     data.visibilityClass = this.document.hidden ? "active" : "";
     return data;
@@ -74,6 +75,9 @@ export default class CardHud extends BasePlaceableHUD {
         return this._onFlip(event);
       case "rotate":
         return this._onRotate(event);
+      case "shuffle":
+        if (!(this.document.card instanceof Cards)) throw new Error("You can only shuffle a card stack");
+        return this.document.card.shuffle();
     }
   }
 
