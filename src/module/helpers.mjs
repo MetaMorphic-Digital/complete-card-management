@@ -4,19 +4,20 @@ export const MoveCardType = `${MODULE_ID}.moveCard`;
 /**
  * @param {string} valuePath    - Path on the Card document
  * @param {(original?: any) => any} valueMod - Callback to transform the fetched value
- * @param {object} [object] - Object to fetch values from
+ * @param {object} [object] - Object to fetch values from, otherwise it uses each individual card
  * @param {string} [targetPath] - Path of value to fetch
  * @param {boolean} [ignoreLock=false] - Whether to allow updating a locked card
  * @returns
  */
-export function generateUpdates(valuePath, valueMod, {object = {}, targetPath = "", ignoreLock = false} = {}) {
-  const fetchedValue = foundry.utils.getProperty(object, targetPath);
+export function generateUpdates(valuePath, valueMod, {object, targetPath = "", ignoreLock = false} = {}) {
+  let fetchedValue;
+  if (object) fetchedValue = foundry.utils.getProperty(object, targetPath);
   const updates = canvas.cards.controlled.reduce((cards, o) => {
     if (!ignoreLock && o.document.locked) return cards;
     const d = fromUuidSync(o.id);
     const updateData = {
       _id: d.id,
-      [valuePath]: valueMod(fetchedValue)
+      [valuePath]: valueMod(fetchedValue === undefined ? o : fetchedValue)
     };
     if (d instanceof Cards) {
       cards.cardStackUpdates.push(updateData);
