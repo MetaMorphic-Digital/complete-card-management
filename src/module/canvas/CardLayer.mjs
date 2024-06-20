@@ -1,5 +1,5 @@
 import CardObject from "./CardObject.mjs";
-import {MODULE_ID, processUpdates} from "../helpers.mjs";
+import {MODULE_ID, generateUpdates, processUpdates} from "../helpers.mjs";
 import CanvasCard from "./CanvasCard.mjs";
 
 /**
@@ -18,7 +18,7 @@ export default class CardLayer extends PlaceablesLayer {
     return foundry.utils.mergeObject(super.layerOptions, {
       name: "cards",
       controllableObjects: true,
-      rotateableObjects: true,
+      rotatableObjects: true,
       zIndex: 100
     });
   }
@@ -161,6 +161,36 @@ export default class CardLayer extends PlaceablesLayer {
     );
     this.sortDirty = false;
   };
+
+  /** @override */
+  async rotateMany({angle, delta, snap, ids, includeLocked = false} = {}) {
+
+    if ((angle ?? delta ?? null) === null) {
+      throw new Error("Either a target angle or relative delta must be provided.");
+    }
+
+    // Rotation is not permitted
+    if (!this.options.rotatableObjects) return [];
+    if (game.paused && !game.user.isGM) {
+      ui.notifications.warn("GAME.PausedWarning", {localize: true});
+      return [];
+    }
+
+    // Identify the objects requested for rotation
+    const objects = this._getMovableObjects(ids, includeLocked);
+    if (!objects.length) return objects;
+
+    // Conceal any active HUD
+    this.hud?.clear();
+
+    const updates = generateUpdates(
+      `flags.${MODULE_ID}.${canvas.scene.id}.rotation`,
+      (o) => o._updateRotation({angle, delta, snap}),
+      {targetPath: "rotation"}
+    );
+    await processUpdates(updates);
+    return objects;
+  }
 
   /** @override */
   async deleteAll() {
