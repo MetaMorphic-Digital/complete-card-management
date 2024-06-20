@@ -12,6 +12,8 @@ export function init() {
   console.log("Complete Card Management | Initializing");
   CONFIG.CCM = CCM_CONFIG;
 
+  ccm.socket.registerSocketHandlers();
+
   // Avoiding risks related to dot notation by preferring manual assignment over mergeObject
   CONFIG.Canvas.layers.cards = {
     group: "interface",
