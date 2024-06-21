@@ -154,11 +154,21 @@ export function passCards(origin, destination, context) {
   for (const changes of context.fromUpdate) { // origin type is a deck
     const card = origin.cards.get(changes._id);
     const moduleFlags = foundry.utils.getProperty(card, `flags.${MODULE_ID}`);
-    if (!moduleFlags || !changes["drawn"]) continue;
     for (const sceneId of Object.keys(moduleFlags)) {
       foundry.utils.setProperty(changes, `flags.${MODULE_ID}.-=${sceneId}`, null);
     }
+    // cardCollectionRemovals.add(card.uuid);
   }
+  // const canUpdateScene = canvas.scene.testUserPermission(game.user, "update");
+  // if (canUpdateScene) {
+  //   const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
+  //   for (const uuid of cardCollection) {
+  //     if (!cardCollectionRemovals.has(uuid)) continue;
+  //     cardCollection.delete(uuid);
+  //     cardCollection.add(uuid.replace(origin.id, destination.id));
+  //     canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection));
+  //   }
+  // }
 }
 
 /**
@@ -182,7 +192,9 @@ export async function createCard(card, options, userId) {
     const sourceUser = game.users.get(userId);
     const sourceCanUpdateScene = canvas.scene.testUserPermission(sourceUser, "update");
     if ((sourceCanUpdateScene && sourceUser.isSelf) || (!sourceCanUpdateScene && game.users.activeGM.isSelf)) {
+      console.log(card.uuid);
       const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(card.uuid);
+      console.log("create", cardCollection);
       canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection));
     }
   }
@@ -235,7 +247,11 @@ export async function deleteCard(card, options, userId) {
     const sourceUser = game.users.get(userId);
     const sourceCanUpdateScene = canvas.scene.testUserPermission(sourceUser, "update");
     if ((sourceCanUpdateScene && sourceUser.isSelf) || (!sourceCanUpdateScene && game.users.activeGM.isSelf)) {
-      const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).delete(card.uuid);
+      console.log(card.uuid);
+      const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
+      console.log("delete1", cardCollection);
+      cardCollection.delete(card.uuid);
+      console.log("delete2", cardCollection);
       canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection));
     }
   }
