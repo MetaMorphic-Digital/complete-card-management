@@ -45,7 +45,7 @@ export default class CCMSocketHandler {
     const {cardCollectionRemovals, originId, destinationId} = payload;
     const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
     for (const uuid of cardCollection) {
-      if (!cardCollectionRemovals.includes((uuid))) continue;
+      if (!cardCollectionRemovals.includes(uuid)) continue;
       cardCollection.delete(uuid);
       cardCollection.add(uuid.replace(originId, destinationId));
       canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection));
