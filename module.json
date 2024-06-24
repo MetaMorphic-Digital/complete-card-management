@@ -65,6 +65,7 @@
       "paths": ["./ccm.css"]
     }
   },
+  "socket": true,
   "packs": [],
   "packFolders": [],
   "documentTypes": {

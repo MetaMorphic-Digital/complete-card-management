@@ -12,6 +12,8 @@ export function init() {
   console.log("Complete Card Management | Initializing");
   CONFIG.CCM = CCM_CONFIG;
 
+  ccm.socket.registerSocketHandlers();
+
   // Avoiding risks related to dot notation by preferring manual assignment over mergeObject
   CONFIG.Canvas.layers.cards = {
     group: "interface",
@@ -148,14 +150,28 @@ async function handleCardStackDrop(canvas, data) {
  * @param {object[]} context.fromDelete   Card deletion operations to be performed in the origin Cards document
  */
 export function passCards(origin, destination, context) {
+  const cardCollectionRemovals = new Set(context.fromDelete.map(id => origin.cards.get(id).uuid));
   for (const changes of context.fromUpdate) { // origin type is a deck
     const card = origin.cards.get(changes._id);
     const moduleFlags = foundry.utils.getProperty(card, `flags.${MODULE_ID}`);
-    if (!moduleFlags || !changes["drawn"]) continue;
     for (const sceneId of Object.keys(moduleFlags)) {
       foundry.utils.setProperty(changes, `flags.${MODULE_ID}.-=${sceneId}`, null);
     }
+    cardCollectionRemovals.add(card.uuid);
   }
+  const canUpdateScene = canvas.scene.testUserPermission(game.user, "update");
+  if (canUpdateScene) {
+    const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
+    for (const uuid of cardCollection) {
+      if (!cardCollectionRemovals.has(uuid)) continue;
+      cardCollection.delete(uuid);
+      cardCollection.add(uuid.replace(origin.id, destination.id));
+      canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection));
+    }
+  }
+  else ccm.socket.emit("passCardHandler",
+    {cardCollectionRemovals: Array.from(cardCollectionRemovals), originId: origin.id, destinationId: destination.id}
+  );
 }
 
 /**
@@ -165,7 +181,7 @@ export function passCards(origin, destination, context) {
  *
  * @event createDocument
  * @category Document
- * @param {Document} card                       The new Document instance which has been created
+ * @param {Card | Cards} card                       The new Document instance which has been created
  * @param {Partial<DatabaseCreateOperation>} options Additional options which modified the creation request
  * @param {string} userId                           The ID of the User who triggered the creation workflow
  */
@@ -182,7 +198,7 @@ export async function createCard(card, options, userId) {
  * A hook event that fires for every Document type after conclusion of an update workflow.
  * Substitute the Document name in the hook event to target a specific Document type, for example "updateActor".
  * This hook fires for all connected clients after the update has been processed.
- * @param {Card & { canvasCard?: ccm_canvas.CanvasCard}} card  The existing Document which was updated
+ * @param {(Card | Cards) & { canvasCard?: ccm_canvas.CanvasCard}} card  The existing Document which was updated
  * @param {object} changed                                     Differential data that was used to update the document
  * @param {Partial<DatabaseUpdateOperation>} options           Additional options which modified the update request
  * @param {string} userId                                      The ID of the User who triggered the update workflow
@@ -214,7 +230,7 @@ export async function updateCard(card, changed, options, userId) {
  *
  * @event deleteDocument
  * @category Document
- * @param {Document} card                       The existing Document which was deleted
+ * @param {Card | Cards} card                       The existing Document which was deleted
  * @param {Partial<DatabaseDeleteOperation>} options Additional options which modified the deletion request
  * @param {string} userId                           The ID of the User who triggered the deletion workflow
  */
