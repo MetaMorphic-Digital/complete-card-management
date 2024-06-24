@@ -215,6 +215,7 @@ export default class CardLayer extends PlaceablesLayer {
       }
       for (const uuid of cardCollection) {
         const card = fromUuidSync(uuid);
+        if (!card) continue;
         await card.unsetFlag(MODULE_ID, canvas.scene.id);
       }
       ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects", {count: cardCollection.length, type}));
