@@ -1,5 +1,6 @@
 import {MODULE_ID} from "../helpers.mjs";
 import CanvasCard from "./CanvasCard.mjs";
+import CardLayer from "./CardLayer.mjs";
 
 /**
  * A CardObject is an implementation of PlaceableObject which represents a single Card document within the Scene.
@@ -70,7 +71,10 @@ export default class CardObject extends PlaceableObject {
     refreshElevation: {}
   };
 
-  /** @override */
+  /**
+   * @override
+   * @returns {CardLayer}
+   */
   get layer() {
     return canvas["cards"];
   }
@@ -375,6 +379,44 @@ export default class CardObject extends PlaceableObject {
   /* -------------------------------------------- */
 
   /** @override */
+  _canDragLeftStart(user, event) {
+    if (game.paused && !game.user.isGM) {
+      ui.notifications.warn("GAME.PausedWarning", {localize: true});
+      return false;
+    }
+    if (this.document.locked && (this.document.documentName === "Card")) {
+      ui.notifications.warn(game.i18n.format("CONTROLS.ObjectIsLocked", {type: this.document.documentName}));
+      return false;
+    }
+    return true;
+  }
+
+  /** @override */
+  _onDragLeftStart(event) {
+
+    const objects = this.layer.controlled;
+    const clones = [];
+    for (const o of objects) {
+      if (!o._canDrag(game.user, event)) continue;
+      else if (o.document.locked) {
+        if ((this.document.documentName === "Card")) continue;
+        else if ((objects.length > 1) || !canvas.scene.testUserPermission(game.user, "update")) continue;
+        ui.notifications.info(game.i18n.format("CCM.CardLayer.DragCardFromDeck", {name: o.document.card.name}));
+      }
+      // Clone the object
+      const c = o.clone();
+      clones.push(c);
+
+      // Draw the clone
+      c._onDragStart();
+      c.visible = false;
+      this.layer.preview.addChild(c);
+      c.draw().then(c => c.visible = true);
+    }
+    event.interactionData.clones = clones;
+  }
+
+  /** @override */
   _onDragLeftDrop(event) {
     // Ensure that we landed in bounds
     const {clones, destination} = event.interactionData;
@@ -417,7 +459,17 @@ export default class CardObject extends PlaceableObject {
         _id: d.id
       };
       if (d instanceof Cards) {
-        cardStackUpdates.push(updateData);
+        if (!this.document.locked) cardStackUpdates.push(updateData);
+        else {
+          // Pulls the next card.
+          // TODO: Change to LAST if the deck is upside down
+          const [card] = d._drawCards(1, CONST.CARD_DRAW_MODES.FIRST);
+          if (!card) ui.notifications.error("CCM.Warning.FailDraw", {localize: true});
+          updateData._id = card.id;
+          cards[d.id] = [updateData];
+          const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(card.uuid);
+          canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+        }
       } else {
         const parentSlot = cards[d.parent.id];
         if (parentSlot) parentSlot.push(updateData);
