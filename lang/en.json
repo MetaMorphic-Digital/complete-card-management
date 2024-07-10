@@ -34,7 +34,7 @@
         "ClearTitle": "Clear Cards"
       },
       "HUD": {
-        "Flip": "Flip Card",
+        "Flip": "Flip {type}",
         "Rotate": "Rotate 90 degrees"
       },
       "DragCardFromDeck": "Dragging card from {name}"

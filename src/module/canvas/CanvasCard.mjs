@@ -86,6 +86,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       rotation: new AngleField(),
       hidden: new BooleanField(),
       locked: new BooleanField(),
+      /** Only used with Cards documents */
+      flipped: new BooleanField(),
       width: new NumberField({
         required: true,
         min: 0,
@@ -113,9 +115,10 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     };
   }
 
-  static flagProps = ["x", "y", "elevation", "rotation", "hidden", "locked"];
-
-  static derivedProps = ["height", "width", "texture"];
+  /**
+   * Properties fetched from the appropriate flag
+   */
+  static flagProps = ["x", "y", "elevation", "rotation", "hidden", "locked", "flipped"];
 
   /** @override */
   get id() {
@@ -156,7 +159,6 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     }
     const updates = {};
     const baseProps = ["height", "width"];
-    const flagProps = ["x", "y", "elevation", "sort", "rotation", "hidden", "locked"];
     for (const p of baseProps) {
       if (p in flatChanges) {
         let newValue = flatChanges[p];
@@ -165,10 +167,20 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         updates[p] = newValue;
       }
     }
-    for (const p of flagProps) {
+    for (const p of this.constructor.flagProps) {
       const translatedProp = `flags.${MODULE_ID}.${canvas.scene.id}.${p}`;
       if (translatedProp in flatChanges) {
         updates[p] = flatChanges[translatedProp];
+        if ((p === "flipped") && (this.card instanceof Cards)) {
+          try {
+            const [bottomCard] = this.card._drawCards(1, CONST.CARD_DRAW_MODES.BOTTOM);
+            updates["texture"] = {src: updates[p] ? bottomCard.img : this.card.img};
+          }
+          catch {
+            console.error("Failed to flip deck", this.card.name);
+            updates["texture"] = {src: this.card.img};
+          }
+        }
       }
     }
     // Face handling

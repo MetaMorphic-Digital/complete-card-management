@@ -31,10 +31,9 @@
         <img src="{{icons.shuffle}}" width="36" height="36">
       </div>
       {{/if}}
-    {{else}}
-    <div class="control-icon" data-action="flip" data-tooltip="CCM.CardLayer.HUD.Flip">
+    {{/if}}
+    <div class="control-icon {{flippedClass}}" data-action="flip" data-tooltip="{{flipTooltip}}">
       <img src="{{icons.flip}}" width="36" height="36">
     </div>
-    {{/if}}
   </div>
 </form>
