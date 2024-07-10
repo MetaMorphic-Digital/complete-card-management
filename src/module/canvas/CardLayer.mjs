@@ -3,7 +3,7 @@ import {MODULE_ID, generateUpdates, processUpdates} from "../helpers.mjs";
 import CanvasCard from "./CanvasCard.mjs";
 
 /**
- * The main Card lay
+ * The main Card layer
  */
 export default class CardLayer extends PlaceablesLayer {
   // "Card" is not a valid document name within the scene document
