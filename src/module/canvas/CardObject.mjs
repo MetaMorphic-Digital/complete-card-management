@@ -395,7 +395,7 @@ export default class CardObject extends PlaceableObject {
    * Card draw mode to use for this CardObject
    */
   get cardDrawMode() {
-    // TODO: Change to LAST if the deck is upside down
+    if (this.document.flipped) return CONST.CARD_DRAW_MODES.LAST;
     return CONST.CARD_DRAW_MODES.FIRST;
   }
 
