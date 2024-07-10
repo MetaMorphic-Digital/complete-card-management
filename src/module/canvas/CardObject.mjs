@@ -391,9 +391,18 @@ export default class CardObject extends PlaceableObject {
     return true;
   }
 
+  /**
+   * Card draw mode to use for this CardObject
+   */
+  get cardDrawMode() {
+    // TODO: Change to LAST if the deck is upside down
+    return CONST.CARD_DRAW_MODES.FIRST;
+  }
+
   /** @override */
   _onDragLeftStart(event) {
 
+    /** @type {this[]} */
     const objects = this.layer.controlled;
     const clones = [];
     for (const o of objects) {
@@ -401,6 +410,13 @@ export default class CardObject extends PlaceableObject {
       else if (o.document.locked) {
         if ((this.document.documentName === "Card")) continue;
         else if ((objects.length > 1) || !canvas.scene.testUserPermission(game.user, "update")) continue;
+        try {
+          o.document.card._drawCards(1, this.cardDrawMode);
+        }
+        catch {
+          ui.notifications.error("CCM.Warning.FailDraw", {localize: true});
+          continue;
+        }
         ui.notifications.info(game.i18n.format("CCM.CardLayer.DragCardFromDeck", {name: o.document.card.name}));
       }
       // Clone the object
@@ -459,12 +475,15 @@ export default class CardObject extends PlaceableObject {
         _id: d.id
       };
       if (d instanceof Cards) {
-        if (!this.document.locked) cardStackUpdates.push(updateData);
+        const trueLocked = this.document.card.getFlag(MODULE_ID, canvas.scene.id).locked;
+        if (!trueLocked) cardStackUpdates.push(updateData);
         else {
           // Pulls the next card.
-          // TODO: Change to LAST if the deck is upside down
-          const [card] = d._drawCards(1, CONST.CARD_DRAW_MODES.FIRST);
-          if (!card) ui.notifications.error("CCM.Warning.FailDraw", {localize: true});
+          const [card] = d._drawCards(1, this.cardDrawMode);
+          if (!card) {
+            ui.notifications.error("CCM.Warning.FailDraw", {localize: true});
+            return cards;
+          }
           updateData._id = card.id;
           cards[d.id] = [updateData];
           const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(card.uuid);
