@@ -121,8 +121,8 @@ async function handleCardStackDrop(canvas, data) {
     cards = await CardsCls.create(cards);
   }
 
-  const adjusted_x = data.x - (cards.width * canvas.grid.sizeX) / 2;
-  const adjusted_y = data.y - (cards.height * canvas.grid.sizeY) / 2;
+  const adjusted_x = data.x - ((cards.width ?? 2) * canvas.grid.sizeX) / 2;
+  const adjusted_y = data.y - ((cards.height ?? 3) * canvas.grid.sizeY) / 2;
 
   await cards.setFlag(MODULE_ID, canvas.scene.id, {
     x: adjusted_x,
