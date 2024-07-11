@@ -19,8 +19,8 @@ export default class CardHud extends BasePlaceableHUD {
   }
 
   /**
-   * Getter for the source Card document
-   * @type {Card}
+   * Getter for the source Card or Cards document
+   * @type {Card | Cards}
    */
   get card() {
     return this.document.card;
@@ -37,6 +37,11 @@ export default class CardHud extends BasePlaceableHUD {
     data.isCardStack = this.object.document.card instanceof Cards;
     data.lockedClass = this.document.locked ? "active" : "";
     data.visibilityClass = this.document.hidden ? "active" : "";
+    data.flippedClass = this.document.flipped ? "active" : "";
+    const typeName = this.card.type === CONST.BASE_DOCUMENT_TYPE
+      ? this.card.constructor.metadata.label
+      : CONFIG[this.card.documentName].typeLabels[this.card.type];
+    data.flipTooltip = game.i18n.format("CCM.CardLayer.HUD.Flip", {type: game.i18n.localize(typeName)});
     return data;
   }
 
@@ -107,8 +112,18 @@ export default class CardHud extends BasePlaceableHUD {
    */
   async _onFlip(event) {
     event.preventDefault();
-    // TODO: Improve handling for multi-faced cards
-    const updates = generateUpdates("face", (o) => o === null ? 0 : null, {object: this.card, targetPath: "face"});
+    let updates;
+    if (this.card.documentName === "Card") {
+      // TODO: Improve handling for multi-faced cards
+      generateUpdates("face", (o) => o === null ? 0 : null, {object: this.card, targetPath: "face"});
+    }
+    else {
+      generateUpdates(
+        this._flagPath + ".flipped",
+        o => !o,
+        {object: this.document, targetPath: "flipped", ignoreLock: true}
+      );
+    }
     await processUpdates(updates);
   }
 

@@ -19,9 +19,21 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       throw new Error("The card doesn't have location data for the current scene");
     }
 
+    let img = card.img;
+
+    if ((card instanceof Cards) && data.flipped) {
+      try {
+        const [bottomCard] = card._drawCards(1, CONST.CARD_DRAW_MODES.BOTTOM);
+        img = bottomCard.img;
+      }
+      catch {
+        console.error("Failed to flip deck", card.name);
+      }
+    }
+
     Object.assign(data, {
       texture: {
-        src: card.img
+        src: img
       },
       width: (card.width ?? 2) * canvas.grid.sizeX,
       height: (card.height ?? 3) * canvas.grid.sizeY
@@ -86,6 +98,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       rotation: new AngleField(),
       hidden: new BooleanField(),
       locked: new BooleanField(),
+      /** Only used with Cards documents */
+      flipped: new BooleanField(),
       width: new NumberField({
         required: true,
         min: 0,
@@ -113,9 +127,11 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     };
   }
 
-  static flagProps = ["x", "y", "elevation", "rotation", "hidden", "locked"];
-
-  static derivedProps = ["height", "width", "texture"];
+  /**
+   * Properties fetched from the appropriate flag
+   * @type {string[]}
+   */
+  static flagProps = ["x", "y", "elevation", "rotation", "hidden", "locked", "flipped"];
 
   /** @override */
   get id() {
@@ -156,7 +172,6 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     }
     const updates = {};
     const baseProps = ["height", "width"];
-    const flagProps = ["x", "y", "elevation", "sort", "rotation", "hidden", "locked"];
     for (const p of baseProps) {
       if (p in flatChanges) {
         let newValue = flatChanges[p];
@@ -165,19 +180,56 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         updates[p] = newValue;
       }
     }
-    for (const p of flagProps) {
+    for (const p of this.constructor.flagProps) {
       const translatedProp = `flags.${MODULE_ID}.${canvas.scene.id}.${p}`;
       if (translatedProp in flatChanges) {
         updates[p] = flatChanges[translatedProp];
+        if ((p === "flipped") && (this.documentName === "Cards")) {
+          try {
+            const [bottomCard] = this.card._drawCards(1, CONST.CARD_DRAW_MODES.BOTTOM);
+            updates["texture"] = {src: updates[p] ? bottomCard.img : this.card.img};
+          }
+          catch {
+            console.error("Failed to flip deck", this.card.name);
+            updates["texture"] = {src: this.card.img};
+          }
+        }
       }
     }
     // Face handling
-    if (("face" in flatChanges) || (`faces.${this.card.face}.img` in flatChanges)) {
-      updates["texture"] = {src: this.card.img};
+    if (("face" in flatChanges) || (`faces.${this.card.face}.img` in flatChanges) || ("img" in flatChanges)) {
+      if (
+        (this.documentName === "Card")
+        || (!this.flipped && !(("flipped" in updates) && updates["flipped"]))
+      ) {
+        updates["texture"] = {src: this.card.img};
+      }
     }
     if ((this.card instanceof Card) && (("x" in updates) || ("y" in updates))) this._checkRegionTrigger(updates, userId);
     this.updateSource(updates);
     this.object?._onUpdate(updates, options, userId);
+  }
+
+  /**
+   * Refreshes the canvas card's face
+   */
+  refreshFace() {
+    if (this.card instanceof Card) return; // Not needed at the moment
+    let src;
+    if (this.flipped) {
+      try {
+        const [bottomCard] = this.card._drawCards(1, CONST.CARD_DRAW_MODES.BOTTOM);
+        src = bottomCard.img;
+      }
+      catch {
+        console.error("Failed to flip deck", this.card.name);
+      }
+    }
+    else src = this.card.img;
+
+    const updates = {texture: {src}};
+    this.updateSource(updates);
+    this.object?._onUpdate(updates, {}, "");
   }
 
   /**

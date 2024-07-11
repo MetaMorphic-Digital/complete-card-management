@@ -209,6 +209,9 @@ export async function updateCard(card, changed, options, userId) {
   let synthetic = card.canvasCard;
   if (synthetic && (synthetic.parent === canvas.scene)) { // A synthetic card exists & exists on the canvas
     synthetic.update(changed, options, userId);
+    if ((card.documentName === "Card") && card.parent && card.parent.canvasCard) {
+      card.parent.canvasCard.refreshFace();
+    }
   }
   else if (canvas.scene.id in moduleFlags) { // New cards
     if (card.drawn && card.isHome) {
@@ -219,7 +222,10 @@ export async function updateCard(card, changed, options, userId) {
     card.canvasCard = synthetic;
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
     obj._onCreate(card.toObject(), options, userId);
-    if (card instanceof Card) synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
+    if (card.documentName === "Card") {
+      if (card.parent && card.parent.canvasCard) card.parent.canvasCard.refreshFace();
+      synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
+    }
   }
 }
 
