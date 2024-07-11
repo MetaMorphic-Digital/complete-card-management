@@ -100,7 +100,7 @@ async function handleCardDrop(canvas, data) {
     return;
   }
 
-  api.singles.placeCard(card, {x: data.x, y: data.y});
+  api.placeCard(card, {x: data.x, y: data.y});
 }
 
 /**
@@ -116,7 +116,7 @@ async function handleCardStackDrop(canvas, data) {
     cards = await CardsCls.create(cards);
   }
 
-  api.singles.placeCard(cards, {x: data.x, y: data.y});
+  api.placeCard(cards, {x: data.x, y: data.y});
 }
 
 /**
@@ -136,7 +136,7 @@ export function passCards(origin, destination, context) {
   const cardCollectionRemovals = new Set(context.fromDelete.map(id => origin.cards.get(id).uuid));
   for (const changes of context.fromUpdate) { // origin type is a deck
     const card = origin.cards.get(changes._id);
-    const moduleFlags = foundry.utils.getProperty(card, `flags.${MODULE_ID}`);
+    const moduleFlags = foundry.utils.getProperty(card, `flags.${MODULE_ID}`) ?? {};
     for (const sceneId of Object.keys(moduleFlags)) {
       foundry.utils.setProperty(changes, `flags.${MODULE_ID}.-=${sceneId}`, null);
     }
