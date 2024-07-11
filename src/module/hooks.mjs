@@ -1,3 +1,4 @@
+import * as api from "./api/_module.mjs";
 import * as apps from "./apps/_module.mjs";
 import * as ccm_canvas from "./canvas/_module.mjs";
 import CCM_CONFIG from "./config.mjs";
@@ -98,14 +99,8 @@ async function handleCardDrop(canvas, data) {
     ui.notifications.error("The dropped card must already be in a card stack in the world");
     return;
   }
-  const adjusted_x = data.x - (card.width * canvas.grid.sizeX) / 2;
-  const adjusted_y = data.y - (card.height * canvas.grid.sizeY) / 2;
 
-  await card.setFlag(MODULE_ID, canvas.scene.id, {x: adjusted_x, y: adjusted_y, rotation: card.rotation, sort: card.sort});
-
-  const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(card.uuid);
-
-  await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+  api.layout.placeCard(card, {x: data.x, y: data.y});
 }
 
 /**
@@ -121,19 +116,7 @@ async function handleCardStackDrop(canvas, data) {
     cards = await CardsCls.create(cards);
   }
 
-  const adjusted_x = data.x - ((cards.width ?? 2) * canvas.grid.sizeX) / 2;
-  const adjusted_y = data.y - ((cards.height ?? 3) * canvas.grid.sizeY) / 2;
-
-  await cards.setFlag(MODULE_ID, canvas.scene.id, {
-    x: adjusted_x,
-    y: adjusted_y,
-    rotation: cards.rotation,
-    sort: cards.sort
-  });
-
-  const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(cards.uuid);
-
-  await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+  api.layout.placeCard(cards, {x: data.x, y: data.y});
 }
 
 /**
