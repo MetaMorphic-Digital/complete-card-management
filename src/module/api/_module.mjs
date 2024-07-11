@@ -1,1 +1,1 @@
-export * as layout from "./layout.mjs";
+export * as singles from "./singles.mjs";

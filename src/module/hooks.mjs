@@ -100,7 +100,7 @@ async function handleCardDrop(canvas, data) {
     return;
   }
 
-  api.layout.placeCard(card, {x: data.x, y: data.y});
+  api.singles.placeCard(card, {x: data.x, y: data.y});
 }
 
 /**
@@ -116,7 +116,7 @@ async function handleCardStackDrop(canvas, data) {
     cards = await CardsCls.create(cards);
   }
 
-  api.layout.placeCard(cards, {x: data.x, y: data.y});
+  api.singles.placeCard(cards, {x: data.x, y: data.y});
 }
 
 /**
