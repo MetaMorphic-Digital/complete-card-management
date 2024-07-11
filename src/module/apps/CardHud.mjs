@@ -112,14 +112,18 @@ export default class CardHud extends BasePlaceableHUD {
    */
   async _onFlip(event) {
     event.preventDefault();
-    const updates = this.card.documentName === "Card"
+    let updates;
+    if (this.card.documentName === "Card") {
       // TODO: Improve handling for multi-faced cards
-      ? generateUpdates("face", (o) => o === null ? 0 : null, {object: this.card, targetPath: "face"}) :
+      generateUpdates("face", (o) => o === null ? 0 : null, {object: this.card, targetPath: "face"});
+    }
+    else {
       generateUpdates(
         this._flagPath + ".flipped",
         o => !o,
         {object: this.document, targetPath: "flipped", ignoreLock: true}
       );
+    }
     await processUpdates(updates);
   }
 

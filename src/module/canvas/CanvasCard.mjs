@@ -129,6 +129,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
 
   /**
    * Properties fetched from the appropriate flag
+   * @type {string[]}
    */
   static flagProps = ["x", "y", "elevation", "rotation", "hidden", "locked", "flipped"];
 
