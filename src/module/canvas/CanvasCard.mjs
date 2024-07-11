@@ -199,8 +199,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     if (("face" in flatChanges) || (`faces.${this.card.face}.img` in flatChanges) || ("img" in flatChanges)) {
       if (
         (this.documentName === "Card")
-        || (!this.flipped && !(("flipped" in updates) && updates["flipped"])))
-      {
+        || (!this.flipped && !(("flipped" in updates) && updates["flipped"]))
+      ) {
         updates["texture"] = {src: this.card.img};
       }
     }
@@ -214,18 +214,19 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    */
   refreshFace() {
     if (this.card instanceof Card) return; // Not needed at the moment
-    const updates = {texture: {}};
+    let src;
     if (this.flipped) {
       try {
         const [bottomCard] = this.card._drawCards(1, CONST.CARD_DRAW_MODES.BOTTOM);
-        updates["texture"] = {src: bottomCard.img};
+        src = bottomCard.img;
       }
       catch {
         console.error("Failed to flip deck", this.card.name);
       }
     }
-    else updates["texture"] = {src: this.card.img};
+    else src = this.card.img;
 
+    const updates = {texture: {src}};
     this.updateSource(updates);
     this.object?._onUpdate(updates, {}, "");
   }
