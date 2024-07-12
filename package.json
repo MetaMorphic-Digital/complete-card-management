@@ -4,7 +4,7 @@
   "description": "A FVTT module that allows users to manipulate cards as part of the canvas",
   "main": "ccm.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",

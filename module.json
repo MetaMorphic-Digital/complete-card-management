@@ -26,8 +26,8 @@
   ],
   "version": "AUTOMATIC",
   "compatibility": {
-    "minimum": "12.327",
-    "verified": "12.327"
+    "minimum": "12.328",
+    "verified": "12.328"
   },
   "relationships": {
     "systems": [
@@ -73,6 +73,6 @@
       "moveCard": {}
     }
   },
-  "manifest": "https://github.com/MetaMorphic-Digital/complete-card-management/releases/latest/download/system.json",
+  "manifest": "https://github.com/MetaMorphic-Digital/complete-card-management/releases/latest/download/module.json",
   "download": "AUTOMATIC"
 }
