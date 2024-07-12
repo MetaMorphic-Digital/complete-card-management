@@ -142,7 +142,7 @@ export function passCards(origin, destination, context) {
     }
     cardCollectionRemovals.add(card.uuid);
   }
-  const canUpdateScene = canvas.scene.testUserPermission(game.user, "update");
+  const canUpdateScene = canvas.scene.canUserModify(game.user, "update");
   if (canUpdateScene) {
     const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
     for (const uuid of cardCollection) {

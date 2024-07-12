@@ -409,7 +409,7 @@ export default class CardObject extends PlaceableObject {
       if (!o._canDrag(game.user, event)) continue;
       else if (o.document.locked) {
         if ((this.document.documentName === "Card")) continue;
-        else if ((objects.length > 1) || !canvas.scene.testUserPermission(game.user, "update")) continue;
+        else if ((objects.length > 1) || !canvas.scene.canUserModify(game.user, "update")) continue;
         try {
           o.document.card._drawCards(1, this.cardDrawMode);
         }
