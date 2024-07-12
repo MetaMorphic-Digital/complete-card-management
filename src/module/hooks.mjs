@@ -1,3 +1,4 @@
+import * as api from "./api/_module.mjs";
 import * as apps from "./apps/_module.mjs";
 import * as ccm_canvas from "./canvas/_module.mjs";
 import CCM_CONFIG from "./config.mjs";
@@ -98,14 +99,8 @@ async function handleCardDrop(canvas, data) {
     ui.notifications.error("The dropped card must already be in a card stack in the world");
     return;
   }
-  const adjusted_x = data.x - (card.width * canvas.grid.sizeX) / 2;
-  const adjusted_y = data.y - (card.height * canvas.grid.sizeY) / 2;
 
-  await card.setFlag(MODULE_ID, canvas.scene.id, {x: adjusted_x, y: adjusted_y, rotation: card.rotation, sort: card.sort});
-
-  const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(card.uuid);
-
-  await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+  api.placeCard(card, data);
 }
 
 /**
@@ -121,19 +116,7 @@ async function handleCardStackDrop(canvas, data) {
     cards = await CardsCls.create(cards);
   }
 
-  const adjusted_x = data.x - (cards.width * canvas.grid.sizeX) / 2;
-  const adjusted_y = data.y - (cards.height * canvas.grid.sizeY) / 2;
-
-  await cards.setFlag(MODULE_ID, canvas.scene.id, {
-    x: adjusted_x,
-    y: adjusted_y,
-    rotation: cards.rotation,
-    sort: cards.sort
-  });
-
-  const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(cards.uuid);
-
-  await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+  api.placeCard(cards, data);
 }
 
 /**
@@ -153,13 +136,13 @@ export function passCards(origin, destination, context) {
   const cardCollectionRemovals = new Set(context.fromDelete.map(id => origin.cards.get(id).uuid));
   for (const changes of context.fromUpdate) { // origin type is a deck
     const card = origin.cards.get(changes._id);
-    const moduleFlags = foundry.utils.getProperty(card, `flags.${MODULE_ID}`);
+    const moduleFlags = foundry.utils.getProperty(card, `flags.${MODULE_ID}`) ?? {};
     for (const sceneId of Object.keys(moduleFlags)) {
       foundry.utils.setProperty(changes, `flags.${MODULE_ID}.-=${sceneId}`, null);
     }
     cardCollectionRemovals.add(card.uuid);
   }
-  const canUpdateScene = canvas.scene.testUserPermission(game.user, "update");
+  const canUpdateScene = canvas.scene.canUserModify(game.user, "update");
   if (canUpdateScene) {
     const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
     for (const uuid of cardCollection) {

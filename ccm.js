@@ -1,6 +1,6 @@
-import {hooks, canvas, apps, CCMSocketHandler} from "./src/module/_module.mjs";
+import {hooks, canvas, api, apps, CCMSocketHandler} from "./src/module/_module.mjs";
 
-globalThis.ccm = {canvas, apps, socket: new CCMSocketHandler()};
+globalThis.ccm = {canvas, api, apps, socket: new CCMSocketHandler()};
 
 Hooks.once("init", hooks.init);
 
