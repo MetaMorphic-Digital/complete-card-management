@@ -176,14 +176,21 @@ export async function dealDialog() {
       }
     },
     render: (event, html) => {
-      const number = html.querySelector("[name=number]");
       const targets = html.querySelector("[name=to]");
       targets.addEventListener("change", event => {
         const size = Math.max(1, event.currentTarget.value.length);
         const max = Math.max(1, Math.floor(dealable / size));
-        const value = Math.min(parseInt(number.value), max);
-        number.value = value;
-        for (const k of [number, ...number.children]) k.setAttribute("max", max);
+        const number = event.currentTarget.form.elements.number;
+        const config = {
+          name: "number",
+          max: max,
+          step: 1,
+          min: 1,
+          value: Math.min(parseInt(number.value), max)
+        };
+        const element = foundry.applications.elements.HTMLRangePickerElement.create(config);
+        number.parentElement.insertAdjacentHTML("beforeend", element.outerHTML);
+        number.remove();
       });
     }
   });
@@ -288,7 +295,7 @@ export async function drawDialog() {
     label: "CARDS.Number",
     initial: 1,
     min: 1,
-    max: 1,
+    max: game.cards.get(Object.keys(cards)[0]).availableCards.length,
     step: 1
   });
 
@@ -328,17 +335,22 @@ export async function drawDialog() {
       }
     },
     render: (event, html) => {
-      const number = html.querySelector("[name=number]");
       const from = html.querySelector("[name=from]");
 
       const update = (id) => {
         const initial = game.cards.get(id).availableCards.length;
-        number.value = Math.min(parseInt(number.value), initial);
-        for (const k of [number, ...number.children]) k.setAttribute("max", initial);
+        const number = from.form.elements.number;
+        const config = {
+          name: "number",
+          max: initial,
+          step: 1,
+          min: 1,
+          value: number.value
+        };
+        const element = foundry.applications.elements.HTMLRangePickerElement.create(config);
+        number.parentElement.insertAdjacentHTML("beforeend", element.outerHTML);
+        number.remove();
       };
-
-      // Set initial maximum.
-      update(from.value);
 
       from.addEventListener("change", (event) => update(event.currentTarget.value));
     }
