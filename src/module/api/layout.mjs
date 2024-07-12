@@ -1,3 +1,4 @@
+import {MODULE_ID} from "../helpers.mjs";
 import {placeCard} from "./singles.mjs";
 
 /**
@@ -43,12 +44,27 @@ export async function grid(config, options = {}) {
   const offsetX = sceneX + (options.offsetX ?? 0);
   const offsetY = sceneY + (options.offsetY ?? 0);
 
+  const updateData = [];
+
   for (let i = 0; i < config.rows; i++) {
     for (let j = 0; j < config.columns; j++) {
-      const index = j * config.rows + i;
-      const x = offsetX + (cardWidth / 2) + j * (cardWidth + spacing.x);
-      const y = offsetY + (cardHeight / 2) + i * (cardHeight + spacing.y);
-      await placeCard(cards[index], {x, y});
+      const card = cards[j * config.rows + i];
+      const cardUpdate = {
+        _id: card._id,
+        flags: {
+          [MODULE_ID]: {
+            [canvas.scene.id]: {
+              x: offsetX + j * (cardWidth + spacing.x),
+              y: offsetY + i * (cardHeight + spacing.y),
+              rotation: card.rotation,
+              sort: card.sort
+            }
+          }
+        }
+      };
+      updateData.push(cardUpdate);
     }
   }
+
+  config.to.updateEmbeddedDocuments("Card", updateData);
 }
