@@ -2,15 +2,15 @@ import {placeCard} from "./singles.mjs";
 
 /**
  * Creates a grid of placed cards
- * @param {object} config         - Mandatory configuration object
- * @param {Cards} config.from     - The Cards document to draw from
- * @param {Cards} config.to       - The Cards document to put the cards into
- * @param {number} config.rows    - Number of rows to layout
- * @param {number} config.columns - Number of columns to layout
- * @param {object} [options]      - Options modifying the layout
- * @param {number} [options.how=0]             - How to draw, a value from CONST.CARD_DRAW_MODES
- * @param {object} [options.updateData={}]     - Modifications to make to each Card as part of the draw operation,
- *                                               for example the displayed face
+ * @param {object} config                       Mandatory configuration object
+ * @param {Cards} config.from                   The Cards document to draw from
+ * @param {Cards} config.to                     The Cards document to put the cards into
+ * @param {number} config.rows                  Number of rows to layout
+ * @param {number} config.columns               Number of columns to layout
+ * @param {object} [options]                    Options modifying the layout
+ * @param {number} [options.how=0]              How to draw, a value from CONST.CARD_DRAW_MODES
+ * @param {object} [options.updateData={}]      Modifications to make to each Card as part of
+ *                                              the draw operation, for example the displayed face
  * @param {number} [options.horizontalSpacing]
  * @param {number} [options.verticalSpacing]
  */

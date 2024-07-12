@@ -2,18 +2,18 @@ import {MODULE_ID} from "../helpers.mjs";
 
 /**
  * Places a card on the scene or updates its location
- * @param {Card | Cards} card - Card or Cards to place
- * @param {object} data       - Data for the CanvasCard
- * @param {number} data.x     - Center of the card's horizontal location
- * @param {number} data.y     - Center of the card's vertical location
+ * @param {Card | Cards} card    Card or Cards to place
+ * @param {object} data          Data for the CanvasCard
+ * @param {number} data.x        Center of the card's horizontal location
+ * @param {number} data.y        Center of the card's vertical location
  */
-export async function placeCard(card, data = {}) {
+export async function placeCard(card, {x, y} = {}) {
   if (!canvas.scene) throw new Error("Not viewing a canvas to place cards");
-  if (isNaN(data.x) || isNaN(data.y)) throw new Error("You must provide numerical x and y canvas coordinates");
+  if (isNaN(x) || isNaN(y)) throw new Error("You must provide numerical x and y canvas coordinates");
   if (!canvas.scene.testUserPermission(game.user, "update")) throw new Error("Placing a card requires updating the scene");
   const sceneId = canvas.scene.id;
-  data.x = Math.clamp(data.x - ((card.width ?? 2) * canvas.grid.sizeX) / 2, 0, canvas.dimensions.width);
-  data.y = Math.clamp(data.y - ((card.height ?? 3) * canvas.grid.sizeY) / 2, 0, canvas.dimensions.height);
+  x = Math.clamp(x - ((card.width ?? 2) * canvas.grid.sizeX) / 2, 0, canvas.dimensions.width);
+  y = Math.clamp(y - ((card.height ?? 3) * canvas.grid.sizeY) / 2, 0, canvas.dimensions.height);
   data.rotation = data.rotation ?? card.rotation;
   data.sort = data.sort ?? card.sort;
   const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(card.uuid);
@@ -24,7 +24,7 @@ export async function placeCard(card, data = {}) {
 /**
  * Removes a card from the scene
  * @param {Card | Cards} card
- * @returns
+ * @returns {Promise<Card | Cards>}      A promise that resolves to the updated card or cards document.
  */
 export async function removeCard(card) {
   if (!canvas.scene) throw new Error("Not viewing a canvas to place cards");
