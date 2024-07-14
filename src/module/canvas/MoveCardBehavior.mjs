@@ -1,5 +1,4 @@
 import CCM_CONFIG from "../config.mjs";
-import {MODULE_ID} from "../helpers.mjs";
 const fields = foundry.data.fields;
 
 export default class MoveCardBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
@@ -8,15 +7,8 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
 
   static defineSchema() {
     return {
-      targetStack: new fields.ForeignDocumentField(getDocumentClass("Cards"), {choices: this.#getStackChoices})
+      targetStack: new fields.ForeignDocumentField(getDocumentClass("Cards"))
     };
-  }
-
-  static #getStackChoices() {
-    return game.cards.reduce((choices, stack) => {
-      choices[stack.id] = stack.name;
-      return choices;
-    }, {});
   }
 
   /** @override */
