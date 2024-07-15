@@ -176,7 +176,7 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * The current sorting method of this deck.
    * @type {string}
    */
-  #sort = "standard";
+  #sort = "shuffled";
   get sort() {
     return this.#sort;
   }
