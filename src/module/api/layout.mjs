@@ -24,6 +24,7 @@ import {placeCard} from "./singles.mjs";
 export async function grid(config, options = {}) {
   if (!canvas.scene) throw new Error("Not viewing a canvas to place cards");
   if (config.from.type !== "deck") throw new Error("You can only create a grid from a deck");
+  if (!canvas.scene.canUserModify(game.user, "update")) throw new Error("Placing a card requires updating the scene");
   const {sceneHeight, sceneWidth, sceneX, sceneY} = canvas.dimensions;
   const cardWidth = canvas.grid.sizeX * (options.defaultWidth ?? 2);
   const cardHeight = canvas.grid.sizeY * (options.defaultHeight ?? 3);
@@ -66,5 +67,9 @@ export async function grid(config, options = {}) {
     }
   }
 
-  config.to.updateEmbeddedDocuments("Card", updateData);
+  await config.to.updateEmbeddedDocuments("Card", updateData);
+  const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).union(
+    new Set(cards.map((card) => card.uuid))
+  );
+  await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
 }
