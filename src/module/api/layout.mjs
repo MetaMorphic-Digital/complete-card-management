@@ -20,11 +20,19 @@ import {placeCard} from "./singles.mjs";
  * @param {number} [options.defaultHeight=3]    Default height of a card in grid squares
  * @param {number} [options.offsetX]            Adjust X offset from the top left of the scene
  * @param {number} [options.offsetY]            Adjust Y offset from the top left of the scene
+ * @returns {Promise<Card[]>}                   A promise that resolves to the drawn cards.
  */
 export async function grid(config, options = {}) {
-  if (!canvas.scene) throw new Error("Not viewing a canvas to place cards");
-  if (config.from.type !== "deck") throw new Error("You can only create a grid from a deck");
-  if (!canvas.scene.canUserModify(game.user, "update")) throw new Error("Placing a card requires updating the scene");
+  if (!canvas.scene) {
+    throw new Error("Not viewing a canvas to place cards");
+  }
+  if (config.from.type !== "deck") {
+    throw new Error("You can only create a grid from a deck");
+  }
+  if (!canvas.scene.canUserModify(game.user, "update")) {
+    throw new Error("Placing a card requires updating the scene");
+  }
+
   const {sceneHeight, sceneWidth, sceneX, sceneY} = canvas.dimensions;
   const cardWidth = canvas.grid.sizeX * (options.defaultWidth ?? 2);
   const cardHeight = canvas.grid.sizeY * (options.defaultHeight ?? 3);
@@ -32,10 +40,15 @@ export async function grid(config, options = {}) {
     x: options.horizontalSpacing ?? canvas.grid.sizeX,
     y: options.verticalSpacing ?? canvas.grid.sizeY
   };
+
   // Only need spacing between cards, not either end, so 1 less than # cards
   const totalHeight = config.rows * (spacing.y + cardHeight) - spacing.y;
   const totalWidth = config.columns * (spacing.x + cardWidth) - spacing.x;
-  if ((totalWidth > sceneWidth) || (totalHeight > sceneHeight)) throw new Error("Not enough room on canvas to place cards");
+
+  if ((totalWidth > sceneWidth) || (totalHeight > sceneHeight)) {
+    throw new Error("Not enough room on canvas to place cards");
+  }
+
   const drawCount = config.rows * config.columns;
   const cards = await config.to.draw(config.from, drawCount, {
     how: options.how,
@@ -72,4 +85,5 @@ export async function grid(config, options = {}) {
     new Set(cards.map((card) => card.uuid))
   );
   await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+  return cards;
 }
