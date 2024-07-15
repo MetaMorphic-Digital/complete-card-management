@@ -66,6 +66,11 @@
       "NextFace": "Next Face",
       "PreviousFace": "Previous Face"
     },
+    "Dialogs": {
+      "Scry": {
+        "Title": "Scrying on: {name}"
+      }
+    },
     "Warning": {
       "NoCardsAvailable": "This {type} has no cards available.",
       "CardDrawn": "This card cannot be added to the canvas as it has already been drawn and added to a pile or hand.",
