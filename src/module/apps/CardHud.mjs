@@ -115,10 +115,10 @@ export default class CardHud extends BasePlaceableHUD {
     let updates;
     if (this.card.documentName === "Card") {
       // TODO: Improve handling for multi-faced cards
-      generateUpdates("face", (o) => o === null ? 0 : null, {object: this.card, targetPath: "face"});
+      updates = generateUpdates("face", (o) => o === null ? 0 : null, {object: this.card, targetPath: "face"});
     }
     else {
-      generateUpdates(
+      updates = generateUpdates(
         this._flagPath + ".flipped",
         o => !o,
         {object: this.document, targetPath: "flipped", ignoreLock: true}
