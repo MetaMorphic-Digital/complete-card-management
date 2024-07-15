@@ -142,3 +142,12 @@
     }
   }
 }
+.ccm.scry {
+  max-height: 90%;
+
+  [data-application-part=cards] {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-right: 0.5rem;
+  }
+}
