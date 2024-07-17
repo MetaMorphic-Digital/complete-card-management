@@ -224,6 +224,12 @@ export default class CardLayer extends PlaceablesLayer {
   }
 
   /** @override */
+  copyObjects() {
+    ui.notifications.warn("CCM.Warning.NoCopyPaste", {localize: true});
+    return [];
+  }
+
+  /** @override */
   async _onDeleteKey(event) {
     if (game.paused && !game.user.isGM) {
       ui.notifications.warn("GAME.PausedWarning", {localize: true});
