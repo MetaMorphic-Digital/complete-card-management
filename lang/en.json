@@ -64,7 +64,10 @@
       "EditCard": "Edit Card",
       "DeleteCard": "Delete Card",
       "NextFace": "Next Face",
-      "PreviousFace": "Previous Face"
+      "PreviousFace": "Previous Face",
+
+      "RecallCard": "Recall Card",
+      "RecalledCard": "Recalled {card} in {deck}."
     },
     "Dialogs": {
       "Scry": {
