@@ -9,6 +9,8 @@ export default class CCMSocketHandler {
     this.identifier = "module.complete-card-management";
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * Sets up socket reception
    */
@@ -18,11 +20,16 @@ export default class CCMSocketHandler {
         case "passCardHandler":
           this.#passCardHandler(payload);
           break;
+        case "updateEmbeddedCards":
+          this.#updateEmbeddedCards(payload);
+          break;
         default:
           throw new Error("Unknown type");
       }
     });
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * Emits a socket message to all other connected clients
@@ -32,6 +39,8 @@ export default class CCMSocketHandler {
   emit(type, payload) {
     return game.socket.emit(this.identifier, {type, payload});
   }
+
+  /* -------------------------------------------------- */
 
   /**
    *
@@ -50,5 +59,20 @@ export default class CCMSocketHandler {
       cardCollection.add(uuid.replace(originId, destinationId));
       canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection));
     }
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Update cards embedded in a Cards document.
+   * @param {object} payload                The received data.
+   * @param {string} payload.uuid           The uuid of the Cards document whose cards to update.
+   * @param {object[]} payload.updates      The array of updates to perform.
+   * @param {string} payload.userId         The id of the user requested to perform the update.
+   */
+  #updateEmbeddedCards({uuid, updates, userId}) {
+    if (game.user.id !== userId) return;
+    const cards = fromUuidSync(uuid);
+    cards.updateEmbeddedDocuments("Card", updates);
   }
 }
