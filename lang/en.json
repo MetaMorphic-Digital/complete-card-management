@@ -54,6 +54,8 @@
       "Unnamed": "Unnamed ({idx})",
       "DeleteFacePrompt": "Delete this face? This action cannot be undone.",
       "DeleteFaceTitle": "Delete Face",
+      "ScryingTitle": "Scrying on: {name}",
+      "ScryingMessage": "{name} is scrying on {number} cards in {deck}.",
 
       "CardType": "Type",
       "CardSuit": "Suit",
@@ -65,11 +67,6 @@
       "DeleteCard": "Delete Card",
       "NextFace": "Next Face",
       "PreviousFace": "Previous Face"
-    },
-    "Dialogs": {
-      "Scry": {
-        "Title": "Scrying on: {name}"
-      }
     },
     "Warning": {
       "NoCardsAvailable": "This {type} has no cards available.",

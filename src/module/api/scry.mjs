@@ -10,6 +10,13 @@ const {HandlebarsApplicationMixin, ApplicationV2} = foundry.applications.api;
 export async function scry(deck, {amount = 1, how = CONST.CARD_DRAW_MODES.FIRST} = {}) {
   const cards = deck._drawCards(amount, how);
   ScryDialog.create(cards);
+  ChatMessage.implementation.create({
+    content: game.i18n.format("CCM.CardSheet.ScryingMessage", {
+      name: game.user.name,
+      number: cards.length,
+      deck: deck.name
+    })
+  });
   // TODO: replace cards with specific method or in specific order.
 }
 
@@ -95,6 +102,6 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /** @override */
   get title() {
-    return game.i18n.format("CCM.Dialogs.Scry.Title", {name: this.#deck.name});
+    return game.i18n.format("CCM.CardSheet.ScryingTitle", {name: this.#deck.name});
   }
 }
