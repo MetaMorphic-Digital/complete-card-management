@@ -5,9 +5,19 @@
  * @returns {Promise<Card>}     A reference to the recalled card belonging to its original parent.
  */
 export default async function recallCard(deck, cardId) {
-  if (deck.type !== "deck") return;
+  if (deck.type !== "deck") {
+    console.warn("You can only recall a card to a Deck.");
+    return;
+  }
   const card = deck.cards.get(cardId);
-  if (!card || !card.drawn) return;
+  if (!card) {
+    console.warn("The card to be recalled does not exist in this Deck.");
+    return;
+  }
+  if (!card.drawn) {
+    console.warn("A card that has not been drawn cannot be recalled.");
+    return;
+  }
   const clone = findClone(card);
   ChatMessage.implementation.create({
     content: game.i18n.format("CCM.CardSheet.RecalledCard", {
