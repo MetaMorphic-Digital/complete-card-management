@@ -33,10 +33,14 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     }
   };
 
+  /* -------------------------------------------------- */
+
   /** @override */
   tabGroups = {
     primary: "cards"
   };
+
+  /* -------------------------------------------------- */
 
   /**
    * Tabs that are present on this sheet.
@@ -57,6 +61,8 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     }
   };
 
+  /* -------------------------------------------------- */
+
   /** @override */
   static PARTS = {
     header: {template: "modules/complete-card-management/templates/card/header.hbs"},
@@ -66,6 +72,8 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
   };
 
+  /* -------------------------------------------------- */
+
   /**
    * The allowed sorting methods which can be used for this sheet.
    * @enum {string}
@@ -74,6 +82,8 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     STANDARD: "standard",
     SHUFFLED: "shuffled"
   };
+
+  /* -------------------------------------------------- */
 
   /** @override */
   async _prepareContext(options) {
@@ -150,15 +160,17 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     return context;
   }
 
+  /* -------------------------------------------------- */
+
   /** @override */
   _onRender(...T) {
     super._onRender(...T);
     this.#setupDragDrop();
   }
 
-  /* ----------------------------- */
-  /* Properties                    */
-  /* ----------------------------- */
+  /* -------------------------------------------------- */
+  /*   Properties                                       */
+  /* -------------------------------------------------- */
 
   /**
    * Convenient access to the contained Cards document.
@@ -171,6 +183,8 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     // Compatibility with CardsConfig prototype methods.
     return this.document;
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * The current sorting method of this deck.
@@ -186,9 +200,9 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     }
   }
 
-  /* ----------------------------- */
-  /* Drag and Drop Handlers        */
-  /* ----------------------------- */
+  /* -------------------------------------------------- */
+  /*   Drag and drop handlers                           */
+  /* -------------------------------------------------- */
 
   #setupDragDrop() {
     const sheet = this;
@@ -207,19 +221,23 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     dd.bind(this.element);
   }
 
+  /* -------------------------------------------------- */
+
   _onDragStart(event) {
     const id = event.currentTarget.closest("[data-card-id]")?.dataset.cardId;
     const card = this.document.cards.get(id);
     if (card) event.dataTransfer.setData("text/plain", JSON.stringify(card.toDragData()));
   }
 
+  /* -------------------------------------------------- */
+
   _onSortCard(event, card) {
     CardsConfig.prototype._onSortCard.call(this, event, card);
   }
 
-  /* ----------------------------- */
-  /* Event Handlers                */
-  /* ----------------------------- */
+  /* -------------------------------------------------- */
+  /*   Event handlers                                   */
+  /* -------------------------------------------------- */
 
   static _onCreateCard(event, target) {
     Card.implementation.createDialog({
@@ -231,28 +249,40 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     });
   }
 
+  /* -------------------------------------------------- */
+
   static _onEditCard(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
     this.document.cards.get(id).sheet.render({force: true});
   }
+
+  /* -------------------------------------------------- */
 
   static _onDeleteCard(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
     this.document.cards.get(id).deleteDialog();
   }
 
+  /* -------------------------------------------------- */
+
   static _onShuffleCards(event, target) {
     this.sort = this.constructor.SORT_TYPES.SHUFFLED;
     this.document.shuffle();
   }
 
+  /* -------------------------------------------------- */
+
   static _onDealCards(event, target) {
     this.document.dealDialog();
   }
 
+  /* -------------------------------------------------- */
+
   static _onResetCards(event, target) {
     this.document.resetDialog();
   }
+
+  /* -------------------------------------------------- */
 
   static _onToggleSort(event, target) {
     const {SHUFFLED, STANDARD} = this.constructor.SORT_TYPES;
@@ -260,11 +290,15 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     this.render();
   }
 
+  /* -------------------------------------------------- */
+
   static _onPreviousFace(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
     const card = this.document.cards.get(id);
     card.update({face: (card.face === 0) ? null : card.face - 1});
   }
+
+  /* -------------------------------------------------- */
 
   static _onNextFace(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
@@ -272,13 +306,19 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     card.update({face: (card.face === null) ? 0 : card.face + 1});
   }
 
+  /* -------------------------------------------------- */
+
   static _onDrawCards(event, target) {
     this.document.drawDialog();
   }
 
+  /* -------------------------------------------------- */
+
   static _onPassCards(event, target) {
     this.document.passDialog();
   }
+
+  /* -------------------------------------------------- */
 
   static _onPlayCard(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
@@ -290,13 +330,20 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 export class DeckSheet extends CardsSheet {
   /** @override */
   static DEFAULT_OPTIONS = {
-    classes: ["deck"]
+    classes: ["deck"],
+    actions: {
+      recallCard: this.#recallCard
+    }
   };
+
+  /* -------------------------------------------------- */
 
   /** @override */
   tabGroups = {
     primary: "configuration"
   };
+
+  /* -------------------------------------------------- */
 
   /** @override */
   async _prepareContext(options) {
@@ -307,6 +354,15 @@ export class DeckSheet extends CardsSheet {
     if (!this.document.availableCards.length) context.footer.deal = true;
     return context;
   }
+
+  /* -------------------------------------------------- */
+  /*   Event handlers                                   */
+  /* -------------------------------------------------- */
+
+  static #recallCard(event, target) {
+    const cardId = target.closest("[data-card-id]").dataset.cardId;
+    ccm.api.recallCard(this.document, cardId);
+  }
 }
 
 export class HandSheet extends CardsSheet {
@@ -314,6 +370,8 @@ export class HandSheet extends CardsSheet {
   static DEFAULT_OPTIONS = {
     classes: ["hand"]
   };
+
+  /* -------------------------------------------------- */
 
   /** @override */
   async _prepareContext(options) {
@@ -329,6 +387,8 @@ export class PileSheet extends CardsSheet {
   static DEFAULT_OPTIONS = {
     classes: ["pile"]
   };
+
+  /* -------------------------------------------------- */
 
   /** @override */
   async _prepareContext(options) {

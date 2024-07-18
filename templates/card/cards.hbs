@@ -39,9 +39,13 @@
       <span class="suit">{{suit}}</span>
       <span class="value">{{value}}</span>
       {{#if @root.isDeck}}
-      <span class="drawn">
-        <input type="checkbox" disabled {{checked card.drawn}}>
-      </span>
+      {{#if card.drawn}}
+      <a class="drawn" data-action="recallCard" data-tooltip="CCM.CardSheet.RecallCard">
+        <i class="fa-solid fa-recycle"></i>
+      </a>
+      {{else}}
+      <span class="drawn"></span>
+      {{/if}}
       {{/if}}
       <span class="face">
         <a data-action="nextFace" data-tooltip="CCM.CardSheet.NextFace" {{#unless card.hasNextFace}}disabled{{/unless}}>
