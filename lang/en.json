@@ -57,6 +57,7 @@
       "ScryingTitle": "Scrying on: {name}",
       "ScryingMessage": "{name} is scrying on {number} cards in {deck}.",
       "ScryingMessageReorder": "{name} shuffled the top {number} cards in {deck}.",
+      "ScryingShuffleAndReplace": "Shuffle and Replace",
 
       "CardType": "Type",
       "CardSuit": "Suit",

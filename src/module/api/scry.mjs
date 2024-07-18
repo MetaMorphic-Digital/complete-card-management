@@ -61,6 +61,10 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     window: {
       icon: "fa-solid fa-eye",
       contentClasses: ["standard-form", "scrollable"]
+    },
+    actions: {
+      shuffleReplace: this.#shuffleCards,
+      close: this.#onClose
     }
   };
 
@@ -68,7 +72,8 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /** @override */
   static PARTS = {
-    cards: {template: "modules/complete-card-management/templates/card/scrying.hbs"}
+    cards: {template: "modules/complete-card-management/templates/card/scrying.hbs"},
+    footer: {template: "modules/complete-card-management/templates/card/scrying-footer.hbs"}
   };
 
   /* -------------------------------------------------- */
@@ -115,7 +120,8 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {Event} event             Initiating click event.
    * @param {HTMLElement} target      The data-action element.
    */
-  static shuffleCards(event, target) {
+  static #shuffleCards(event, target) {
+    this.close();
     const {min, max} = this.#cards.reduce((acc, card) => {
       const sort = card.sort;
       acc.min = Math.min(acc.min, sort);
@@ -153,5 +159,17 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         deck: this.#deck.name
       })
     });
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Close the application.
+   * @this {ScryDialog}
+   * @param {Event} event             Initiating click event.
+   * @param {HTMLElement} target      The data-action element.
+   */
+  static #onClose(event, target) {
+    this.close();
   }
 }
