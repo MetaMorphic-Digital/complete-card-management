@@ -104,4 +104,54 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   get title() {
     return game.i18n.format("CCM.CardSheet.ScryingTitle", {name: this.#deck.name});
   }
+
+  /* -------------------------------------------------- */
+  /*   Event handlers                                   */
+  /* -------------------------------------------------- */
+
+  /**
+   * Shuffle the order of the revealed cards.
+   * @this {ScryDialog}
+   * @param {Event} event             Initiating click event.
+   * @param {HTMLElement} target      The data-action element.
+   */
+  static shuffleCards(event, target) {
+    const {min, max} = this.#cards.reduce((acc, card) => {
+      const sort = card.sort;
+      acc.min = Math.min(acc.min, sort);
+      acc.max = Math.max(acc.max, sort);
+      return acc;
+    }, {min: Infinity, max: -Infinity});
+
+    const order = Array.fromRange(max - min + 1, min)
+      .map(n => ({value: n, sort: Math.random()}))
+      .sort((a, b) => a.sort - b.sort)
+      .map(o => o.value);
+
+    const updates = this.#cards.map((card, i) => {
+      return {_id: card.id, sort: order[i]};
+    });
+
+    const canPerform = this.#deck.isOwner;
+    if (canPerform) this.#deck.updateEmbeddedDocuments("Card", updates);
+    else {
+      const userId = game.users.find(u => u.active && this.#deck.testUserPermission(u, "OWNER"))?.id;
+      if (!userId) {
+        ui.notifications.warn("CCM.Warning.DeckOwnerNotFound", {localize: true});
+        return;
+      }
+      ccm.socket.emit("updateEmbeddedCards", {
+        userId: userId,
+        updates: updates,
+        uuid: this.#deck.uuid
+      });
+    }
+    ChatMessage.implementation.create({
+      content: game.i18n.format("CCM.CardSheet.ScryingMessageReorder", {
+        name: game.user.name,
+        number: this.#cards.length,
+        deck: this.#deck.name
+      })
+    });
+  }
 }
