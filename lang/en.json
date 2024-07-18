@@ -56,7 +56,7 @@
       "DeleteFaceTitle": "Delete Face",
       "ScryingTitle": "Scrying on: {name}",
       "ScryingMessage": "{name} is scrying on {number} cards in {deck}.",
-      "ScryingMessageReorder": "{name} shuffled the top {number} cards in {deck}.",
+      "ScryingMessageReorder": "{name} shuffled the {number} revealed cards back into {deck}.",
       "ScryingShuffleAndReplace": "Shuffle and Replace",
 
       "CardType": "Type",
