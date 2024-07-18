@@ -9,7 +9,7 @@ const {HandlebarsApplicationMixin, ApplicationV2} = foundry.applications.api;
  */
 export async function scry(deck, {amount = 1, how = CONST.CARD_DRAW_MODES.FIRST} = {}) {
   const cards = deck._drawCards(amount, how);
-  ScryDialog.create(cards);
+  const application = ScryDialog.create(cards, {how});
   ChatMessage.implementation.create({
     content: game.i18n.format("CCM.CardSheet.ScryingMessage", {
       name: game.user.name,
@@ -17,6 +17,7 @@ export async function scry(deck, {amount = 1, how = CONST.CARD_DRAW_MODES.FIRST}
       deck: deck.name
     })
   });
+  return application;
   // TODO: replace cards with specific method or in specific order.
 }
 
@@ -26,25 +27,30 @@ export async function scry(deck, {amount = 1, how = CONST.CARD_DRAW_MODES.FIRST}
 class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * @class
-   * @param {object} [options]            Application rendering options.
-   * @param {Card[]} [options.cards]      The revealed cards.
+   * @param {object} [options]                                      Application rendering options.
+   * @param {Card[]} [options.cards]                                The revealed cards.
+   * @param {number} [options.how=CONST.CARD_DRAW_MODES.FIRST]      From where in the deck to draw the cards to scry on.
    */
-  constructor({cards, ...options} = {}) {
+  constructor({cards, how, ...options} = {}) {
     super(options);
     this.#cards = cards ?? [];
     this.#deck = cards[0]?.parent ?? null;
+    this.#how = how;
   }
 
   /* -------------------------------------------------- */
 
   /**
    * Factory method to create an instance of this application.
-   * @param {Card[]} cards          The revealed cards.
-   * @param {object} [options]      Application rendering options.
+   * @param {Card[]} cards                                          The revealed cards.
+   * @param {object} [options]                                      Application rendering options.
+   * @param {number} [options.how=CONST.CARD_DRAW_MODES.FIRST]      From where in the deck to draw the cards to scry on.
+   * @returns {Promise<ScryDialog>}                                 A promise resolving to the created application instance.
    */
-  static create(cards, options = {}) {
-    options.cards = cards;
-    new this(options).render({force: true});
+  static create(cards, {how = CONST.CARD_DRAW_MODES.FIRST, ...options} = {}) {
+    const application = new this({cards, how, ...options});
+    application.render({force: true});
+    return application;
   }
 
   /* -------------------------------------------------- */
@@ -82,6 +88,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext(options) {
     const context = {};
     context.cards = this.#cards;
+    context.shuffle = this.#how !== CONST.CARD_DRAW_MODES.RANDOM;
     return context;
   }
 
@@ -94,6 +101,14 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * @type {Card[]}
    */
   #cards = null;
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Reference to the method in which the cards were drawn from the deck.
+   * @type {number}
+   */
+  #how = null;
 
   /* -------------------------------------------------- */
 
@@ -121,6 +136,9 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {HTMLElement} target      The data-action element.
    */
   static #shuffleCards(event, target) {
+    // Cannot shuffle back in randomly drawn cards yet.
+    if (this.#how === CONST.CARD_DRAW_MODES.RANDOM) return;
+
     this.close();
     const {min, max} = this.#cards.reduce((acc, card) => {
       const sort = card.sort;
