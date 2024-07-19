@@ -62,6 +62,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     rejectClose: false,
     position: {
       width: 600,
+      top: 100,
       height: "auto"
     },
     window: {

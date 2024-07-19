@@ -54,10 +54,13 @@
       "Unnamed": "Unnamed ({idx})",
       "DeleteFacePrompt": "Delete this face? This action cannot be undone.",
       "DeleteFaceTitle": "Delete Face",
+      "ScryingContext": "Scry",
       "ScryingTitle": "Scrying on: {name}",
       "ScryingMessage": "{name} is scrying on {number} cards in {deck}.",
       "ScryingMessageReorder": "{name} shuffled the {number} revealed cards back into {deck}.",
       "ScryingShuffleAndReplace": "Shuffle and Replace",
+      "ScryPromptHint": "Choose the amount of cards to scry on from this set of cards.",
+      "ScryPromptLabel": "Amount",
 
       "CardType": "Type",
       "CardSuit": "Suit",
