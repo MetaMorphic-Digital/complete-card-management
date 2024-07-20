@@ -56,6 +56,8 @@ export function init() {
   Hooks.callAll("CCMInit");
 }
 
+/* -------------------------------------------------- */
+
 /**
  * Run on Foundry ready
  */
@@ -63,9 +65,9 @@ export function ready() {
   console.log("Complete Card Management | Ready");
 }
 
-/****************
- * Canvas Hooks
- ****************/
+/* -------------------------------------------------- */
+/*   Canvas hooks                                     */
+/* -------------------------------------------------- */
 
 /**
  * Handles drop data
@@ -83,6 +85,8 @@ export function dropCanvasData(canvas, data) {
       break;
   }
 }
+
+/* -------------------------------------------------- */
 
 /**
  *
@@ -103,6 +107,8 @@ async function handleCardDrop(canvas, data) {
   api.placeCard(card, data);
 }
 
+/* -------------------------------------------------- */
+
 /**
  *
  * @param {Canvas} canvas - The Game Canvas
@@ -118,6 +124,8 @@ async function handleCardStackDrop(canvas, data) {
 
   api.placeCard(cards, data);
 }
+
+/* -------------------------------------------------- */
 
 /**
  * A hook event that fires when Cards are passed from one stack to another.
@@ -157,6 +165,8 @@ export function passCards(origin, destination, context) {
   );
 }
 
+/* -------------------------------------------------- */
+
 /**
  * A hook event that fires for every embedded Document type after conclusion of a creation workflow.
  * Substitute the Document name in the hook event to target a specific type, for example "createToken".
@@ -176,6 +186,8 @@ export async function createCard(card, options, userId) {
     obj._onCreate(card.toObject(), options, userId);
   }
 }
+
+/* -------------------------------------------------- */
 
 /**
  * A hook event that fires for every Document type after conclusion of an update workflow.
@@ -212,6 +224,8 @@ export async function updateCard(card, changed, options, userId) {
   }
 }
 
+/* -------------------------------------------------- */
+
 /**
  * A hook event that fires for every Document type after conclusion of an deletion workflow.
  * Substitute the Document name in the hook event to target a specific Document type, for example "deleteActor".
@@ -228,6 +242,8 @@ export async function deleteCard(card, options, userId) {
     card.canvasCard.object._onDelete(options, userId);
   }
 }
+
+/* -------------------------------------------------- */
 
 /**
  * Hook event method for adding cards layer controls.
@@ -266,6 +282,8 @@ export function getSceneControlButtons(controls) {
   });
 }
 
+/* -------------------------------------------------- */
+
 /**
  * A hook called when the canvas HUD is rendered during `Canvas#initialize`
  * @param {HeadsUpDisplay} app  - The HeadsUpDisplay application
@@ -279,6 +297,8 @@ export function renderHeadsUpDisplay(app, [html], context) {
   cardHudTemplate.setAttribute("id", "card-hud");
   html.appendChild(cardHudTemplate);
 }
+
+/* -------------------------------------------------- */
 
 /**
  * A hook event that fires for every embedded Document type after conclusion of a creation workflow.
@@ -322,4 +342,76 @@ export async function createScene(scene, options, userId) {
   for (const [id, updates] of Object.entries(cardUpdates)) {
     await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
   }
+}
+
+/* -------------------------------------------------- */
+
+/**
+ * Add additional context options to cards in cards directory.
+ * @param {HTMLElement} html      The sidebar html.
+ * @param {object[]} options      The array of context menu options.
+ */
+export function addCardsDirectoryOptions(html, options) {
+  options.push({
+    name: "CCM.CardSheet.ScryingContext",
+    icon: "<i class='fa-solid fa-eye'></i>",
+    callback: async ([li]) => {
+      const id = li.dataset.documentId;
+      const cards = game.cards.get(id);
+      const data = await promptAmount(cards);
+      if (!data) return;
+      ccm.api.scry(cards, {amount: data.amount, how: data.mode});
+    }
+  });
+}
+
+/* -------------------------------------------------- */
+
+/**
+ * Create a prompt for the user to select how many cards they want to have revealed, and how.
+ * @param {Cards} cards                     The deck, hand, or pile of cards.
+ * @returns {Promise<object|null|void>}     A promise that resolves to the number of cards and how to draw.
+ */
+async function promptAmount(cards) {
+  const max = (cards.type === "deck") ? cards.availableCards.length : cards.cards.size;
+  if (!max) {
+    ui.notifications.warn(game.i18n.format("CCM.Warning.NoCardsAvailable", {
+      type: game.i18n.localize(CONFIG.Cards.typeLabels[cards.type])
+    }));
+    return;
+  }
+
+  const rangePicker = new foundry.data.fields.NumberField({
+    label: "CCM.CardSheet.ScryPromptLabel",
+    hint: "CCM.CardSheet.ScryPromptHint"
+  }).toFormGroup({localize: true}, {
+    value: 1, step: 1, min: 1, max: max, name: "amount"
+  }).outerHTML;
+
+  const drawMode = new foundry.data.fields.NumberField({
+    label: "CARDS.DrawMode",
+    choices: {
+      [CONST.CARD_DRAW_MODES.TOP]: "CARDS.DrawModeTop",
+      [CONST.CARD_DRAW_MODES.BOTTOM]: "CARDS.DrawModeBottom"
+    }
+  }).toFormGroup({localize: true}, {
+    value: CONST.CARD_DRAW_MODES.TOP, blank: false, name: "mode", localize: true
+  }).outerHTML;
+
+  const title = game.i18n.format("CCM.CardSheet.ScryingTitle", {name: cards.name});
+
+  const data = await foundry.applications.api.DialogV2.prompt({
+    modal: true,
+    rejectClose: false,
+    content: `<fieldset>${rangePicker}${drawMode}</fieldset>`,
+    window: {title: title, icon: "fa-solid fa-eye"},
+    position: {width: 400},
+    ok: {
+      callback: (event, button, html) => {
+        const {amount, mode} = new FormDataExtended(button.form).object;
+        return {amount, mode};
+      }
+    }
+  });
+  return data;
 }
