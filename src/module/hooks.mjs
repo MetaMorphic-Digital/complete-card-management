@@ -27,7 +27,7 @@ export function init() {
   CONFIG.RegionBehavior.typeIcons[MoveCardType] = "fa-solid fa-cards";
   CONFIG.controlIcons.flip = "modules/complete-card-management/assets/icons/vertical-flip.svg";
   CONFIG.controlIcons.rotate = "modules/complete-card-management/assets/icons/clockwise-rotation.svg";
-  CONFIG.controlIcons.shuffle = "modules/complete-card-management/assets/icons/dice.svg";
+  CONFIG.controlIcons.shuffle = "modules/complete-card-management/assets/icons/shuffle.svg";
 
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
     label: "CCM.Sheets.Deck", types: ["deck"]
