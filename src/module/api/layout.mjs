@@ -49,7 +49,7 @@ export async function grid(config, options = {}) {
   const totalWidth = config.columns * (spacing.x + cardWidth) - spacing.x;
 
   if ((totalWidth > sceneWidth) || (totalHeight > sceneHeight)) {
-    throw new Error("Not enough room on scene to place cards");
+    throw new Error("Not enough space on the scene to place cards.");
   }
 
   const drawCount = config.rows * config.columns;
