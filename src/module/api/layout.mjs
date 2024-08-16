@@ -26,8 +26,8 @@ export async function grid(config, options = {}) {
   const scene = options.sceneId ? game.scenes.get(options.sceneId) : canvas.scene;
 
   if (!scene) {
-    if (!options.sceneId) throw new Error("Not viewing a scene to place cards");
-    else throw new Error("Could not find scene with ID" + options.sceneId);
+    if (!options.sceneId) throw new Error("Not viewing a scene to place cards.");
+    else throw new Error(`Could not find scene with ID '${options.sceneId}.`);
   }
   if (config.from.type !== "deck") {
     throw new Error("You can only create a grid from a deck");
