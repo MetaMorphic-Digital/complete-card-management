@@ -124,7 +124,7 @@ export async function triangle(config, options = {}) {
     else throw new Error(`Could not find scene with ID '${options.sceneId}`.);
   }
   if (config.from.type !== "deck") {
-    throw new Error("You can only create a grid from a deck");
+    throw new Error("You can only create a grid with cards retrieved from a deck.");
   }
   if (!scene.canUserModify(game.user, "update")) {
     throw new Error("Placing a card requires permission to update the scene.");
