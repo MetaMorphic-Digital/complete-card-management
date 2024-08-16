@@ -92,6 +92,8 @@ export async function grid(config, options = {}) {
   return cards;
 }
 
+/* -------------------------------------------------- */
+
 /**
  * Creates a pyramid of placed cards
  * @param {object} config                       Mandatory configuration object
@@ -118,18 +120,17 @@ export async function triangle(config, options = {}) {
   const scene = options.sceneId ? game.scenes.get(options.sceneId) : canvas.scene;
 
   if (!scene) {
-    if (!options.sceneId) throw new Error("Not viewing a scene to place cards");
-    else throw new Error("Could not find scene with ID" + options.sceneId);
+    if (!options.sceneId) throw new Error("Not viewing a scene to place cards.");
+    else throw new Error(`Could not find scene with ID '${options.sceneId}`.);
   }
   if (config.from.type !== "deck") {
     throw new Error("You can only create a grid from a deck");
   }
   if (!scene.canUserModify(game.user, "update")) {
-    throw new Error("Placing a card requires updating the scene");
+    throw new Error("Placing a card requires permission to update the scene.");
   }
 
   const {sceneHeight, sceneWidth, sceneX, sceneY} = scene.dimensions;
-  console.log(sceneHeight, sceneWidth, sceneX, sceneY);
   const cardWidth = scene.grid.sizeX * (options.defaultWidth ?? 2);
   const cardHeight = scene.grid.sizeY * (options.defaultHeight ?? 3);
   const spacing = {
@@ -146,7 +147,7 @@ export async function triangle(config, options = {}) {
   const totalWidth = config.base * (spacing.x + cardWidth) - spacing.x;
 
   if ((totalWidth > sceneWidth) || (totalHeight > sceneHeight)) {
-    throw new Error("Not enough room on scene to place cards");
+    throw new Error("Not enough space on the scene to place cards.");
   }
 
   const drawCount = (config.base * (config.base + 1)) / 2;
@@ -183,15 +184,11 @@ export async function triangle(config, options = {}) {
       const card = cards[index];
       const cardUpdate = {
         _id: card._id,
-        flags: {
-          [MODULE_ID]: {
-            [scene.id]: {
-              x: offsetX + loop_x * (cardWidth + spacing.x) * direction_x,
-              y: offsetY + loop_y * (cardHeight + spacing.y) * direction_y,
-              rotation: card.rotation,
-              sort: card.sort
-            }
-          }
+        [`flags.${MODULE_ID}.${scene.id}`]: {
+          x: offsetX + loop_x * (cardWidth + spacing.x) * direction_x,
+          y: offsetY + loop_y * (cardHeight + spacing.y) * direction_y,
+          rotation: card.rotation,
+          sort: card.sort
         }
       };
       updateData.push(cardUpdate);

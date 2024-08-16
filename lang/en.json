@@ -83,7 +83,7 @@
       "DeckOwnerNotFound": "No owner of the deck was found to be able to perform this action."
     },
     "API": {
-      "LayoutScene": "Laid out cards on scene {name}"
+      "LayoutScene": "Laid out cards on scene {name}."
     }
   },
   "TYPES.RegionBehavior.complete-card-management.moveCard": "Move Card"
