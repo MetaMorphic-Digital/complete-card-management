@@ -27,13 +27,13 @@ export async function grid(config, options = {}) {
 
   if (!scene) {
     if (!options.sceneId) throw new Error("Not viewing a scene to place cards.");
-    else throw new Error(`Could not find scene with ID '${options.sceneId}.`);
+    else throw new Error(`Could not find scene with ID '${options.sceneId}'.`);
   }
   if (config.from.type !== "deck") {
-    throw new Error("You can only create a grid from a deck");
+    throw new Error("You can only create a grid with cards retrieved from a deck.");
   }
   if (!scene.canUserModify(game.user, "update")) {
-    throw new Error("Placing a card requires updating the scene");
+    throw new Error("Placing a card requires permission to update the scene.");
   }
 
   const {sceneHeight, sceneWidth, sceneX, sceneY} = scene.dimensions;
@@ -68,15 +68,11 @@ export async function grid(config, options = {}) {
       const card = cards[j * config.rows + i];
       const cardUpdate = {
         _id: card._id,
-        flags: {
-          [MODULE_ID]: {
-            [scene.id]: {
-              x: offsetX + j * (cardWidth + spacing.x),
-              y: offsetY + i * (cardHeight + spacing.y),
-              rotation: card.rotation,
-              sort: card.sort
-            }
-          }
+        [`flags.${MODULE_ID}.${scene.id}`]: {
+          x: offsetX + j * (cardWidth + spacing.x),
+          y: offsetY + i * (cardHeight + spacing.y),
+          rotation: card.rotation,
+          sort: card.sort
         }
       };
       updateData.push(cardUpdate);
@@ -121,10 +117,10 @@ export async function triangle(config, options = {}) {
 
   if (!scene) {
     if (!options.sceneId) throw new Error("Not viewing a scene to place cards.");
-    else throw new Error(`Could not find scene with ID '${options.sceneId}`.);
+    else throw new Error(`Could not find scene with ID '${options.sceneId}'.`);
   }
   if (config.from.type !== "deck") {
-    throw new Error("You can only create a grid with cards retrieved from a deck.");
+    throw new Error("You can only create a triangle with cards retrieved from a deck.");
   }
   if (!scene.canUserModify(game.user, "update")) {
     throw new Error("Placing a card requires permission to update the scene.");
