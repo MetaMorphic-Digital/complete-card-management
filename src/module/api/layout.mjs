@@ -19,25 +19,29 @@ import {MODULE_ID} from "../helpers.mjs";
  * @param {number} [options.defaultHeight=3]    Default height of a card in grid squares
  * @param {number} [options.offsetX]            Adjust X offset from the top left of the scene
  * @param {number} [options.offsetY]            Adjust Y offset from the top left of the scene
+ * @param {number} [options.sceneId]            Scene ID to play cards to. Defaults to canvas.scene
  * @returns {Promise<Card[]>}                   A promise that resolves to the drawn cards.
  */
 export async function grid(config, options = {}) {
-  if (!canvas.scene) {
-    throw new Error("Not viewing a canvas to place cards");
+  const scene = options.sceneId ? game.scenes.get(options.sceneId) : canvas.scene;
+
+  if (!scene) {
+    if (!options.sceneId) throw new Error("Not viewing a scene to place cards");
+    else throw new Error("Could not find scene with ID" + options.sceneId);
   }
   if (config.from.type !== "deck") {
     throw new Error("You can only create a grid from a deck");
   }
-  if (!canvas.scene.canUserModify(game.user, "update")) {
+  if (!scene.canUserModify(game.user, "update")) {
     throw new Error("Placing a card requires updating the scene");
   }
 
-  const {sceneHeight, sceneWidth, sceneX, sceneY} = canvas.dimensions;
-  const cardWidth = canvas.grid.sizeX * (options.defaultWidth ?? 2);
-  const cardHeight = canvas.grid.sizeY * (options.defaultHeight ?? 3);
+  const {sceneHeight, sceneWidth, sceneX, sceneY} = scene.dimensions;
+  const cardWidth = scene.grid.sizeX * (options.defaultWidth ?? 2);
+  const cardHeight = scene.grid.sizeY * (options.defaultHeight ?? 3);
   const spacing = {
-    x: options.horizontalSpacing ?? canvas.grid.sizeX,
-    y: options.verticalSpacing ?? canvas.grid.sizeY
+    x: options.horizontalSpacing ?? scene.grid.sizeX,
+    y: options.verticalSpacing ?? scene.grid.sizeY
   };
 
   // Only need spacing between cards, not either end, so 1 less than # cards
@@ -45,7 +49,7 @@ export async function grid(config, options = {}) {
   const totalWidth = config.columns * (spacing.x + cardWidth) - spacing.x;
 
   if ((totalWidth > sceneWidth) || (totalHeight > sceneHeight)) {
-    throw new Error("Not enough room on canvas to place cards");
+    throw new Error("Not enough room on scene to place cards");
   }
 
   const drawCount = config.rows * config.columns;
@@ -66,7 +70,7 @@ export async function grid(config, options = {}) {
         _id: card._id,
         flags: {
           [MODULE_ID]: {
-            [canvas.scene.id]: {
+            [scene.id]: {
               x: offsetX + j * (cardWidth + spacing.x),
               y: offsetY + i * (cardHeight + spacing.y),
               rotation: card.rotation,
@@ -80,10 +84,11 @@ export async function grid(config, options = {}) {
   }
 
   await config.to.updateEmbeddedDocuments("Card", updateData);
-  const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).union(
+  const currentCards = new Set(scene.getFlag(MODULE_ID, "cardCollection")).union(
     new Set(cards.map((card) => card.uuid))
   );
-  await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+  await scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+  if (options.sceneId) ui.notifications.info(game.i18n.format("CCM.API.LayoutScene", {name: scene.name}));
   return cards;
 }
 
@@ -106,25 +111,30 @@ export async function grid(config, options = {}) {
  * @param {number} [options.offsetX]            Adjust X offset from the top left of the scene
  * @param {number} [options.offsetY]            Adjust Y offset from the top left of the scene
  * @param {"UP" | "DOWN" | "LEFT" | "RIGHT"} [options.direction] Direction to orient the pyramid
+ * @param {number} [options.sceneId]            Scene ID to play cards to. Defaults to canvas.scene
  * @returns {Promise<Card[]>}                   A promise that resolves to the drawn cards.
  */
 export async function triangle(config, options = {}) {
-  if (!canvas.scene) {
-    throw new Error("Not viewing a canvas to place cards");
+  const scene = options.sceneId ? game.scenes.get(options.sceneId) : canvas.scene;
+
+  if (!scene) {
+    if (!options.sceneId) throw new Error("Not viewing a scene to place cards");
+    else throw new Error("Could not find scene with ID" + options.sceneId);
   }
   if (config.from.type !== "deck") {
     throw new Error("You can only create a grid from a deck");
   }
-  if (!canvas.scene.canUserModify(game.user, "update")) {
+  if (!scene.canUserModify(game.user, "update")) {
     throw new Error("Placing a card requires updating the scene");
   }
 
-  const {sceneHeight, sceneWidth, sceneX, sceneY} = canvas.dimensions;
-  const cardWidth = canvas.grid.sizeX * (options.defaultWidth ?? 2);
-  const cardHeight = canvas.grid.sizeY * (options.defaultHeight ?? 3);
+  const {sceneHeight, sceneWidth, sceneX, sceneY} = scene.dimensions;
+  console.log(sceneHeight, sceneWidth, sceneX, sceneY);
+  const cardWidth = scene.grid.sizeX * (options.defaultWidth ?? 2);
+  const cardHeight = scene.grid.sizeY * (options.defaultHeight ?? 3);
   const spacing = {
-    x: options.horizontalSpacing ?? canvas.grid.sizeX,
-    y: options.verticalSpacing ?? canvas.grid.sizeY
+    x: options.horizontalSpacing ?? scene.grid.sizeX,
+    y: options.verticalSpacing ?? scene.grid.sizeY
   };
   const direction = options.direction ?? "UP";
   const direction_x = direction === "LEFT" ? -1 : 1;
@@ -136,7 +146,7 @@ export async function triangle(config, options = {}) {
   const totalWidth = config.base * (spacing.x + cardWidth) - spacing.x;
 
   if ((totalWidth > sceneWidth) || (totalHeight > sceneHeight)) {
-    throw new Error("Not enough room on canvas to place cards");
+    throw new Error("Not enough room on scene to place cards");
   }
 
   const drawCount = (config.base * (config.base + 1)) / 2;
@@ -175,7 +185,7 @@ export async function triangle(config, options = {}) {
         _id: card._id,
         flags: {
           [MODULE_ID]: {
-            [canvas.scene.id]: {
+            [scene.id]: {
               x: offsetX + loop_x * (cardWidth + spacing.x) * direction_x,
               y: offsetY + loop_y * (cardHeight + spacing.y) * direction_y,
               rotation: card.rotation,
@@ -189,9 +199,10 @@ export async function triangle(config, options = {}) {
   }
 
   await config.to.updateEmbeddedDocuments("Card", updateData);
-  const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).union(
+  const currentCards = new Set(scene.getFlag(MODULE_ID, "cardCollection")).union(
     new Set(cards.map((card) => card.uuid))
   );
-  await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+  await scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+  if (options.sceneId) ui.notifications.info(game.i18n.format("CCM.API.LayoutScene", {name: scene.name}));
   return cards;
 }

@@ -81,6 +81,9 @@
       "FailDraw": "Failed to draw card",
       "NoCopyPaste": "Canvas cards cannot be copied and pasted.",
       "DeckOwnerNotFound": "No owner of the deck was found to be able to perform this action."
+    },
+    "API": {
+      "LayoutScene": "Laid out cards on scene {name}"
     }
   },
   "TYPES.RegionBehavior.complete-card-management.moveCard": "Move Card"
