@@ -413,7 +413,11 @@ export default class CardObject extends PlaceableObject {
         if ((this.document.documentName === "Card")) continue;
         else if ((objects.length > 1) || !canvas.scene.canUserModify(game.user, "update")) continue;
         try {
-          o.document.card._drawCards(1, this.cardDrawMode);
+          const [card] = o.document.card._drawCards(1, this.cardDrawMode);
+          if (card.canvasCard?.object) {
+            ui.notifications.error("CCM.Warning.FailCanvasDeck", {localize: true});
+            continue;
+          }
         }
         catch {
           ui.notifications.error("CCM.Warning.FailDraw", {localize: true});
