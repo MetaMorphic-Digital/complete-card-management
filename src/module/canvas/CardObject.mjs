@@ -287,10 +287,12 @@ export default class CardObject extends PlaceableObject {
     // Update the frame bounds
     const {width, height, rotation} = this.document;
     const bounds = this.frame.bounds;
-    bounds.x = 0;
-    bounds.y = 0;
-    bounds.width = width;
-    bounds.height = height;
+    const offsetX = (width - this.mesh.width) / 2;
+    const offsetY = (height - this.mesh.height) / 2;
+    bounds.x = 0 + offsetX;
+    bounds.y = 0 + offsetY;
+    bounds.width = width - 2 * offsetX;
+    bounds.height = height - 2 * offsetY;
     bounds.rotate(Math.toRadians(rotation));
     MouseInteractionManager.emulateMoveEvent();
 
