@@ -130,7 +130,7 @@ export default class CardLayer extends PlaceablesLayer {
     const promises = documents.map((doc) => {
       // Preemptively filtering out drawings that would fail
       const data = doc.getFlag(MODULE_ID, canvas.scene.id);
-      if (!data) {
+      if (!data || (data.x === undefined) || (data.y === undefined)) {
         console.warn("No canvas data found for", doc.name);
         return;
       }
