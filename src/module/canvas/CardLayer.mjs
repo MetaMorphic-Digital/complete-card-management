@@ -65,7 +65,7 @@ export default class CardLayer extends PlaceablesLayer {
     const toUpdate = [];
     let target = front ? -Infinity : Infinity;
     for (const document of this.documentCollection) {
-      if (document.object?.controlled && !document.locked) toUpdate.push(document);
+      if (document.canvasCard.object?.controlled && !document.locked) toUpdate.push(document);
       else target = (front ? Math.max : Math.min)(target, document.sort);
     }
     if (!Number.isFinite(target)) return true;
@@ -75,13 +75,12 @@ export default class CardLayer extends PlaceablesLayer {
     toUpdate.sort((a, b) => a.sort - b.sort);
 
     // Update the to-be-updated objects
-    const updates = toUpdate.reduce((cards, canvasCard, i) => {
-      const d = fromUuidSync(canvasCard.id);
-      const parentSlot = cards[d.parent.id];
-      const updateData = {_id: d.id};
-      foundry.utils.setProperty(updateData, `flags.${MODULE_ID}.${canvas.scene}.sort`, target + i);
+    const updates = toUpdate.reduce((cards, card, i) => {
+      const parentSlot = cards[card.id];
+      const updateData = {_id: card.id};
+      foundry.utils.setProperty(updateData, `flags.${MODULE_ID}.${canvas.scene.id}.sort`, target + i);
       if (parentSlot) parentSlot.push(updateData);
-      else cards[d.parent.id] = [updateData];
+      else cards[card.parent.id] = [updateData];
       return cards;
     }, {});
 
