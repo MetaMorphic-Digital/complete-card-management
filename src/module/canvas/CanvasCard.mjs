@@ -80,14 +80,12 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       x: new NumberField({
         required: true,
         integer: true,
-        nullable: false,
-        initial: 0
+        nullable: false
       }),
       y: new NumberField({
         required: true,
         integer: true,
-        nullable: false,
-        initial: 0
+        nullable: false
       }),
       elevation: new NumberField({
         required: true,
