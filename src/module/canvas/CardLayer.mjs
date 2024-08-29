@@ -97,9 +97,17 @@ export default class CardLayer extends PlaceablesLayer {
 
   /** @override */
   async _draw(options) {
+
     // Setting up the group functionality
+    /** @type {InterfaceCanvasGroup} */
     const itf = this.parent;
     itf.cardCollection = new foundry.utils.Collection();
+    itf.cardMeshes = itf.addChild(new PIXI.Container());
+    itf.cardMeshes.sortChildren = CardLayer.#sortMeshesByElevationAndSort;
+    itf.cardMeshes.sortableChildren = true;
+    itf.cardMeshes.eventMode = "none";
+    itf.cardMeshes.interactiveChildren = false;
+    itf.cardMeshes.zIndex = 100;
 
     // Layer functionality
     // Inherited from InteractionLayer
@@ -157,6 +165,23 @@ export default class CardLayer extends PlaceablesLayer {
       || (a.document.sort - b.document.sort)
       || (a.zIndex - b.zIndex)
       || (a._lastSortedIndex - b._lastSortedIndex)
+    );
+    this.sortDirty = false;
+  };
+
+  static #sortMeshesByElevationAndSort = function() {
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i]._lastSortedIndex = i;
+    }
+    this.children.sort((a, b) => {
+      const uuid = a.name.endsWith(".preview") ? a.name.slice(0, a.name.length - ".preview".length) : a.name;
+      const adoc = fromUuidSync(uuid).canvasCard;
+      const bdoc = fromUuidSync(uuid).canvasCard;
+      return (adoc.elevation - bdoc.elevation)
+      || (adoc.sort - bdoc.sort)
+      || (a.zIndex - b.zIndex)
+      || (a._lastSortedIndex - b._lastSortedIndex);
+    }
     );
     this.sortDirty = false;
   };
