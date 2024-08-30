@@ -181,8 +181,7 @@ export default class CardLayer extends PlaceablesLayer {
       || (adoc.sort - bdoc.sort)
       || (a.zIndex - b.zIndex)
       || (a._lastSortedIndex - b._lastSortedIndex);
-    }
-    );
+    });
     this.sortDirty = false;
   };
 
