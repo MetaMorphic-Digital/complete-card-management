@@ -4,7 +4,9 @@
   "description": "A FVTT module that allows users to manipulate cards as part of the canvas",
   "main": "ccm.mjs",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "createSymlinks": "node ./tools/create-symlinks.mjs",
+    "postinstall": "npm run createSymlinks"
   },
   "repository": {
     "type": "git",
@@ -20,7 +22,7 @@
   },
   "homepage": "https://github.com/MetaMorphic-Digital/complete-card-management#readme",
   "dependencies": {
-    "@foundryvtt/foundryvtt-cli": "^1.0.2",
+    "@foundryvtt/foundryvtt-cli": "^1.0.3",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "eslint": "^8.57.0",
     "rollup": "^4.18.0",

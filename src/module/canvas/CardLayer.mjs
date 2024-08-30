@@ -12,7 +12,7 @@ export default class CardLayer extends PlaceablesLayer {
   /**
    * Configuration options for the CardLayer
    *
-   * @returns {import("../_types.mjs").PlaceablesLayerOptions} The Options
+   * @returns {PlaceablesLayerOptions} The Options
    */
   static get layerOptions() {
     return foundry.utils.mergeObject(super.layerOptions, {
