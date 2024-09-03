@@ -73,6 +73,7 @@ export default class CardLayer extends PlaceablesLayer {
     const toUpdate = [];
     let target = front ? -Infinity : Infinity;
     for (const document of this.documentCollection) {
+      if (!document.canvasCard) continue;
       if (document.canvasCard?.object?.controlled && !document.locked) toUpdate.push(document);
       else target = (front ? Math.max : Math.min)(target, document.canvasCard.sort);
     }
