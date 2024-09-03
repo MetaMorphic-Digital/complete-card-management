@@ -138,6 +138,7 @@ export default class CardObject extends PlaceableObject {
     // Draw the Card mesh
     if (this.texture) {
       this.mesh = canvas.interface.addCard(this);
+      this.mesh.canvasCard = this;
       this.bg = undefined;
     }
 
@@ -362,6 +363,11 @@ export default class CardObject extends PlaceableObject {
   _onUpdate(changed, options, userId) {
     super._onUpdate(changed, options, userId);
     const restrictionsChanged = ("restrictions" in changed) && !foundry.utils.isEmpty(changed.restrictions);
+
+    if (("sort" in changed) || ("elevation" in changed)) {
+      this.parent.sortDirty = true;
+      if (this.mesh) this.mesh.parent.sortDirty = true;
+    }
 
     // Refresh the Drawing
     this.renderFlags.set({

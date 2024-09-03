@@ -58,6 +58,14 @@ export default class CardLayer extends PlaceablesLayer {
   }
 
   /** @override */
+  getMaxSort() {
+    let sort = -Infinity;
+    const collection = this.documentCollection;
+    for (const document of collection) sort = Math.max(sort, document.canvasCard.sort);
+    return sort;
+  }
+
+  /** @override */
   async _sendToBackOrBringToFront(front) {
     if (!this.controlled.length) return true;
 
@@ -65,8 +73,9 @@ export default class CardLayer extends PlaceablesLayer {
     const toUpdate = [];
     let target = front ? -Infinity : Infinity;
     for (const document of this.documentCollection) {
-      if (document.object?.controlled && !document.locked) toUpdate.push(document);
-      else target = (front ? Math.max : Math.min)(target, document.sort);
+      if (!document.canvasCard) continue;
+      if (document.canvasCard?.object?.controlled && !document.locked) toUpdate.push(document);
+      else target = (front ? Math.max : Math.min)(target, document.canvasCard.sort);
     }
     if (!Number.isFinite(target)) return true;
     target += (front ? 1 : -toUpdate.length);
@@ -75,13 +84,12 @@ export default class CardLayer extends PlaceablesLayer {
     toUpdate.sort((a, b) => a.sort - b.sort);
 
     // Update the to-be-updated objects
-    const updates = toUpdate.reduce((cards, canvasCard, i) => {
-      const d = fromUuidSync(canvasCard.id);
-      const parentSlot = cards[d.parent.id];
-      const updateData = {_id: d.id};
-      foundry.utils.setProperty(updateData, `flags.${MODULE_ID}.${canvas.scene}.sort`, target + i);
+    const updates = toUpdate.reduce((cards, card, i) => {
+      const parentSlot = cards[card.id];
+      const updateData = {_id: card.id};
+      foundry.utils.setProperty(updateData, `flags.${MODULE_ID}.${canvas.scene.id}.sort`, target + i);
       if (parentSlot) parentSlot.push(updateData);
-      else cards[d.parent.id] = [updateData];
+      else cards[card.parent.id] = [updateData];
       return cards;
     }, {});
 
@@ -98,9 +106,17 @@ export default class CardLayer extends PlaceablesLayer {
 
   /** @override */
   async _draw(options) {
+
     // Setting up the group functionality
+    /** @type {InterfaceCanvasGroup} */
     const itf = this.parent;
     itf.cardCollection = new foundry.utils.Collection();
+    itf.cardMeshes = itf.addChild(new PIXI.Container());
+    itf.cardMeshes.sortChildren = CardLayer.#sortMeshesByElevationAndSort;
+    itf.cardMeshes.sortableChildren = true;
+    itf.cardMeshes.eventMode = "none";
+    itf.cardMeshes.interactiveChildren = false;
+    itf.cardMeshes.zIndex = 100;
 
     // Layer functionality
     // Inherited from InteractionLayer
@@ -159,6 +175,23 @@ export default class CardLayer extends PlaceablesLayer {
       || (a.zIndex - b.zIndex)
       || (a._lastSortedIndex - b._lastSortedIndex)
     );
+    this.sortDirty = false;
+  };
+
+  static #sortMeshesByElevationAndSort = function() {
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i]._lastSortedIndex = i;
+    }
+    this.children.sort((a, b) => {
+      const a_uuid = a.name.endsWith(".preview") ? a.name.slice(0, a.name.length - ".preview".length) : a.name;
+      const b_uuid = b.name.endsWith(".preview") ? b.name.slice(0, b.name.length - ".preview".length) : b.name;
+      const adoc = fromUuidSync(a_uuid).canvasCard;
+      const bdoc = fromUuidSync(b_uuid).canvasCard;
+      return (adoc.elevation - bdoc.elevation)
+      || (adoc.sort - bdoc.sort)
+      || (a.zIndex - b.zIndex)
+      || (a._lastSortedIndex - b._lastSortedIndex);
+    });
     this.sortDirty = false;
   };
 
