@@ -57,6 +57,13 @@ export default class CardLayer extends PlaceablesLayer {
     }, new foundry.utils.Collection());
   }
 
+  getMaxSort() {
+    let sort = -Infinity;
+    const collection = this.documentCollection;
+    for (const document of collection) sort = Math.max(sort, document.canvasCard.sort);
+    return sort;
+  }
+
   /** @override */
   async _sendToBackOrBringToFront(front) {
     if (!this.controlled.length) return true;
@@ -174,9 +181,10 @@ export default class CardLayer extends PlaceablesLayer {
       this.children[i]._lastSortedIndex = i;
     }
     this.children.sort((a, b) => {
-      const uuid = a.name.endsWith(".preview") ? a.name.slice(0, a.name.length - ".preview".length) : a.name;
-      const adoc = fromUuidSync(uuid).canvasCard;
-      const bdoc = fromUuidSync(uuid).canvasCard;
+      const a_uuid = a.name.endsWith(".preview") ? a.name.slice(0, a.name.length - ".preview".length) : a.name;
+      const b_uuid = b.name.endsWith(".preview") ? b.name.slice(0, b.name.length - ".preview".length) : b.name;
+      const adoc = fromUuidSync(a_uuid).canvasCard;
+      const bdoc = fromUuidSync(b_uuid).canvasCard;
       return (adoc.elevation - bdoc.elevation)
       || (adoc.sort - bdoc.sort)
       || (a.zIndex - b.zIndex)

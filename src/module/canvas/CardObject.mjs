@@ -138,6 +138,7 @@ export default class CardObject extends PlaceableObject {
     // Draw the Card mesh
     if (this.texture) {
       this.mesh = canvas.interface.addCard(this);
+      this.mesh.canvasCard = this;
       this.bg = undefined;
     }
 
