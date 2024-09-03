@@ -57,6 +57,7 @@ export default class CardLayer extends PlaceablesLayer {
     }, new foundry.utils.Collection());
   }
 
+  /** @override */
   getMaxSort() {
     let sort = -Infinity;
     const collection = this.documentCollection;
@@ -72,8 +73,8 @@ export default class CardLayer extends PlaceablesLayer {
     const toUpdate = [];
     let target = front ? -Infinity : Infinity;
     for (const document of this.documentCollection) {
-      if (document.canvasCard.object?.controlled && !document.locked) toUpdate.push(document);
-      else target = (front ? Math.max : Math.min)(target, document.sort);
+      if (document.canvasCard?.object?.controlled && !document.locked) toUpdate.push(document);
+      else target = (front ? Math.max : Math.min)(target, document.canvasCard.sort);
     }
     if (!Number.isFinite(target)) return true;
     target += (front ? 1 : -toUpdate.length);
