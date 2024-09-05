@@ -248,6 +248,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       origin,
       destination
     };
+    let makingMove = false;
     for (const region of this.parent.regions) {
       if (!region.object) continue;
       const triggeredBehaviors = region.behaviors.filter(b =>
@@ -263,6 +264,28 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT, eventData);
       } else if ((!originInside || newCard) && destinationInside) {
         region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN, eventData);
+        for (const behaviors of region.behaviors) {
+          // Crude way to approximate if this is going to trigger a pass event
+          if (behaviors.type === "moveCard") {
+            makingMove = true;
+          }
+        }
+      }
+    }
+    // Don't check deck drops if there's a region setup, and only original user does this part
+    if (makingMove || (userId !== game.userId)) return;
+    const decks = canvas.cards.documentCollection.filter(c => c.documentName === "Cards");
+    for (const d of decks) {
+      if (!d.canvasCard) continue;
+      const {x, y, width, height} = d.canvasCard;
+      if ((destination.x < x + width) && (destination.x > x)
+      && (destination.y < y + height) && (destination.y > y)
+      ) {
+        if (this.card.parent === d) {
+          ui.notifications.warn(game.i18n.format("CCM.Warning.AlreadyInside", {card: this.card.name, stack: d.name}));
+          continue;
+        }
+        return this.card.pass(d);
       }
     }
   }
