@@ -187,8 +187,8 @@ export default class CardLayer extends PlaceablesLayer {
       const b_uuid = b.name.endsWith(".preview") ? b.name.slice(0, b.name.length - ".preview".length) : b.name;
       const adoc = fromUuidSync(a_uuid).canvasCard;
       const bdoc = fromUuidSync(b_uuid).canvasCard;
-      return (adoc.elevation - bdoc.elevation)
-      || (adoc.sort - bdoc.sort)
+      return (adoc?.elevation - bdoc?.elevation)
+      || (adoc?.sort - bdoc?.sort)
       || (a.zIndex - b.zIndex)
       || (a._lastSortedIndex - b._lastSortedIndex);
     });
