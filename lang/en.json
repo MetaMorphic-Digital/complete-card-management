@@ -75,6 +75,9 @@
       "RecallCard": "Recall Card",
       "RecalledCard": "Recalled {card} in {deck}."
     },
+    "UserConfig": {
+      "PlayerHand": "Player Hand"
+    },
     "Warning": {
       "NoCardsAvailable": "This {type} has no cards available.",
       "CardDrawn": "This card cannot be added to the canvas as it has already been drawn and added to a pile or hand.",

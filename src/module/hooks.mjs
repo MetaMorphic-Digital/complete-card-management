@@ -298,6 +298,48 @@ export function renderHeadsUpDisplay(app, [html], context) {
   html.appendChild(cardHudTemplate);
 }
 
+/**
+ * A hook called when the UserConfig application opens
+ * @param {import("../../foundry/client-esm/applications/sheets/user-config.mjs").default} app - The UserConfig application
+ * @param {HTMLElement} html - The app's rendered HTML
+ */
+export function renderUserConfig(app, html) {
+  const PCDisplay = html.querySelector("fieldset:nth-child(2)");
+  const cardSelect = document.createElement("fieldset");
+  const legend = document.createElement("legend");
+  legend.innerText = game.modules.get("complete-card-management").title;
+  PCDisplay.after(cardSelect);
+  cardSelect.prepend(legend);
+
+  /** @type {User} */
+  const user = app.document;
+  const handId = user.getFlag(MODULE_ID, "playerHand");
+  const options = game.cards.reduce((arr, doc) => {
+    if (!doc.visible || (doc.type !== "hand") || !doc.canUserModify(game.user, "update")) return arr;
+    arr.push({value: doc.id, label: doc.name});
+    return arr;
+  }, []);
+
+  const config = {
+    name: `flags.${MODULE_ID}.playerHand`,
+    value: handId,
+    options,
+    blank: ""
+  };
+
+  const handSelect = foundry.applications.fields.createSelectInput(config);
+
+  const groupConfig = {
+    label: "CCM.UserConfig.PlayerHand",
+    localize: true,
+    input: handSelect
+  };
+
+  const handSelectGroup = foundry.applications.fields.createFormGroup(groupConfig);
+
+  cardSelect.append(handSelectGroup);
+}
+
 /* -------------------------------------------------- */
 
 /**
