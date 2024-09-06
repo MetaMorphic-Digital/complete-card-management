@@ -247,6 +247,21 @@ export async function deleteCard(card, options, userId) {
   checkHandDisplayUpdate(card, "delete");
 }
 
+/**
+ * A hook event that fires for every Document type after conclusion of an update workflow.
+ * Substitute the Document name in the hook event to target a specific Document type, for example "updateActor".
+ * This hook fires for all connected clients after the update has been processed.
+ * @param {User} user  The existing Document which was updated
+ * @param {object} changed                                     Differential data that was used to update the document
+ * @param {Partial<DatabaseUpdateOperation>} options           Additional options which modified the update request
+ * @param {string} userId                                      The ID of the User who triggered the update workflow
+ */
+export async function updateUser(user, changed, options, userId) {
+  const handId = foundry.utils.getProperty(changed, `flags.${MODULE_ID}.playerHand`);
+  const changeShow = foundry.utils.getProperty(changed, `flags.${MODULE_ID}.showCardCount`);
+  if ((handId !== undefined) || (changeShow !== undefined)) ui.players.render();
+}
+
 /* -------------------------------------------------- */
 
 /**
