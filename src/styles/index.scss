@@ -1,2 +1,5 @@
 @import './cardSheet';
 @import './cardsSheet';
+#players {
+  @import "./playerList";
+}

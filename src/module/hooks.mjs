@@ -2,7 +2,7 @@ import * as api from "./api/_module.mjs";
 import * as apps from "./apps/_module.mjs";
 import * as ccm_canvas from "./canvas/_module.mjs";
 import CCM_CONFIG from "./config.mjs";
-import {MODULE_ID, MoveCardType} from "./helpers.mjs";
+import {checkHandDisplayUpdate, MODULE_ID, MoveCardType} from "./helpers.mjs";
 import {addCard, removeCard} from "./patches.mjs";
 
 /**
@@ -185,6 +185,8 @@ export async function createCard(card, options, userId) {
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
     obj._onCreate(card.toObject(), options, userId);
   }
+
+  checkHandDisplayUpdate(card, "create");
 }
 
 /* -------------------------------------------------- */
@@ -241,6 +243,8 @@ export async function deleteCard(card, options, userId) {
   if (card.canvasCard) {
     card.canvasCard.object._onDelete(options, userId);
   }
+
+  checkHandDisplayUpdate(card, "delete");
 }
 
 /* -------------------------------------------------- */
@@ -287,7 +291,7 @@ export function getSceneControlButtons(controls) {
 /**
  * A hook called when the canvas HUD is rendered during `Canvas#initialize`
  * @param {HeadsUpDisplay} app  - The HeadsUpDisplay application
- * @param {JQuery} jquery       - A JQuery object of the HUD
+ * @param {HTMLElement[]} jquery       - A JQuery object of the HUD
  * @param {object} context      - Context passed from HeadsUpDisplay#getData
  */
 export function renderHeadsUpDisplay(app, [html], context) {
@@ -347,6 +351,28 @@ export function renderUserConfig(app, html) {
   });
 
   cardSelect.append(showCardCountGroup);
+}
+
+/**
+ * Add card displays to the player list
+ * @param {PlayerList} app
+ * @param {HTMLElement[]} jquery
+ * @param {Record<string, unknown>} context
+ */
+export function renderPlayerList(app, [html], context) {
+  const list = html.querySelector("ol#player-list");
+  for (const li of list.children) {
+    const user = game.users.get(li.dataset.userId);
+    const showCards = user.getFlag(MODULE_ID, "showCardCount");
+    if (!showCards) continue;
+    const handId = user.getFlag(MODULE_ID, "playerHand");
+    const hand = game.cards.get(handId);
+    if (!hand) continue;
+    const cardCount = document.createElement("div");
+    cardCount.classList = "card-count";
+    cardCount.innerText = hand.cards.size;
+    li.append(cardCount);
+  }
 }
 
 /* -------------------------------------------------- */
