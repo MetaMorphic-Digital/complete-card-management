@@ -265,7 +265,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       } else if ((!originInside || newCard) && destinationInside) {
         region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN, eventData);
         // Crude way to approximate if this is going to trigger a pass event.
-        makingMove = region.behaviors.some(b => b.type === "moveCard");
+        makingMove ||= region.behaviors.some(b => b.type === "moveCard");
       }
     }
     // Don't check deck drops if there's a region setup, and only original user does this part
@@ -279,6 +279,9 @@ export default class CanvasCard extends foundry.abstract.DataModel {
           ui.notifications.warn(game.i18n.format("CCM.Warning.AlreadyInside", {card: this.card.name, stack: d.name}));
           continue;
         }
+        ui.notifications.info(game.i18n.format("CCM.MoveCardBehavior.AddCard",
+          {name: this.card.name, stack: d.name})
+        );
         return this.card.pass(d);
       }
     }
