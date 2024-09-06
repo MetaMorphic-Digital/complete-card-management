@@ -13,6 +13,7 @@ Hooks.on("getSceneControlButtons", hooks.getSceneControlButtons);
 Hooks.on("renderHeadsUpDisplay", hooks.renderHeadsUpDisplay);
 Hooks.on("renderUserConfig", hooks.renderUserConfig);
 Hooks.on("renderPlayerList", hooks.renderPlayerList);
+Hooks.on("getUserContextOptions", hooks.getUserContextOptions);
 
 Hooks.on("passCards", hooks.passCards);
 

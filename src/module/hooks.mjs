@@ -375,6 +375,27 @@ export function renderPlayerList(app, [html], context) {
   }
 }
 
+/**
+ *
+ * @param {HTMLElement[]} param0
+ * @param {ContextMenuEntry[]} contextOptions
+ */
+export function getUserContextOptions([html], contextOptions) {
+  contextOptions.push({
+    name: game.i18n.localize("CCM.UserConfig.OpenHand"),
+    icon: "<i class=\"fa-solid fa-cards\"></i>",
+    condition: ([li]) => {
+      const user = game.users.get(li.dataset.userId);
+      return user.getFlag(MODULE_ID, "playerHand");
+    },
+    callback: ([li]) => {
+      const user = game.users.get(li.dataset.userId);
+      const handId = user.getFlag(MODULE_ID, "playerHand");
+      game.cards.get(handId)?.sheet.render(true);
+    }
+  });
+}
+
 /* -------------------------------------------------- */
 
 /**

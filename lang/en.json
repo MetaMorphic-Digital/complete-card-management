@@ -77,7 +77,8 @@
     },
     "UserConfig": {
       "PlayerHand": "Player Hand",
-      "ShowCardCount": "Show Card Count"
+      "ShowCardCount": "Show Card Count",
+      "OpenHand": "Open Player Hand"
     },
     "Warning": {
       "NoCardsAvailable": "This {type} has no cards available.",
