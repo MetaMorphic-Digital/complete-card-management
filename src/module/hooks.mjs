@@ -388,7 +388,8 @@ export function getUserContextOptions([html], contextOptions) {
     icon: "<i class=\"fa-solid fa-cards\"></i>",
     condition: ([li]) => {
       const user = game.users.get(li.dataset.userId);
-      return user.getFlag(MODULE_ID, "playerHand");
+      const handId = user.getFlag(MODULE_ID, "playerHand");
+      return game.cards.get(handId)?.visible;
     },
     callback: ([li]) => {
       const user = game.users.get(li.dataset.userId);
