@@ -76,7 +76,8 @@
       "RecalledCard": "Recalled {card} in {deck}."
     },
     "UserConfig": {
-      "PlayerHand": "Player Hand"
+      "PlayerHand": "Player Hand",
+      "ShowCardCount": "Show Card Count"
     },
     "Warning": {
       "NoCardsAvailable": "This {type} has no cards available.",

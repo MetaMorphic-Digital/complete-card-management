@@ -320,24 +320,33 @@ export function renderUserConfig(app, html) {
     return arr;
   }, []);
 
-  const config = {
+  const handSelect = foundry.applications.fields.createSelectInput({
     name: `flags.${MODULE_ID}.playerHand`,
     value: handId,
     options,
     blank: ""
-  };
+  });
 
-  const handSelect = foundry.applications.fields.createSelectInput(config);
-
-  const groupConfig = {
+  const handSelectGroup = foundry.applications.fields.createFormGroup({
     label: "CCM.UserConfig.PlayerHand",
     localize: true,
     input: handSelect
-  };
-
-  const handSelectGroup = foundry.applications.fields.createFormGroup(groupConfig);
+  });
 
   cardSelect.append(handSelectGroup);
+
+  const showCardCount = foundry.applications.fields.createCheckboxInput({
+    name: `flags.${MODULE_ID}.showCardCount`,
+    value: user.getFlag(MODULE_ID, "showCardCount")
+  });
+
+  const showCardCountGroup = foundry.applications.fields.createFormGroup({
+    label: "CCM.UserConfig.ShowCardCount",
+    localize: true,
+    input: showCardCount
+  });
+
+  cardSelect.append(showCardCountGroup);
 }
 
 /* -------------------------------------------------- */
