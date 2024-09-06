@@ -154,6 +154,7 @@
 
 #players {
   .card-count {
-    flex: 0 0 8px;
+    flex: 0 0 22px;
+    text-align: right;
   }
 }

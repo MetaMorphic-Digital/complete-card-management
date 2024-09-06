@@ -78,7 +78,8 @@
     "UserConfig": {
       "PlayerHand": "Player Hand",
       "ShowCardCount": "Show Card Count",
-      "OpenHand": "Open Player Hand"
+      "OpenHand": "Open Player Hand",
+      "CardCount": "{count} cards in {stack}"
     },
     "Warning": {
       "NoCardsAvailable": "This {type} has no cards available.",

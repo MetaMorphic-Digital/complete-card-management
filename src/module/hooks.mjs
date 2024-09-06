@@ -370,7 +370,9 @@ export function renderPlayerList(app, [html], context) {
     if (!hand) continue;
     const cardCount = document.createElement("div");
     cardCount.classList = "card-count";
-    cardCount.innerText = hand.cards.size;
+    const count = hand.cards.size;
+    cardCount.innerText = "| " + count;
+    cardCount.dataset.tooltip = game.i18n.format("CCM.UserConfig.CardCount", {count, stack: hand.name});
     li.append(cardCount);
   }
 }
