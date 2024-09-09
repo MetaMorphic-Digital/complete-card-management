@@ -42,3 +42,25 @@ export async function processUpdates(processedUpdates) {
     else await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
   }
 }
+
+/**
+ * Loop through player hands to see if the PlayerList needs to be re-rendered
+ * @param {Card} card - The card being created or deleted
+ * @param {"create" | "delete"} action
+ */
+export function checkHandDisplayUpdate(card, action) {
+  let render = false;
+
+  for (const user of game.users) {
+    const showCardCount = user.getFlag(MODULE_ID, "showCardCount");
+    if (!showCardCount) continue;
+    const handId = user.getFlag(MODULE_ID, "playerHand");
+    const hand = game.cards.get(handId);
+    render ||= card.parent === hand;
+  }
+
+  if (render) {
+    if (action === "delete") setTimeout(() => ui.players.render(), 100);
+    else ui.players.render();
+  }
+}

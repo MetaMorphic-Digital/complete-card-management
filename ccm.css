@@ -151,3 +151,10 @@
     margin-right: 0.5rem;
   }
 }
+
+#players {
+  .card-count {
+    flex: 0 0 22px;
+    text-align: right;
+  }
+}

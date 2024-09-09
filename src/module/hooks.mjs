@@ -2,7 +2,7 @@ import * as api from "./api/_module.mjs";
 import * as apps from "./apps/_module.mjs";
 import * as ccm_canvas from "./canvas/_module.mjs";
 import CCM_CONFIG from "./config.mjs";
-import {MODULE_ID, MoveCardType} from "./helpers.mjs";
+import {checkHandDisplayUpdate, MODULE_ID, MoveCardType} from "./helpers.mjs";
 import {addCard, removeCard} from "./patches.mjs";
 
 /**
@@ -185,6 +185,8 @@ export async function createCard(card, options, userId) {
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
     obj._onCreate(card.toObject(), options, userId);
   }
+
+  checkHandDisplayUpdate(card, "create");
 }
 
 /* -------------------------------------------------- */
@@ -241,6 +243,23 @@ export async function deleteCard(card, options, userId) {
   if (card.canvasCard) {
     card.canvasCard.object._onDelete(options, userId);
   }
+
+  checkHandDisplayUpdate(card, "delete");
+}
+
+/**
+ * A hook event that fires for every Document type after conclusion of an update workflow.
+ * Substitute the Document name in the hook event to target a specific Document type, for example "updateActor".
+ * This hook fires for all connected clients after the update has been processed.
+ * @param {User} user  The existing Document which was updated
+ * @param {object} changed                                     Differential data that was used to update the document
+ * @param {Partial<DatabaseUpdateOperation>} options           Additional options which modified the update request
+ * @param {string} userId                                      The ID of the User who triggered the update workflow
+ */
+export async function updateUser(user, changed, options, userId) {
+  const handId = foundry.utils.getProperty(changed, `flags.${MODULE_ID}.playerHand`);
+  const changeShow = foundry.utils.getProperty(changed, `flags.${MODULE_ID}.showCardCount`);
+  if (handId || changeShow) ui.players.render();
 }
 
 /* -------------------------------------------------- */
@@ -287,7 +306,7 @@ export function getSceneControlButtons(controls) {
 /**
  * A hook called when the canvas HUD is rendered during `Canvas#initialize`
  * @param {HeadsUpDisplay} app  - The HeadsUpDisplay application
- * @param {JQuery} jquery       - A JQuery object of the HUD
+ * @param {HTMLElement[]} jquery       - A JQuery object of the HUD
  * @param {object} context      - Context passed from HeadsUpDisplay#getData
  */
 export function renderHeadsUpDisplay(app, [html], context) {
@@ -296,6 +315,104 @@ export function renderHeadsUpDisplay(app, [html], context) {
   const cardHudTemplate = document.createElement("template");
   cardHudTemplate.setAttribute("id", "card-hud");
   html.appendChild(cardHudTemplate);
+}
+
+/**
+ * A hook called when the UserConfig application opens
+ * @param {import("../../foundry/client-esm/applications/sheets/user-config.mjs").default} app - The UserConfig application
+ * @param {HTMLElement} html - The app's rendered HTML
+ */
+export function renderUserConfig(app, html) {
+  const PCDisplay = html.querySelector("fieldset:nth-child(2)");
+  const cardSelect = document.createElement("fieldset");
+  const legend = document.createElement("legend");
+  legend.innerText = game.modules.get("complete-card-management").title;
+  PCDisplay.after(cardSelect);
+  cardSelect.prepend(legend);
+
+  /** @type {User} */
+  const user = app.document;
+  const handId = user.getFlag(MODULE_ID, "playerHand");
+  const options = game.cards.reduce((arr, doc) => {
+    if (!doc.visible || (doc.type !== "hand") || !doc.canUserModify(game.user, "update")) return arr;
+    arr.push({value: doc.id, label: doc.name});
+    return arr;
+  }, []);
+
+  const handSelect = foundry.applications.fields.createSelectInput({
+    name: `flags.${MODULE_ID}.playerHand`,
+    value: handId,
+    options,
+    blank: ""
+  });
+
+  const handSelectGroup = foundry.applications.fields.createFormGroup({
+    label: "CCM.UserConfig.PlayerHand",
+    localize: true,
+    input: handSelect
+  });
+
+  cardSelect.append(handSelectGroup);
+
+  const showCardCount = foundry.applications.fields.createCheckboxInput({
+    name: `flags.${MODULE_ID}.showCardCount`,
+    value: user.getFlag(MODULE_ID, "showCardCount")
+  });
+
+  const showCardCountGroup = foundry.applications.fields.createFormGroup({
+    label: "CCM.UserConfig.ShowCardCount",
+    localize: true,
+    input: showCardCount
+  });
+
+  cardSelect.append(showCardCountGroup);
+}
+
+/**
+ * Add card displays to the player list
+ * @param {PlayerList} app
+ * @param {HTMLElement[]} jquery
+ * @param {Record<string, unknown>} context
+ */
+export function renderPlayerList(app, [html], context) {
+  const list = html.querySelector("ol#player-list");
+  for (const li of list.children) {
+    const user = game.users.get(li.dataset.userId);
+    const showCards = user.getFlag(MODULE_ID, "showCardCount");
+    if (!showCards) continue;
+    const handId = user.getFlag(MODULE_ID, "playerHand");
+    const hand = game.cards.get(handId);
+    if (!hand) continue;
+    const cardCount = document.createElement("div");
+    cardCount.classList = "card-count";
+    const count = hand.cards.size;
+    cardCount.innerText = count;
+    cardCount.dataset.tooltip = game.i18n.format("CCM.UserConfig.CardCount", {count, stack: hand.name});
+    cardCount.dataset.tooltipDirection = "UP";
+    li.append(cardCount);
+  }
+}
+
+/**
+ *
+ * @param {HTMLElement[]} param0
+ * @param {ContextMenuEntry[]} contextOptions
+ */
+export function getUserContextOptions([html], contextOptions) {
+  contextOptions.push({
+    name: game.i18n.localize("CCM.UserConfig.OpenHand"),
+    icon: "<i class=\"fa-solid fa-fw fa-cards\"></i>",
+    condition: ([li]) => {
+      const user = game.users.get(li.dataset.userId);
+      const handId = user.getFlag(MODULE_ID, "playerHand");
+      return game.cards.get(handId)?.visible;
+    },
+    callback: ([li]) => {
+      const user = game.users.get(li.dataset.userId);
+      const handId = user.getFlag(MODULE_ID, "playerHand");
+      game.cards.get(handId)?.sheet.render(true);
+    }
+  });
 }
 
 /* -------------------------------------------------- */
