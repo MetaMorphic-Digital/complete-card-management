@@ -259,7 +259,7 @@ export async function deleteCard(card, options, userId) {
 export async function updateUser(user, changed, options, userId) {
   const handId = foundry.utils.getProperty(changed, `flags.${MODULE_ID}.playerHand`);
   const changeShow = foundry.utils.getProperty(changed, `flags.${MODULE_ID}.showCardCount`);
-  if ((handId !== undefined) || (changeShow !== undefined)) ui.players.render();
+  if (handId || changeShow) ui.players.render();
 }
 
 /* -------------------------------------------------- */
@@ -401,7 +401,7 @@ export function renderPlayerList(app, [html], context) {
 export function getUserContextOptions([html], contextOptions) {
   contextOptions.push({
     name: game.i18n.localize("CCM.UserConfig.OpenHand"),
-    icon: "<i class=\"fa-solid fa-cards\"></i>",
+    icon: "<i class=\"fa-solid fa-fw fa-cards\"></i>",
     condition: ([li]) => {
       const user = game.users.get(li.dataset.userId);
       const handId = user.getFlag(MODULE_ID, "playerHand");
