@@ -75,6 +75,10 @@
       "RecallCard": "Recall Card",
       "RecalledCard": "Recalled {card} in {deck}."
     },
+    "SceneConfig": {
+      "CanvasPileLabel": "Canvas Pile",
+      "CanvasPileHint": "Treat the entire canvas as a card pile. Regions with the MoveCardBehavior type will override this within their coverage."
+    },
     "UserConfig": {
       "PlayerHand": "Player Hand",
       "ShowCardCount": "Show Card Count",
