@@ -285,6 +285,13 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         return this.card.pass(d);
       }
     }
+
+    // Canvas Pile Handling
+    const canvasPileId = canvas.scene.getFlag(MODULE_ID, "canvasPile");
+    const canvasPile = game.cards.get(canvasPileId);
+    const parent = this.card.parent;
+    if (!canvasPile || (parent === canvasPile)) return;
+    return this.card.pass(canvasPile);
   }
 
   /**

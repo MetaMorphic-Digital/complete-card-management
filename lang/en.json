@@ -77,7 +77,7 @@
     },
     "SceneConfig": {
       "CanvasPileLabel": "Canvas Pile",
-      "CanvasPileHint": "Treat the entire canvas as a card pile. Regions with the MoveCardBehavior type will override this within their coverage."
+      "CanvasPileHint": "Treat the entire canvas as a card pile. Regions with the Allocate Card type will override this within their coverage."
     },
     "UserConfig": {
       "PlayerHand": "Player Hand",
@@ -98,5 +98,5 @@
       "LayoutScene": "Laid out cards on scene {name}."
     }
   },
-  "TYPES.RegionBehavior.complete-card-management.moveCard": "Move Card"
+  "TYPES.RegionBehavior.complete-card-management.moveCard": "Allocate Card"
 }
