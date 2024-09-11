@@ -387,6 +387,19 @@ export default class CardObject extends PlaceableObject {
   /* -------------------------------------------- */
 
   /** @override */
+  _onClickLeft2(event) {
+    const filePath = this.document.texture.src;
+    if (filePath) {
+      const ip = new ImagePopout(filePath, {
+        title: this.document.card.name,
+        uuid: this.document.card.uuid
+      });
+      ip.render(true);
+    }
+    if (!this._propagateLeftClick(event)) event.stopPropagation();
+  }
+
+  /** @override */
   _canDragLeftStart(user, event) {
     if (game.paused && !game.user.isGM) {
       ui.notifications.warn("GAME.PausedWarning", {localize: true});
