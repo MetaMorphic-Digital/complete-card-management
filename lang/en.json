@@ -79,6 +79,18 @@
       "ShowNames": {
         "Label": "Show Card Owner Name",
         "Hint": "Display the owner of each card on the canvas"
+      },
+      "OwnerFontSize": {
+        "Label":"Font Size",
+        "Hint": "Font size of the text displayed if \"Show Card Owner\" is checked"
+      },
+      "OwnerTextColor": {
+        "Label": "Text Color",
+        "Hint": "Text color of the text displayed if \"Show Card Owner\" is checked"
+      },
+      "OwnerTextAlpha": {
+        "Label": "Text Alpha",
+        "Hint": "Text alpha of the text displayed if \"Show Card Owner\" is checked"
       }
     },
     "SceneConfig": {

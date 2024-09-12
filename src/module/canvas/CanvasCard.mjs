@@ -133,6 +133,51 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    */
   static flagProps = ["x", "y", "elevation", "sort", "rotation", "hidden", "locked", "flipped"];
 
+  static registerSettings() {
+    game.settings.register(MODULE_ID, "showOwner", {
+      name: "CCM.Settings.ShowNames.Label",
+      hint: "CCM.Settings.ShowNames.Hint",
+      scope: "client",
+      config: true,
+      type: new foundry.data.fields.BooleanField(),
+      onChange: value => canvas.cards.draw()
+    });
+
+    game.settings.register(MODULE_ID, "ownerFontSize", {
+      name: "CCM.Settings.OwnerFontSize.Label",
+      hint: "CCM.Settings.OwnerFontSize.Hint",
+      scope: "client",
+      config: true,
+      type: new foundry.data.fields.NumberField({
+        nullable: false,
+        integer: true,
+        min: 8,
+        max: 512,
+        initial: 160,
+        validationError: "must be an integer between 8 and 512"
+      }),
+      onChange: value => canvas.cards.draw()
+    });
+
+    game.settings.register(MODULE_ID, "ownerTextColor", {
+      name: "CCM.Settings.OwnerTextColor.Label",
+      hint: "CCM.Settings.OwnerTextColor.Hint",
+      scope: "client",
+      config: true,
+      type: new foundry.data.fields.ColorField({nullable: false, initial: "#ffffff"}),
+      onChange: value => canvas.cards.draw()
+    });
+
+    game.settings.register(MODULE_ID, "ownerTextAlpha", {
+      name: "CCM.Settings.OwnerTextAlpha.Label",
+      hint: "CCM.Settings.OwnerTextAlpha.Hint",
+      scope: "client",
+      config: true,
+      type: new foundry.data.fields.AlphaField(),
+      onChange: value => canvas.cards.draw()
+    });
+  }
+
   /** @override */
   get id() {
     return this.card.id;
@@ -158,7 +203,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * The font size used to display text within this card
    */
   get fontSize() {
-    return 196;
+    return game.settings.get(MODULE_ID, "ownerFontSize");
   }
 
   /**
@@ -176,7 +221,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * @returns {Color}
    */
   get textColor() {
-    return Color.from("#FFFFFF");
+    return game.settings.get(MODULE_ID, "ownerTextColor");
   }
 
   /**

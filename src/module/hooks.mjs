@@ -29,14 +29,7 @@ export function init() {
   CONFIG.controlIcons.rotate = "modules/complete-card-management/assets/icons/clockwise-rotation.svg";
   CONFIG.controlIcons.shuffle = "modules/complete-card-management/assets/icons/shuffle.svg";
 
-  game.settings.register(MODULE_ID, "showOwner", {
-    name: "CCM.Settings.ShowNames.Label",
-    hint: "CCM.Settings.ShowNames.Hint",
-    scope: "client",
-    config: true,
-    type: new foundry.data.fields.BooleanField(),
-    onChange: value => canvas.cards.draw()
-  });
+  ccm_canvas.CanvasCard.registerSettings();
 
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
     label: "CCM.Sheets.Deck", types: ["deck"]
