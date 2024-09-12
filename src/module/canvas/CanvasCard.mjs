@@ -154,6 +154,47 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return this.card.sheet;
   }
 
+  /**
+   * The font size used to display text within this card
+   */
+  get fontSize() {
+    return 196;
+  }
+
+  /**
+   * The font family used to display text within this card
+   * @returns {string} Defaults to `CONFIG.defaultFontFamily`
+   */
+  get fontFamily() {
+    return CONFIG.defaultFontFamily || "Signika";
+  }
+
+  /** @import Color from "../../../foundry/common/utils/color.mjs" */
+
+  /**
+   * The color of the text displayed within this card
+   * @returns {Color}
+   */
+  get textColor() {
+    return Color.from("#FFFFFF");
+  }
+
+  /**
+   * The name of the user who owns this card
+   * @returns {string}
+   */
+  get text() {
+    return this.card.name;
+  }
+
+  /**
+   * The opacity of text displayed on this card
+   * @returns {number}
+   */
+  get textAlpha() {
+    return 1;
+  }
+
   /** @override */
   clone(data = {}, context = {}) {
     // TODO: Possible refactor actually using the data and context object?
