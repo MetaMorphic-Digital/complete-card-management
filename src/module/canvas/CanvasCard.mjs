@@ -265,7 +265,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       } else if ((!originInside || newCard) && destinationInside) {
         region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN, eventData);
         // Crude way to approximate if this is going to trigger a pass event.
-        makingMove ||= region.behaviors.some(b => b.type === "moveCard");
+        makingMove ||= region.behaviors.some(b => b.type === "complete-card-management.moveCard");
       }
     }
     // Don't check deck drops if there's a region setup, and only original user does this part
@@ -285,6 +285,13 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         return this.card.pass(d);
       }
     }
+
+    // Canvas Pile Handling
+    const canvasPileId = canvas.scene.getFlag(MODULE_ID, "canvasPile");
+    const canvasPile = game.cards.get(canvasPileId);
+    const parent = this.card.parent;
+    if (!canvasPile || (parent === canvasPile)) return;
+    return this.card.pass(canvasPile);
   }
 
   /**

@@ -185,8 +185,8 @@ export default class CardLayer extends PlaceablesLayer {
     this.children.sort((a, b) => {
       const a_uuid = a.name.endsWith(".preview") ? a.name.slice(0, a.name.length - ".preview".length) : a.name;
       const b_uuid = b.name.endsWith(".preview") ? b.name.slice(0, b.name.length - ".preview".length) : b.name;
-      const adoc = fromUuidSync(a_uuid).canvasCard;
-      const bdoc = fromUuidSync(b_uuid).canvasCard;
+      const adoc = fromUuidSync(a_uuid)?.canvasCard;
+      const bdoc = fromUuidSync(b_uuid)?.canvasCard;
       return (adoc?.elevation - bdoc?.elevation)
       || (adoc?.sort - bdoc?.sort)
       || (a.zIndex - b.zIndex)

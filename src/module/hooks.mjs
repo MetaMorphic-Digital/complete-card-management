@@ -415,6 +415,43 @@ export function getUserContextOptions([html], contextOptions) {
   });
 }
 
+/**
+ * Add Scene pile selection
+ * @param {SceneConfig} app
+ * @param {HTMLElement[]} jquery
+ * @param {Record<string, unknown>} context
+ */
+export function renderSceneConfig(app, [html], context) {
+  /** @type {Scene} */
+  const scene = app.document;
+
+  const options = game.cards.reduce((arr, doc) => {
+    if (!doc.visible || (doc.type !== "pile") || !doc.canUserModify(game.user, "update")) return arr;
+    arr.push({value: doc.id, label: doc.name});
+    return arr;
+  }, []);
+
+  const input = foundry.applications.fields.createSelectInput({
+    name: `flags.${MODULE_ID}.canvasPile`,
+    value: scene.getFlag(MODULE_ID, "canvasPile"),
+    options,
+    blank: ""
+  });
+
+  const group = foundry.applications.fields.createFormGroup({
+    input,
+    label: "CCM.SceneConfig.CanvasPileLabel",
+    hint: "CCM.SceneConfig.CanvasPileHint",
+    localize: true
+  });
+
+  const basicOptions = html.querySelector(".tab[data-group=\"ambience\"][data-tab=\"basic\"]");
+
+  basicOptions.append(document.createElement("hr"), group);
+
+  app.setPosition();
+}
+
 /* -------------------------------------------------- */
 
 /**
