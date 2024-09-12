@@ -55,9 +55,11 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   // Using this.parent so that way it sticks after constructor.
   parent = this.parent ?? null;
 
+  /** @import CardObject from "./CardObject.mjs" */
+
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
-   * @type {import('./CardObject.mjs').default}
+   * @type {CardObject}
    */
   get object() {
     if (this._object || this._destroyed) return this._object;
@@ -67,7 +69,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
 
   /**
    * Attached object
-   * @type {import('./CardObject.mjs').default}
+   * @type {CardObject}
    */
   // Using this._object so that way it sticks after constructor.
   _object = this._object ?? null;

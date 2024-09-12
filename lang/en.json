@@ -75,6 +75,12 @@
       "RecallCard": "Recall Card",
       "RecalledCard": "Recalled {card} in {deck}."
     },
+    "Settings": {
+      "ShowNames": {
+        "Label": "Show Card Owner Name",
+        "Hint": "Display the owner of each card on the canvas"
+      }
+    },
     "SceneConfig": {
       "CanvasPileLabel": "Canvas Pile",
       "CanvasPileHint": "Treat the entire canvas as a card pile. Regions with the Allocate Card type will override this within their coverage."
