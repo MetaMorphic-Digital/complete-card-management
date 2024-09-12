@@ -184,7 +184,21 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * @returns {string}
    */
   get text() {
-    return this.card.name;
+    const showOwner = game.settings.get(MODULE_ID, "showOwner");
+    if (!showOwner) return "";
+    /** @type {Cards} */
+    const stack = this.card.documentName === "Card" ? this.card.parent : this.card;
+    let owner = null;
+    switch (stack.type) {
+      case "deck":
+        break;
+      case "hand":
+        owner = game.users.find(u => (u.getFlag(MODULE_ID, "playerHand") === stack.id));
+        break;
+      case "pile":
+        break;
+    }
+    return owner?.name ?? "";
   }
 
   /**
