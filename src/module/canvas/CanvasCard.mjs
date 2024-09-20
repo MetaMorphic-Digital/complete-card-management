@@ -233,16 +233,9 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     if (!showOwner) return "";
     /** @type {Cards} */
     const stack = this.card.documentName === "Card" ? this.card.parent : this.card;
-    let owner = null;
-    switch (stack.type) {
-      case "deck":
-        break;
-      case "hand":
-        owner = game.users.find(u => (u.getFlag(MODULE_ID, "playerHand") === stack.id));
-        break;
-      case "pile":
-        break;
-    }
+    const ownerId = stack.getFlag(MODULE_ID, "primaryOwner");
+    let owner = game.users.get(ownerId);
+    if (!owner && (stack.type === "hand")) owner = game.users.find(u => (u.getFlag(MODULE_ID, "playerHand") === stack.id));
     return owner?.name ?? "";
   }
 
@@ -303,6 +296,15 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         || (!this.flipped && !(("flipped" in updates) && updates["flipped"]))
       ) {
         updates["texture"] = {src: this.card.img};
+      }
+    }
+    // Primary Owner Card Text
+    if (foundry.utils.getProperty(changed, `flags.${MODULE_ID}.primaryOwner`) !== undefined) {
+      options.cardText = true;
+      if (this.card instanceof Cards) {
+        for (const card of this.card.cards) {
+          card.canvasCard?.object?.renderFlags.set({refreshText: true});
+        }
       }
     }
     if ((this.card instanceof Card) && (("x" in updates) || ("y" in updates))) this._checkRegionTrigger(updates, userId);
