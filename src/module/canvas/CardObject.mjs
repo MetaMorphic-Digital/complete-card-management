@@ -437,6 +437,7 @@ export default class CardObject extends PlaceableObject {
       refreshRotation: "rotation" in changed,
       refreshSize: ("width" in changed) || ("height" in changed),
       refreshMesh: ("texture" in changed),
+      refreshText: (options.cardText),
       refreshElevation: "elevation" in changed,
       refreshPerception: ("occlusion" in changed) && ("mode" in changed.occlusion)
     });
