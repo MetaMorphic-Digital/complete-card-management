@@ -273,7 +273,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   _onDragStart(event) {
     const id = event.currentTarget.closest("[data-card-id]")?.dataset.cardId;
     const card = this.document.cards.get(id);
-    console.log(event);
     if (card) event.dataTransfer.setData("text/plain", JSON.stringify(card.toDragData()));
   }
 
@@ -527,6 +526,19 @@ export class DockedHandSheet extends HandSheet {
       template: "modules/complete-card-management/templates/card/docked.hbs"
     }
   };
+
+  /**
+   * Handle dragstart event.
+   * @param {DragEvent} event     The triggering drag event.
+   */
+  _onDragStart(event) {
+    super._onDragStart(event);
+    const img = event.target.querySelector("img");
+    const w = 67;
+    const h = 100;
+    const preview = DragDrop.createDragImage(img, w, h);
+    event.dataTransfer.setDragImage(preview, w / 2, h / 2);
+  }
 }
 
 export class PileSheet extends CardsSheet {
