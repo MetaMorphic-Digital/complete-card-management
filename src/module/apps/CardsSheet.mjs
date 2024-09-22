@@ -1,7 +1,7 @@
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
 /** AppV2 cards sheet (Deck, Hand, Pile) */
-class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
+export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /** @override */
   static DEFAULT_OPTIONS = {
     classes: ["ccm", "cards"],
