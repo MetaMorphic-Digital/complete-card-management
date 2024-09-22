@@ -16,6 +16,7 @@
         list-style: none;
         padding: 0;
         min-height: 100px;
+        margin: 0;
         .card {
           padding-left: 0;
           height: 100px;

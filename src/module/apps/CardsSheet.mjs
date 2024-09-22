@@ -273,6 +273,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   _onDragStart(event) {
     const id = event.currentTarget.closest("[data-card-id]")?.dataset.cardId;
     const card = this.document.cards.get(id);
+    console.log(event);
     if (card) event.dataTransfer.setData("text/plain", JSON.stringify(card.toDragData()));
   }
 
