@@ -10,18 +10,18 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       height: "auto"
     },
     actions: {
-      createCard: this._onCreateCard,
-      editCard: this._onEditCard,
-      deleteCard: this._onDeleteCard,
-      shuffleCards: this._onShuffleCards,
-      dealCards: this._onDealCards,
-      resetCards: this._onResetCards,
-      toggleSort: this._onToggleSort,
-      previousFace: this._onPreviousFace,
-      nextFace: this._onNextFace,
-      drawCards: this._onDrawCards,
-      passCards: this._onPassCards,
-      playCard: this._onPlayCard
+      createCard: CardsSheet._onCreateCard,
+      editCard: CardsSheet._onEditCard,
+      deleteCard: CardsSheet._onDeleteCard,
+      shuffleCards: CardsSheet._onShuffleCards,
+      dealCards: CardsSheet._onDealCards,
+      resetCards: CardsSheet._onResetCards,
+      toggleSort: CardsSheet._onToggleSort,
+      previousFace: CardsSheet._onPreviousFace,
+      nextFace: CardsSheet._onNextFace,
+      drawCards: CardsSheet._onDrawCards,
+      passCards: CardsSheet._onPassCards,
+      playCard: CardsSheet._onPlayCard
     },
     form: {
       submitOnChange: true,
@@ -166,6 +166,7 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   _onRender(...T) {
     super._onRender(...T);
     this.#setupDragDrop();
+    this.#setupSearch();
   }
 
   /* -------------------------------------------------- */
@@ -201,9 +202,46 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   }
 
   /* -------------------------------------------------- */
+  /*   Search filtering                                 */
+  /* -------------------------------------------------- */
+
+  /**
+   * Current value of the search filter.
+   * @type {string}
+   */
+  #search = null;
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Set up search filter.
+   */
+  #setupSearch() {
+    const search = new SearchFilter({
+      inputSelector: "input[type=search]",
+      contentSelector: "ol.cards",
+      initial: this.#search ?? "",
+      callback: (event, value, rgx, element) => {
+        for (const card of element.querySelectorAll(".card")) {
+          let hidden = false;
+          const name = card.querySelector(".name").textContent.trim();
+          hidden = value && !rgx.test(name);
+          card.classList.toggle("hidden", hidden);
+        }
+        this.#search = value;
+      }
+    });
+
+    search.bind(this.element);
+  }
+
+  /* -------------------------------------------------- */
   /*   Drag and drop handlers                           */
   /* -------------------------------------------------- */
 
+  /**
+   * Set up drag and drop.
+   */
   #setupDragDrop() {
     const sheet = this;
     const dd = new DragDrop({
@@ -223,6 +261,10 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle dragstart event.
+   * @param {DragEvent} event     The triggering drag event.
+   */
   _onDragStart(event) {
     const id = event.currentTarget.closest("[data-card-id]")?.dataset.cardId;
     const card = this.document.cards.get(id);
@@ -231,6 +273,9 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
+  /**
+   * Sorting is performed the same way as on the standard sheet.
+   */
   _onSortCard(event, card) {
     CardsConfig.prototype._onSortCard.call(this, event, card);
   }
@@ -239,8 +284,15 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /*   Event handlers                                   */
   /* -------------------------------------------------- */
 
+  /**
+   * Handle creation of a new card.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onCreateCard(event, target) {
-    Card.implementation.createDialog({
+    if (!this.isEditable) return;
+    getDocumentClass("Card").createDialog({
       faces: [{}],
       face: 0
     }, {
@@ -251,6 +303,12 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle editing a card.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onEditCard(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
     this.document.cards.get(id).sheet.render({force: true});
@@ -258,33 +316,68 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle deleting a card.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onDeleteCard(event, target) {
+    if (!this.isEditable) return;
     const id = target.closest("[data-card-id]").dataset.cardId;
     this.document.cards.get(id).deleteDialog();
   }
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle shuffling the order of cards.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onShuffleCards(event, target) {
+    if (!this.isEditable) return;
     this.sort = this.constructor.SORT_TYPES.SHUFFLED;
     this.document.shuffle();
   }
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle dealing a card.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onDealCards(event, target) {
+    if (!this.isEditable) return;
     this.document.dealDialog();
   }
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle resetting the card stack.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onResetCards(event, target) {
+    if (!this.isEditable) return;
     this.document.resetDialog();
   }
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle toggling sort mode.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onToggleSort(event, target) {
+    if (!this.isEditable) return;
     const {SHUFFLED, STANDARD} = this.constructor.SORT_TYPES;
     this.sort = (this.sort === SHUFFLED) ? STANDARD : SHUFFLED;
     this.render();
@@ -292,7 +385,14 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle toggling the face of a card.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onPreviousFace(event, target) {
+    if (!this.isEditable) return;
     const id = target.closest("[data-card-id]").dataset.cardId;
     const card = this.document.cards.get(id);
     card.update({face: (card.face === 0) ? null : card.face - 1});
@@ -300,7 +400,14 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle toggling the face of a card.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onNextFace(event, target) {
+    if (!this.isEditable) return;
     const id = target.closest("[data-card-id]").dataset.cardId;
     const card = this.document.cards.get(id);
     card.update({face: (card.face === null) ? 0 : card.face + 1});
@@ -308,19 +415,40 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle drawing cards.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onDrawCards(event, target) {
+    if (!this.isEditable) return;
     this.document.drawDialog();
   }
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle passing cards.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onPassCards(event, target) {
+    if (!this.isEditable) return;
     this.document.passDialog();
   }
 
   /* -------------------------------------------------- */
 
+  /**
+   * Handle playing a card.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static _onPlayCard(event, target) {
+    if (!this.isEditable) return;
     const id = target.closest("[data-card-id]").dataset.cardId;
     const card = this.document.cards.get(id);
     this.document.playDialog(card);
