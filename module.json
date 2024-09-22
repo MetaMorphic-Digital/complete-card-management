@@ -61,8 +61,8 @@
   ],
   "flags": {
     "hotReload": {
-      "extensions": ["css"],
-      "paths": ["./ccm.css"]
+      "extensions": ["css", "hbs"],
+      "paths": ["./ccm.css", "templates"]
     }
   },
   "socket": true,

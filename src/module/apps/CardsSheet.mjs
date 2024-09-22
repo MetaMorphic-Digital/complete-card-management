@@ -1,5 +1,10 @@
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
+/**
+ * @import {ApplicationRenderContext, ApplicationRenderOptions}
+ * from "../../../foundry/client-esm/applications/_types.mjs"
+ */
+
 /** AppV2 cards sheet (Deck, Hand, Pile) */
 export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /** @override */
@@ -510,7 +515,18 @@ export class HandSheet extends CardsSheet {
   }
 }
 
-export class DockedHandSheet extends HandSheet {}
+export class DockedHandSheet extends HandSheet {
+  static DEFAULT_OPTIONS = {
+    classes: ["docked"],
+    window: {positioned: false}
+  };
+
+  static PARTS = {
+    cardList: {
+      template: "modules/complete-card-management/templates/card/docked.hbs"
+    }
+  };
+}
 
 export class PileSheet extends CardsSheet {
   /** @override */
