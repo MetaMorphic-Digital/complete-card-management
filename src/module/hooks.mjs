@@ -35,6 +35,9 @@ export function init() {
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.HandSheet, {
     label: "CCM.Sheets.Hand", types: ["hand"]
   });
+  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DockedHandSheet, {
+    label: "CCM.Sheets.DockedHand", types: ["hand"]
+  });
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.PileSheet, {
     label: "CCM.Sheets.Pile", types: ["pile"]
   });

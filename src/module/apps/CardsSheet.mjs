@@ -510,6 +510,8 @@ export class HandSheet extends CardsSheet {
   }
 }
 
+export class DockedHandSheet extends HandSheet {}
+
 export class PileSheet extends CardsSheet {
   /** @override */
   static DEFAULT_OPTIONS = {
