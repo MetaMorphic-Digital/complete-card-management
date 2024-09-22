@@ -1,8 +1,8 @@
-<fieldset>
-  {{#each cards}}
-  <figure>
-    <img class="thumbnail" src="{{img}}">
-    <figcaption>{{name}}</figcaption>
+<fieldset class="cards">
+  {{#each cards as |card index|}}
+  <figure data-card-id="{{card.id}}" data-index="{{index}}">
+    <img class="thumbnail" src="{{card.img}}">
+    <figcaption>{{card.name}}</figcaption>
   </figure>
   {{/each}}
 </fieldset>

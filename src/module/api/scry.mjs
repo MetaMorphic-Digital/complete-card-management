@@ -93,6 +93,13 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     return context;
   }
 
+  /** @override */
+  _onRender(...T) {
+    super._onRender(...T);
+    // Can't rearrange random pulls
+    if (this.#how !== CONST.CARD_DRAW_MODES.RANDOM) this.#setupDragDrop();
+  }
+
   /* -------------------------------------------------- */
   /*   Properties                                       */
   /* -------------------------------------------------- */
@@ -119,11 +126,78 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   #deck = null;
 
+  /**
+   * A getter to align functionality with proper deck sheets
+   * @returns {Cards}
+   */
+  get document() {
+    return this.#deck;
+  }
+
   /* -------------------------------------------------- */
 
   /** @override */
   get title() {
     return game.i18n.format("CCM.CardSheet.ScryingTitle", {name: this.#deck.name});
+  }
+
+  /* -------------------------------------------------- */
+  /*   Drag and drop handlers                           */
+  /* -------------------------------------------------- */
+
+  /**
+   * Set up drag and drop.
+   */
+  #setupDragDrop() {
+    const dd = new DragDrop({
+      dragSelector: "[data-card-id]",
+      dropSelector: "fieldset.cards",
+      callbacks: {
+        dragstart: this._onDragStart.bind(this),
+        drop: this._onDrop.bind(this)
+      }
+    });
+    dd.bind(this.element);
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Handle dragstart event.
+   * @param {DragEvent} event     The triggering drag event.
+   */
+  _onDragStart(event) {
+    const id = event.currentTarget.closest("[data-card-id]")?.dataset.cardId;
+    const card = this.#deck.cards.get(id);
+    if (card) event.dataTransfer.setData("text/plain", JSON.stringify(card.toDragData()));
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Drag and drop the
+   * @param {DragEvent} event     The triggering drag event.
+   */
+  async _onDrop(event) {
+    const data = TextEditor.getDragEventData(event);
+    if (data.type !== "Card") return;
+    const card = await Card.implementation.fromDropData(data);
+    if (card.parent.id !== this.document.id) {
+      ui.notifications.error("CCM.Warning.NoScryDrop", {localize: true});
+      return;
+    }
+    const currentIndex = this.#cards.findIndex(c => c.id === card.id);
+    /** @type {HTMLElement} */
+    const target = event.target.closest("[data-card-id]");
+    const targetCard = this.document.cards.get(target?.dataset.cardId);
+    if (card.id === targetCard) return; // Don't sort on self
+    if (targetCard) {
+      const targetIndex = this.#cards.findIndex(c => c.id === targetCard.id);
+      this.#cards.splice(targetIndex, 0, this.#cards.splice(currentIndex, 1)[0]);
+    }
+
+    ui.notifications.info("Drop successful");
+    return this.render();
   }
 
   /* -------------------------------------------------- */
