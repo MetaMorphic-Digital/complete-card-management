@@ -71,7 +71,8 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     actions: {
       shuffleReplace: this.#shuffleCards,
-      confirm: this.#confirm
+      confirm: this.#confirm,
+      playCard: this.#playCard
     }
   };
 
@@ -251,6 +252,25 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         deck: this.#deck.name
       })
     });
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Play a card from the dialog
+   * @this {ScryDialog}
+   * @param {Event} event             Initiating click event.
+   * @param {HTMLElement} target      The data-action element.
+   */
+  static async #playCard(event, target) {
+    const figure = target.closest("[data-card-id]");
+    const cardId = figure.dataset.cardId;
+    const card = this.#deck.cards.get(cardId);
+    const play = await this.#deck.playDialog(card);
+    if (play) {
+      this.#cards.findSplice(c => c.id === cardId);
+      this.render();
+    }
   }
 
   /* -------------------------------------------------- */
