@@ -1,7 +1,14 @@
+import {MODULE_ID} from "../helpers.mjs";
+
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
+/**
+ * @import {ApplicationRenderContext, ApplicationRenderOptions}
+ * from "../../../foundry/client-esm/applications/_types.mjs"
+ */
+
 /** AppV2 cards sheet (Deck, Hand, Pile) */
-class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
+export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /** @override */
   static DEFAULT_OPTIONS = {
     classes: ["ccm", "cards"],
@@ -131,6 +138,12 @@ class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       placeholder: game.i18n.localize("Rotation"),
       value: this.document.rotation || ""
     });
+    context.primaryOwner = {
+      field: new foundry.data.fields.ForeignDocumentField(User, {
+        label: "CCM.CardSheet.PrimaryOwner"
+      }, {name: `flags.${MODULE_ID}.primaryOwner`}),
+      value: (options.document ?? this.document).getFlag(MODULE_ID, "primaryOwner")
+    };
 
     // Cards
     const sortFn = {
@@ -507,6 +520,38 @@ export class HandSheet extends CardsSheet {
     context.isHand = true;
     if (!this.document.cards.size) context.footer.pass = context.footer.reset = true;
     return context;
+  }
+}
+
+export class DockedHandSheet extends HandSheet {
+  /** @override */
+  static DEFAULT_OPTIONS = {
+    classes: ["docked"],
+    window: {positioned: false}
+  };
+
+  /* -------------------------------------------------- */
+
+  /** @override */
+  static PARTS = {
+    cardList: {
+      template: "modules/complete-card-management/templates/card/docked.hbs"
+    }
+  };
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Handle dragstart event.
+   * @param {DragEvent} event     The triggering drag event.
+   */
+  _onDragStart(event) {
+    super._onDragStart(event);
+    const img = event.target.querySelector("img");
+    const w = 67;
+    const h = 100;
+    const preview = DragDrop.createDragImage(img, w, h);
+    event.dataTransfer.setDragImage(preview, w / 2, h / 2);
   }
 }
 

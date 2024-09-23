@@ -7,6 +7,53 @@
     [name=name] { font-size: 18px; }
   }
 
+  &.docked {
+    bottom: 65px;
+    left: 220px;
+    width: var(--hotbar-width);
+    [data-application-part="cardList"] {
+      .cards {
+        list-style: none;
+        padding: 0;
+        min-height: 100px;
+        margin: 0;
+        .card {
+          padding-left: 0;
+          height: 100px;
+          width: fit-content;
+          display: inline-block;
+
+          [data-action=playCard] {
+            padding: 0 20px;
+            position: absolute;
+            display: flex;
+            width: fit-content;
+            height: 100px;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            opacity: 0;
+            transition: inherit;
+            z-index: 1;
+
+            &:hover {
+              opacity: 1;
+
+              &+ img {
+                opacity: 0.5;
+                transition: inherit;
+              }
+            }
+          }
+          img {
+            height: 100px;
+            width: fit-content;
+          }
+        }
+      }
+    }
+  }
+
   .sheet-tabs.tabs .item .fa-solid {
     font-size: 14px;
   }

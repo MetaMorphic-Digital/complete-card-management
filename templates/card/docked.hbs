@@ -1,0 +1,14 @@
+<section>
+  <ol class="cards">
+    {{#each cards}}
+    <li class="card" data-card-id="{{card.id}}">
+      <div class="name">
+        <a data-action="playCard">
+          <i class="fa-solid fa-circle-play"></i>
+        </a>
+        <img src="{{card.img}}" alt="{{card.name}}">
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+</section>

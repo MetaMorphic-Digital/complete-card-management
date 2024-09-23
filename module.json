@@ -61,8 +61,8 @@
   ],
   "flags": {
     "hotReload": {
-      "extensions": ["css", "json"],
-      "paths": ["./ccm.css", "./lang/en.json"]
+      "extensions": ["css", "hbs", "json"],
+      "paths": ["./ccm.css", "./lang/en.json", "templates"]
     }
   },
   "socket": true,
