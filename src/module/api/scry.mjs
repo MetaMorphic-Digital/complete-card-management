@@ -71,7 +71,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     actions: {
       shuffleReplace: this.#shuffleCards,
-      close: this.#onClose
+      confirm: this.#confirm
     }
   };
 
@@ -196,7 +196,6 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       this.#cards.splice(targetIndex, 0, this.#cards.splice(currentIndex, 1)[0]);
     }
 
-    ui.notifications.info("Drop successful");
     return this.render();
   }
 
@@ -257,12 +256,20 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------------- */
 
   /**
-   * Close the application.
+   * Close the application with the Confirm button.
    * @this {ScryDialog}
    * @param {Event} event             Initiating click event.
    * @param {HTMLElement} target      The data-action element.
    */
-  static #onClose(event, target) {
+  static async #confirm(event, target) {
+    if (this.#how !== CONST.CARD_DRAW_MODES.RANDOM) {
+      const startIndex = this.#how === CONST.CARD_DRAW_MODES.FIRST ? 0 : this.#deck.cards.size - this.#cards.length;
+      const updates = this.#cards.map((c, index) => ({
+        _id: c._id,
+        sort: index + startIndex
+      }));
+      await this.#deck.updateEmbeddedDocuments("Card", updates);
+    }
     this.close();
   }
 }
