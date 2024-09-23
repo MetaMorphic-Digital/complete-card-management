@@ -1,8 +1,10 @@
+/** @import CardObject from "./canvas/CardObject.mjs" */
+
 /**
  * Add a CardObject to the layer
  *
  * @this InterfaceCanvasGroup
- * @param {import('./CardObject.mjs').CardObject} card The CardObject being added
+ * @param {CardObject} card The CardObject being added
  * @returns {PIXI.Graphics} The created Graphics instance
  */
 export function addCard(card) {
@@ -18,7 +20,7 @@ export function addCard(card) {
  * Remove a CardObject from the layer
  *
  * @this InterfaceCanvasGroup
- * @param {import('./CardObject.mjs').CardObject} card The CardObject being added
+ * @param {CardObject} card The CardObject being added
  */
 export function removeCard(card) {
   const name = card.objectId;

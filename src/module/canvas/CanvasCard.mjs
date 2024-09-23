@@ -55,9 +55,11 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   // Using this.parent so that way it sticks after constructor.
   parent = this.parent ?? null;
 
+  /** @import CardObject from "./CardObject.mjs" */
+
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
-   * @type {import('./CardObject.mjs').default}
+   * @type {CardObject}
    */
   get object() {
     if (this._object || this._destroyed) return this._object;
@@ -67,7 +69,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
 
   /**
    * Attached object
-   * @type {import('./CardObject.mjs').default}
+   * @type {CardObject}
    */
   // Using this._object so that way it sticks after constructor.
   _object = this._object ?? null;
@@ -131,6 +133,52 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    */
   static flagProps = ["x", "y", "elevation", "sort", "rotation", "hidden", "locked", "flipped"];
 
+  static registerSettings() {
+    game.settings.register(MODULE_ID, "showOwner", {
+      name: "CCM.Settings.ShowNames.Label",
+      hint: "CCM.Settings.ShowNames.Hint",
+      scope: "client",
+      config: true,
+      type: new foundry.data.fields.BooleanField(),
+      initial: true,
+      onChange: value => canvas.cards.draw()
+    });
+
+    game.settings.register(MODULE_ID, "ownerFontSize", {
+      name: "CCM.Settings.OwnerFontSize.Label",
+      hint: "CCM.Settings.OwnerFontSize.Hint",
+      scope: "client",
+      config: true,
+      type: new foundry.data.fields.NumberField({
+        nullable: false,
+        integer: true,
+        min: 8,
+        max: 512,
+        initial: 160,
+        validationError: "must be an integer between 8 and 512"
+      }),
+      onChange: value => canvas.cards.draw()
+    });
+
+    game.settings.register(MODULE_ID, "ownerTextColor", {
+      name: "CCM.Settings.OwnerTextColor.Label",
+      hint: "CCM.Settings.OwnerTextColor.Hint",
+      scope: "client",
+      config: true,
+      type: new foundry.data.fields.ColorField({nullable: false, initial: "#ffffff"}),
+      onChange: value => canvas.cards.draw()
+    });
+
+    game.settings.register(MODULE_ID, "ownerTextAlpha", {
+      name: "CCM.Settings.OwnerTextAlpha.Label",
+      hint: "CCM.Settings.OwnerTextAlpha.Hint",
+      scope: "client",
+      config: true,
+      type: new foundry.data.fields.AlphaField(),
+      onChange: value => canvas.cards.draw()
+    });
+  }
+
   /** @override */
   get id() {
     return this.card.id;
@@ -150,6 +198,54 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   get sheet() {
     // TODO: Custom sheet? I think?
     return this.card.sheet;
+  }
+
+  /**
+   * The font size used to display text within this card
+   */
+  get fontSize() {
+    return game.settings.get(MODULE_ID, "ownerFontSize");
+  }
+
+  /**
+   * The font family used to display text within this card
+   * @returns {string} Defaults to `CONFIG.defaultFontFamily`
+   */
+  get fontFamily() {
+    return CONFIG.defaultFontFamily || "Signika";
+  }
+
+  /** @import Color from "../../../foundry/common/utils/color.mjs" */
+
+  /**
+   * The color of the text displayed within this card
+   * @returns {Color}
+   */
+  get textColor() {
+    return game.settings.get(MODULE_ID, "ownerTextColor");
+  }
+
+  /**
+   * The name of the user who owns this card
+   * @returns {string}
+   */
+  get text() {
+    const showOwner = game.settings.get(MODULE_ID, "showOwner");
+    if (!showOwner) return "";
+    /** @type {Cards} */
+    const stack = this.card.documentName === "Card" ? this.card.parent : this.card;
+    const ownerId = stack.getFlag(MODULE_ID, "primaryOwner");
+    let owner = game.users.get(ownerId);
+    if (!owner && (stack.type === "hand")) owner = game.users.find(u => (u.getFlag(MODULE_ID, "playerHand") === stack.id));
+    return owner?.name ?? "";
+  }
+
+  /**
+   * The opacity of text displayed on this card
+   * @returns {number}
+   */
+  get textAlpha() {
+    return 1;
   }
 
   /** @override */
@@ -201,6 +297,15 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         || (!this.flipped && !(("flipped" in updates) && updates["flipped"]))
       ) {
         updates["texture"] = {src: this.card.img};
+      }
+    }
+    // Primary Owner Card Text
+    if (foundry.utils.getProperty(changed, `flags.${MODULE_ID}.primaryOwner`) !== undefined) {
+      options.cardText = true;
+      if (this.card instanceof Cards) {
+        for (const card of this.card.cards) {
+          card.canvasCard?.object?.renderFlags.set({refreshText: true});
+        }
       }
     }
     if ((this.card instanceof Card) && (("x" in updates) || ("y" in updates))) this._checkRegionTrigger(updates, userId);

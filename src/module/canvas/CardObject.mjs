@@ -60,13 +60,17 @@ export default class CardObject extends PlaceableObject {
 
   static RENDER_FLAGS = {
     redraw: {propagate: ["refresh"]},
-    refresh: {propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshElevation"], alias: true},
+    refresh: {
+      propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshText", "refreshElevation"],
+      alias: true
+    },
     refreshState: {},
     refreshTransform: {propagate: ["refreshRotation", "refreshSize"], alias: true},
     refreshRotation: {propagate: ["refreshFrame"]},
-    refreshSize: {propagate: ["refreshFrame", "refreshPosition"]},
+    refreshSize: {propagate: ["refreshPosition", "refreshFrame", "refreshText"]},
     refreshPosition: {},
     refreshMesh: {},
+    refreshText: {},
     refreshFrame: {},
     refreshElevation: {}
   };
@@ -100,6 +104,14 @@ export default class CardObject extends PlaceableObject {
 
     // Normal case
     return new PIXI.Rectangle(x, y, width, height).normalize();
+  }
+
+  /**
+   * Does the CanvasCard have text that is displayed?
+   * @type {boolean}
+   */
+  get hasText() {
+    return !!this.document.text && (this.document.fontSize > 0);
   }
 
   /**
@@ -140,6 +152,8 @@ export default class CardObject extends PlaceableObject {
       this.mesh = canvas.interface.addCard(this);
       this.mesh.canvasCard = this;
       this.bg = undefined;
+      // Card text
+      this.mesh.text = this.hasText ? this.mesh.addChild(this.#drawText()) : null;
     }
 
     // Draw a placeholder background
@@ -172,11 +186,43 @@ export default class CardObject extends PlaceableObject {
     return frame;
   }
 
+  /**
+   * Create a PreciseText element to be displayed as part of this drawing.
+   * @returns {PreciseText}
+   */
+  #drawText() {
+    const text = new PreciseText(this.document.text || "", this._getTextStyle());
+    text.eventMode = "none";
+    text.anchor.set(0.5, 0.5);
+    return text;
+  }
+
   /** @override */
   _destroy(options) {
     canvas.interface.removeCard(this);
     this.texture?.destroy();
     this.frame?.destroy(); // Unsure if needed? Possibly resolves multi-select frame issue
+  }
+
+  /**
+   * Prepare the text style used to instantiate a PIXI.Text or PreciseText instance for this Drawing document.
+   * @returns {PIXI.TextStyle}
+   * @protected
+   */
+  _getTextStyle() {
+    const {fontSize, fontFamily, textColor, width} = this.document;
+    const stroke = Math.max(Math.round(fontSize / 32), 2);
+    return PreciseText.getTextStyle({
+      fontFamily: fontFamily,
+      fontSize: fontSize,
+      fill: textColor,
+      strokeThickness: stroke,
+      dropShadowBlur: Math.max(Math.round(fontSize / 16), 2),
+      align: "center",
+      wordWrap: true,
+      wordWrapWidth: width,
+      padding: stroke * 4
+    });
   }
 
   /**
@@ -190,6 +236,7 @@ export default class CardObject extends PlaceableObject {
     if (flags.refreshSize) this._refreshSize();
     if (flags.refreshPosition) this._refreshPosition();
     if (flags.refreshMesh) this._refreshMesh();
+    if (flags.refreshText) this._refreshText();
     if (flags.refreshFrame) this._refreshFrame();
     if (flags.refreshElevation) this._refreshElevation();
 
@@ -278,6 +325,19 @@ export default class CardObject extends PlaceableObject {
   _refreshElevation() {
     if (!this.mesh) return;
     this.mesh.elevation = this.document.elevation;
+  }
+
+  /**
+   * Refresh the content and appearance of text.
+   * @protected
+   */
+  _refreshText() {
+    const pixiText = this.mesh?.text;
+    if (!pixiText) return;
+    const {text, textAlpha} = this.document;
+    pixiText.text = text ?? "";
+    pixiText.alpha = textAlpha;
+    pixiText.style = this._getTextStyle();
   }
 
   /**
@@ -377,6 +437,7 @@ export default class CardObject extends PlaceableObject {
       refreshRotation: "rotation" in changed,
       refreshSize: ("width" in changed) || ("height" in changed),
       refreshMesh: ("texture" in changed),
+      refreshText: (options.cardText),
       refreshElevation: "elevation" in changed,
       refreshPerception: ("occlusion" in changed) && ("mode" in changed.occlusion)
     });

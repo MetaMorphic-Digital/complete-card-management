@@ -1,3 +1,5 @@
+import {MODULE_ID} from "../helpers.mjs";
+
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
 /**
@@ -136,6 +138,12 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       placeholder: game.i18n.localize("Rotation"),
       value: this.document.rotation || ""
     });
+    context.primaryOwner = {
+      field: new foundry.data.fields.ForeignDocumentField(User, {
+        label: "CCM.CardSheet.PrimaryOwner"
+      }, {name: `flags.${MODULE_ID}.primaryOwner`}),
+      value: (options.document ?? this.document).getFlag(MODULE_ID, "primaryOwner")
+    };
 
     // Cards
     const sortFn = {

@@ -29,6 +29,8 @@ export function init() {
   CONFIG.controlIcons.rotate = "modules/complete-card-management/assets/icons/clockwise-rotation.svg";
   CONFIG.controlIcons.shuffle = "modules/complete-card-management/assets/icons/shuffle.svg";
 
+  ccm_canvas.CanvasCard.registerSettings();
+
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
     label: "CCM.Sheets.Deck", types: ["deck"]
   });
@@ -72,11 +74,13 @@ export function ready() {
 /*   Canvas hooks                                     */
 /* -------------------------------------------------- */
 
+/** @import {CanvasDropData} from "./_types.d.ts" */
+
 /**
  * Handles drop data
  *
  * @param {Canvas} canvas                              - The Canvas
- * @param {import("./_types.mjs").CanvasDropData} data - Drop data
+ * @param {CanvasDropData} data - Drop data
  */
 export function dropCanvasData(canvas, data) {
   switch (data.type) {
@@ -94,7 +98,7 @@ export function dropCanvasData(canvas, data) {
 /**
  *
  * @param {Canvas} canvas - The Game Canvas
- * @param {import("./_types.mjs").CanvasDropData} data - Drop data
+ * @param {CanvasDropData} data - Drop data
  */
 async function handleCardDrop(canvas, data) {
   /** @type {Card} */
@@ -115,7 +119,7 @@ async function handleCardDrop(canvas, data) {
 /**
  *
  * @param {Canvas} canvas - The Game Canvas
- * @param {import("./_types.mjs").CanvasDropData} data - Drop data
+ * @param {CanvasDropData} data - Drop data
  */
 async function handleCardStackDrop(canvas, data) {
   let cards = await fromUuidSync(data.uuid);
@@ -320,9 +324,11 @@ export function renderHeadsUpDisplay(app, [html], context) {
   html.appendChild(cardHudTemplate);
 }
 
+/** @import UserConfig from "../../foundry/client-esm/applications/sheets/user-config.mjs" */
+
 /**
  * A hook called when the UserConfig application opens
- * @param {import("../../foundry/client-esm/applications/sheets/user-config.mjs").default} app - The UserConfig application
+ * @param {UserConfig} app - The UserConfig application
  * @param {HTMLElement} html - The app's rendered HTML
  */
 export function renderUserConfig(app, html) {
