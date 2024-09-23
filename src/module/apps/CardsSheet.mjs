@@ -516,16 +516,22 @@ export class HandSheet extends CardsSheet {
 }
 
 export class DockedHandSheet extends HandSheet {
+  /** @override */
   static DEFAULT_OPTIONS = {
     classes: ["docked"],
     window: {positioned: false}
   };
 
+  /* -------------------------------------------------- */
+
+  /** @override */
   static PARTS = {
     cardList: {
       template: "modules/complete-card-management/templates/card/docked.hbs"
     }
   };
+
+  /* -------------------------------------------------- */
 
   /**
    * Handle dragstart event.
