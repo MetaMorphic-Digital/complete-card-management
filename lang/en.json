@@ -5,6 +5,7 @@
       "Card": "Complete Card Management Card Sheet",
       "Deck": "Complete Card Management Deck Sheet",
       "Hand": "Complete Card Management Hand Sheet",
+      "DockedHand": "Complete Card Management Hand Sheet (Docked)",
       "Pile": "Complete Card Management Pile Sheet"
     },
     "MoveCardBehavior": {
