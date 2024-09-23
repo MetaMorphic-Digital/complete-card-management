@@ -83,7 +83,7 @@
         "Hint": "Display the owner of each card on the canvas"
       },
       "OwnerFontSize": {
-        "Label":"Font Size",
+        "Label": "Font Size",
         "Hint": "Font size of the text displayed if \"Show Card Owner\" is checked"
       },
       "OwnerTextColor": {

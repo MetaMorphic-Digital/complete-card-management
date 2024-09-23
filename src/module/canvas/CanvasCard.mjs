@@ -140,6 +140,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       scope: "client",
       config: true,
       type: new foundry.data.fields.BooleanField(),
+      initial: true,
       onChange: value => canvas.cards.draw()
     });
 
