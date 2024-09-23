@@ -2,9 +2,19 @@
   {{#each cards as |card index|}}
   <figure data-card-id="{{card.id}}" data-index="{{index}}">
     <div class="overlay">
+      {{#if @root.isBottom}}
+      <a data-action="moveCard">
+        <i class="fa-solid fa-sort-up"></i>
+      </a>
+      {{/if}}
       <a data-action="playCard">
         <i class="fa-solid fa-circle-play"></i>
       </a>
+      {{#if @root.isTop}}
+      <a data-action="moveCard">
+        <i class="fa-solid fa-sort-down"></i>
+      </a>
+      {{/if}}
     </div>
     <img class="thumbnail" src="{{card.img}}">
     <figcaption>{{card.name}}</figcaption>

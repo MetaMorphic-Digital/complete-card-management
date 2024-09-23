@@ -72,7 +72,8 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     actions: {
       shuffleReplace: this.#shuffleCards,
       confirm: this.#confirm,
-      playCard: this.#playCard
+      playCard: this.#playCard,
+      moveCard: this.#moveCard
     }
   };
 
@@ -91,6 +92,8 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     const context = {};
     context.cards = this.#cards;
     context.shuffle = this.#how !== CONST.CARD_DRAW_MODES.RANDOM;
+    context.isTop = this.#how === CONST.CARD_DRAW_MODES.TOP;
+    context.isBottom = this.#how === CONST.CARD_DRAW_MODES.BOTTOM;
     return context;
   }
 
@@ -252,6 +255,42 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         deck: this.#deck.name
       })
     });
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Move a card to the top or bottom
+   * @this {ScryDialog}
+   * @param {Event} event             Initiating click event.
+   * @param {HTMLElement} target      The data-action element.
+   */
+  static async #moveCard(event, target) {
+    const figure = target.closest("[data-card-id]");
+    const cardId = figure.dataset.cardId;
+    const card = this.#deck.cards.get(cardId);
+    // If this is the top of the deck, we're sending to the bottom
+    // Which means all cards in between need to be shifted up
+    // Vise-versa for scrying the bottom of the deck
+    const adjustment = this.#how === CONST.CARD_DRAW_MODES.FIRST ? -1 : 1;
+    const comparison = this.#how === CONST.CARD_DRAW_MODES.FIRST ? c => c.sort > card.sort : c => c.sort < card.sort;
+
+    const updates = this.#deck.cards.filter(comparison).map(c => {
+      return {
+        _id: c._id,
+        sort: c.sort + adjustment
+      };
+    });
+
+    updates.push({
+      _id: cardId,
+      sort: this.#how === CONST.CARD_DRAW_MODES.FIRST ? this.#deck.cards.size - 1 : 0
+    });
+
+    await this.#deck.updateEmbeddedDocuments("Card", updates);
+
+    this.#cards.findSplice(c => c.id === cardId);
+    this.render();
   }
 
   /* -------------------------------------------------- */
