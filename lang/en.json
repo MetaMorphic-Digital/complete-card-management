@@ -55,6 +55,7 @@
       "Unnamed": "Unnamed ({idx})",
       "DeleteFacePrompt": "Delete this face? This action cannot be undone.",
       "DeleteFaceTitle": "Delete Face",
+
       "ScryingContext": "Scry",
       "ScryingTitle": "Scrying on: {name}",
       "ScryingMessage": "{name} is scrying on {number} cards in {deck}.",
@@ -62,6 +63,8 @@
       "ScryingShuffleAndReplace": "Shuffle and Replace",
       "ScryPromptHint": "Choose the amount of cards to scry on from this set of cards.",
       "ScryPromptLabel": "Amount",
+      "ScryMoveTop": "Sort card to top of deck",
+      "ScryMoveBottom": "Sort card to bottom of deck",
 
       "CardType": "Type",
       "CardSuit": "Suit",
@@ -113,7 +116,8 @@
       "FailCanvasDeck": "The top card of this deck is already on the canvas. Move it to a another card stack, such as with a region, to draw a new card.",
       "AlreadyInside": "{card} is already contained within {stack}.",
       "NoCopyPaste": "Canvas cards cannot be copied and pasted.",
-      "DeckOwnerNotFound": "No owner of the deck was found to be able to perform this action."
+      "DeckOwnerNotFound": "No owner of the deck was found to be able to perform this action.",
+      "NoScryDrop": "You can't drop external cards on the scrying dialog"
     },
     "API": {
       "LayoutScene": "Laid out cards on scene {name}."

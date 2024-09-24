@@ -71,7 +71,9 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     actions: {
       shuffleReplace: this.#shuffleCards,
-      close: this.#onClose
+      confirm: this.#confirm,
+      playCard: this.#playCard,
+      moveCard: this.#moveCard
     }
   };
 
@@ -90,7 +92,16 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     const context = {};
     context.cards = this.#cards;
     context.shuffle = this.#how !== CONST.CARD_DRAW_MODES.RANDOM;
+    context.isTop = this.#how === CONST.CARD_DRAW_MODES.TOP;
+    context.isBottom = this.#how === CONST.CARD_DRAW_MODES.BOTTOM;
     return context;
+  }
+
+  /** @override */
+  _onRender(...T) {
+    super._onRender(...T);
+    // Can't rearrange random pulls
+    if (this.#how !== CONST.CARD_DRAW_MODES.RANDOM) this.#setupDragDrop();
   }
 
   /* -------------------------------------------------- */
@@ -119,11 +130,77 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   #deck = null;
 
+  /**
+   * A getter to align functionality with proper deck sheets
+   * @returns {Cards}
+   */
+  get document() {
+    return this.#deck;
+  }
+
   /* -------------------------------------------------- */
 
   /** @override */
   get title() {
     return game.i18n.format("CCM.CardSheet.ScryingTitle", {name: this.#deck.name});
+  }
+
+  /* -------------------------------------------------- */
+  /*   Drag and drop handlers                           */
+  /* -------------------------------------------------- */
+
+  /**
+   * Set up drag and drop.
+   */
+  #setupDragDrop() {
+    const dd = new DragDrop({
+      dragSelector: "[data-card-id]",
+      dropSelector: "fieldset.cards",
+      callbacks: {
+        dragstart: this._onDragStart.bind(this),
+        drop: this._onDrop.bind(this)
+      }
+    });
+    dd.bind(this.element);
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Handle dragstart event.
+   * @param {DragEvent} event     The triggering drag event.
+   */
+  _onDragStart(event) {
+    const id = event.currentTarget.closest("[data-card-id]")?.dataset.cardId;
+    const card = this.#deck.cards.get(id);
+    if (card) event.dataTransfer.setData("text/plain", JSON.stringify(card.toDragData()));
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Drag and drop the
+   * @param {DragEvent} event     The triggering drag event.
+   */
+  async _onDrop(event) {
+    const data = TextEditor.getDragEventData(event);
+    if (data.type !== "Card") return;
+    const card = await Card.implementation.fromDropData(data);
+    if (card.parent.id !== this.document.id) {
+      ui.notifications.error("CCM.Warning.NoScryDrop", {localize: true});
+      return;
+    }
+    const currentIndex = this.#cards.findIndex(c => c.id === card.id);
+    /** @type {HTMLElement} */
+    const target = event.target.closest("[data-card-id]");
+    const targetCard = this.document.cards.get(target?.dataset.cardId);
+    if (card.id === targetCard) return; // Don't sort on self
+    if (targetCard) {
+      const targetIndex = this.#cards.findIndex(c => c.id === targetCard.id);
+      this.#cards.splice(targetIndex, 0, this.#cards.splice(currentIndex, 1)[0]);
+    }
+
+    return this.render();
   }
 
   /* -------------------------------------------------- */
@@ -183,12 +260,75 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------------- */
 
   /**
-   * Close the application.
+   * Move a card to the top or bottom
    * @this {ScryDialog}
    * @param {Event} event             Initiating click event.
    * @param {HTMLElement} target      The data-action element.
    */
-  static #onClose(event, target) {
+  static async #moveCard(event, target) {
+    const figure = target.closest("[data-card-id]");
+    const cardId = figure.dataset.cardId;
+    const card = this.#deck.cards.get(cardId);
+    // If this is the top of the deck, we're sending to the bottom
+    // Which means all cards in between need to be shifted up
+    // Vise-versa for scrying the bottom of the deck
+    const adjustment = this.#how === CONST.CARD_DRAW_MODES.FIRST ? -1 : 1;
+    const comparison = this.#how === CONST.CARD_DRAW_MODES.FIRST ? c => c.sort > card.sort : c => c.sort < card.sort;
+
+    const updates = this.#deck.cards.filter(comparison).map(c => {
+      return {
+        _id: c._id,
+        sort: c.sort + adjustment
+      };
+    });
+
+    updates.push({
+      _id: cardId,
+      sort: this.#how === CONST.CARD_DRAW_MODES.FIRST ? this.#deck.cards.size - 1 : 0
+    });
+
+    await this.#deck.updateEmbeddedDocuments("Card", updates);
+
+    this.#cards.findSplice(c => c.id === cardId);
+    this.render();
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Play a card from the dialog
+   * @this {ScryDialog}
+   * @param {Event} event             Initiating click event.
+   * @param {HTMLElement} target      The data-action element.
+   */
+  static async #playCard(event, target) {
+    const figure = target.closest("[data-card-id]");
+    const cardId = figure.dataset.cardId;
+    const card = this.#deck.cards.get(cardId);
+    const play = await this.#deck.playDialog(card);
+    if (play) {
+      this.#cards.findSplice(c => c.id === cardId);
+      this.render();
+    }
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Close the application with the Confirm button.
+   * @this {ScryDialog}
+   * @param {Event} event             Initiating click event.
+   * @param {HTMLElement} target      The data-action element.
+   */
+  static async #confirm(event, target) {
+    if (this.#how !== CONST.CARD_DRAW_MODES.RANDOM) {
+      const startIndex = this.#how === CONST.CARD_DRAW_MODES.FIRST ? 0 : this.#deck.cards.size - this.#cards.length;
+      const updates = this.#cards.map((c, index) => ({
+        _id: c._id,
+        sort: index + startIndex
+      }));
+      await this.#deck.updateEmbeddedDocuments("Card", updates);
+    }
     this.close();
   }
 }
