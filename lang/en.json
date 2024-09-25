@@ -13,6 +13,10 @@
         "targetStack": {
           "hint": "The Deck, Hand, or Pile to move a card into.",
           "label": "Target Stack"
+        },
+        "keepCanvasCard": {
+          "hint": "Whether to keep any cards moved into this region on the canvas",
+          "label": "Keep Canvas Card"
         }
       },
       "NoGM": "No active GM to manage scene data!",
