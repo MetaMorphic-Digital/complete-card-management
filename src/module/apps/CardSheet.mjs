@@ -58,6 +58,16 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   };
 
   /** @override */
+  get title() {
+    const stack = this.document.parent;
+    if (!stack) return super.title;
+    return game.i18n.format("CCM.CardSheet.CardParentTitle", {
+      cardName: this.document.name,
+      stackName: stack.name
+    });
+  }
+
+  /** @override */
   _onRender(...T) {
     super._onRender(...T);
     this.#faces = this.element.querySelector("[name=face]");
