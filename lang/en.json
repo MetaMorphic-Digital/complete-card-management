@@ -41,6 +41,7 @@
       "DragCardFromDeck": "Dragging card from {name}"
     },
     "CardSheet": {
+      "CardParentTitle": "{stackName}: {cardName}",
       "Add": "Add",
       "Save": "Save Card",
       "AddFace": "Add Face",
