@@ -15,7 +15,7 @@
           "label": "Target Stack"
         },
         "keepCanvasCard": {
-          "hint": "Whether to keep any cards moved into this region on the canvas",
+          "hint": "Whether to keep any cards moved into this region on the canvas.",
           "label": "Keep Canvas Card"
         }
       },

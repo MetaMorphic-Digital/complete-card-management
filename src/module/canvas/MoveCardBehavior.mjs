@@ -9,7 +9,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
   static defineSchema() {
     return {
       targetStack: new fields.ForeignDocumentField(getDocumentClass("Cards")),
-      keepCanvasCard: new fields.BooleanField({initial: true})
+      keepCanvasCard: new fields.BooleanField()
     };
   }
 
