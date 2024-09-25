@@ -1,4 +1,5 @@
 import CCM_CONFIG from "../config.mjs";
+import {MODULE_ID} from "../helpers.mjs";
 const fields = foundry.data.fields;
 
 export default class MoveCardBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
@@ -7,7 +8,8 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
 
   static defineSchema() {
     return {
-      targetStack: new fields.ForeignDocumentField(getDocumentClass("Cards"))
+      targetStack: new fields.ForeignDocumentField(getDocumentClass("Cards")),
+      keepCanvasCard: new fields.BooleanField()
     };
   }
 
@@ -54,6 +56,11 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
       ui.notifications.info(game.i18n.format("CCM.MoveCardBehavior.AddCard",
         {name: card.name, stack: this.targetStack.name})
       );
+
+      if (!this.keepCanvasCard) {
+        await card.unsetFlag(MODULE_ID, canvas.scene.id);
+      }
+
       card.pass(this.targetStack);
     }
   }
@@ -66,7 +73,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
   static async #onCardMoveOut(event) {
     const {card} = event.data;
     if (this.targetStack && (this.targetStack !== card.parent) && event.user.isSelf) {
-      console.log(game.i18n.format("CCM.MoveCardBehavior.RemoveCard",
+      console.debug(game.i18n.format("CCM.MoveCardBehavior.RemoveCard",
         {name: card.name, stack: this.targetStack.name})
       );
     }
