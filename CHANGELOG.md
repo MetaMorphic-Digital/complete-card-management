@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.1
+
+- Removed `compatibility.systems` field from the module.json, allowing this module to be used with any system, not just SWADE and UTS.
+
+## 1.0.0 Official Release
+
+- Improved title on Card Sheet
+- Added option to the allocate card region behavior to delete canvas cards dropped there (default: true)
+
 ## 0.9.1 Beta Release 2
 
 ### Additions
