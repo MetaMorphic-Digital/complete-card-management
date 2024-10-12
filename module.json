@@ -29,27 +29,6 @@
     "minimum": "12.328",
     "verified": "12.331"
   },
-  "relationships": {
-    "systems": [
-      {
-        "id": "universal-tabletop-system",
-        "type": "system",
-        "manifest": "https://github.com/MetaMorphic-Digital/universal-tabletop-system/releases/latest/download/system.json",
-        "compatibility": {
-          "verified": "0.8"
-        }
-      },
-      {
-        "id": "swade",
-        "type": "system",
-        "manifest": "https://gitlab.com/api/v4/projects/16269883/packages/generic/swade/latest/system.json",
-        "compatibility": {
-          "minimum": "4.0.0",
-          "verified": "4"
-        }
-      }
-    ]
-  },
   "esmodules": ["./ccm.mjs"],
   "styles": ["./ccm.css"],
   "languages": [
