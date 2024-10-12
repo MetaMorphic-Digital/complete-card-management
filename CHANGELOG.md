@@ -2,7 +2,7 @@
 
 ## 1.0.1
 
-- Removed `compatibility.systems` field from the module.json, allowing this module to be used with any system, not just SWADE and UTS.
+- Removed `compatibility.systems` field from the module.json, allowing this module to be used with any system, not just SWADE and UTS. [#146]
 
 ## 1.0.0 Official Release
 
