@@ -18,7 +18,6 @@ export async function scry(deck, {amount = 1, how = CONST.CARD_DRAW_MODES.FIRST}
     })
   });
   return application;
-  // TODO: replace cards with specific method or in specific order.
 }
 
 /**
