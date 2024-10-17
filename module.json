@@ -1,7 +1,7 @@
 {
   "id": "complete-card-management",
   "title": "Complete Card Management",
-  "description": "A module for generic card, deck, hand, and pile interactions using the canvas",
+  "description": "Complete Card Management (CCM) is produced by Metamorphic Digital Studios and allows full interaction with cards on the canvas in Foundry VTT. By creating a unique card layer on the canvas users can drop cards, flip them, rotate them, shuffle decks, and even use regions to assign cards to different piles. The versatility is endless.",
   "authors": [
     {
       "name": "Joseph M.",
