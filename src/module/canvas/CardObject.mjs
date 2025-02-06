@@ -191,7 +191,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
    * @returns {PreciseText}
    */
   #drawText() {
-    const text = new PreciseText(this.document.text || "", this._getTextStyle());
+    const text = new foundry.canvas.containers.PreciseText(this.document.text || "", this._getTextStyle());
     text.eventMode = "none";
     text.anchor.set(0.5, 0.5);
     return text;
@@ -212,7 +212,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   _getTextStyle() {
     const {fontSize, fontFamily, textColor, width} = this.document;
     const stroke = Math.max(Math.round(fontSize / 32), 2);
-    return PreciseText.getTextStyle({
+    return foundry.canvas.containers.PreciseText.getTextStyle({
       fontFamily: fontFamily,
       fontSize: fontSize,
       fill: textColor,

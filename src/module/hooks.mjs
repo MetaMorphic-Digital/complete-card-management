@@ -5,6 +5,8 @@ import CCM_CONFIG from "./config.mjs";
 import {checkHandDisplayUpdate, MODULE_ID, MoveCardType} from "./helpers.mjs";
 import {addCard, removeCard} from "./patches.mjs";
 
+/** @import SceneConfig from "../../foundry/client-esm/applications/sheets/scene-config.mjs"; */
+
 /**
  * Run on Foundry init
  */
@@ -369,7 +371,6 @@ export function renderPlayerList(app, [html], context) {
  * @param {ContextMenuEntry[]} contextOptions
  */
 export function getUserContextOptions(html, contextOptions) {
-  console.log(html, contextOptions);
   contextOptions.push({
     name: game.i18n.localize("CCM.UserConfig.OpenHand"),
     icon: "<i class=\"fa-solid fa-fw fa-cards\"></i>",
@@ -389,14 +390,15 @@ export function getUserContextOptions(html, contextOptions) {
 /**
  * Add Scene pile selection
  * @param {SceneConfig} app
- * @param {HTMLElement[]} jquery
+ * @param {HTMLElement} html
  * @param {Record<string, unknown>} context
+ * @param {Record<string, unknown>} options
  */
-export function renderSceneConfig(app, [html], context) {
+export function renderSceneConfig(app, html, context, options) {
   /** @type {Scene} */
   const scene = app.document;
 
-  const options = game.cards.reduce((arr, doc) => {
+  const selectOptions = game.cards.reduce((arr, doc) => {
     if (!doc.visible || (doc.type !== "pile") || !doc.canUserModify(game.user, "update")) return arr;
     arr.push({value: doc.id, label: doc.name});
     return arr;
@@ -405,7 +407,7 @@ export function renderSceneConfig(app, [html], context) {
   const input = foundry.applications.fields.createSelectInput({
     name: `flags.${MODULE_ID}.canvasPile`,
     value: scene.getFlag(MODULE_ID, "canvasPile"),
-    options,
+    options: selectOptions,
     blank: ""
   });
 
@@ -418,7 +420,7 @@ export function renderSceneConfig(app, [html], context) {
 
   const basicOptions = html.querySelector(".tab[data-group=\"ambience\"][data-tab=\"basic\"]");
 
-  basicOptions.append(document.createElement("hr"), group);
+  basicOptions.append(group);
 
   app.setPosition();
 }
