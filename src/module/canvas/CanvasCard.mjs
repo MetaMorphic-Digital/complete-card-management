@@ -346,8 +346,12 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     if (game.user.id !== userId) return;
     const centerX = this.width / 2;
     const centerY = this.height / 2;
-    const origin = {x: this.x + centerX, y: this.y + centerY};
-    const destination = {x: (updates.x ?? this.x) + centerX, y: (updates.y ?? this.y) + centerY};
+    const origin = {x: this.x + centerX, y: this.y + centerY, elevation: this.elevation};
+    const destination = {
+      x: (updates.x ?? this.x) + centerX,
+      y: (updates.y ?? this.y) + centerY,
+      elevation: updates.elevation ?? this.elevation
+    };
     const eventData = {
       card: this.card,
       origin,
@@ -363,8 +367,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         )
       );
       if (!triggeredBehaviors.length) continue;
-      const originInside = region.object.testPoint(origin);
-      const destinationInside = region.object.testPoint(destination);
+      const originInside = region.testPoint(origin);
+      const destinationInside = region.testPoint(destination);
       if (originInside && !destinationInside) {
         region._triggerEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT, eventData);
       } else if ((!originInside || newCard) && destinationInside) {

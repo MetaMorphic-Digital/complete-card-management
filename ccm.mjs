@@ -8,8 +8,6 @@ Hooks.once("ready", hooks.ready);
 
 Hooks.on("dropCanvasData", hooks.dropCanvasData);
 
-Hooks.on("getSceneControlButtons", hooks.getSceneControlButtons);
-
 Hooks.on("renderSceneConfig", hooks.renderSceneConfig);
 
 Hooks.on("renderHeadsUpDisplay", hooks.renderHeadsUpDisplay);
