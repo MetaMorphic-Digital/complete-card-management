@@ -1,39 +1,38 @@
-<form id="{{id}}" class="{{classes}}" data-appid="{{appId}}" autocomplete="off">
-  <div class="col left">
-    <div class="attribute elevation" data-tooltip="HUD.Elevation">
-      <i class="fas fa-angle-up"></i>
-      <input type="text" name="elevation" value="{{elevation}}" {{disabled (or locked (and isGamePaused (not isGM)))}}>
-    </div>
-    <div class="control-icon" data-action="sort-up" data-tooltip="HUD.ToFront">
-      <img src="{{icons.up}}" width="36" height="36">
-    </div>
-    <div class="control-icon" data-action="sort-down" data-tooltip="HUD.ToBack">
-      <img src="{{icons.down}}" width="36" height="36">
-    </div>
-    <div class="control-icon" data-action="rotate" data-tooltip="CCM.CardLayer.HUD.Rotate">
-      <img src="{{icons.rotate}}" width="36" height="36">
-    </div>
-  </div>
 
-  <div class="col middle">
+<div class="col left">
+  <div class="attribute elevation" data-tooltip="HUD.Elevation">
+    <i class="fas fa-angle-up"></i>
+    <input type="text" name="elevation" value="{{elevation}}" {{disabled (or locked (and isGamePaused (not isGM)))}}>
   </div>
+  <button type="button" class="control-icon" data-action="sort-up" data-tooltip="HUD.ToFront">
+    <img src="{{icons.up}}" width="36" height="36">
+  </button>
+  <button type="button" class="control-icon" data-action="sort-down" data-tooltip="HUD.ToBack">
+    <img src="{{icons.down}}" width="36" height="36">
+  </button>
+  <button type="button" class="control-icon" data-action="rotate" data-tooltip="CCM.CardLayer.HUD.Rotate">
+    <img src="{{icons.rotate}}" width="36" height="36">
+  </button>
+</div>
 
-  <div class="col right">
-    <div class="control-icon {{visibilityClass}}" data-action="visibility" data-tooltip="HUD.ToggleVis">
-      <img src="{{icons.visibility}}" width="36" height="36">
-    </div>
-    <div class="control-icon {{lockedClass}}" data-action="locked" data-tooltip="HUD.ToggleLock">
-      <img src="{{icons.lock}}" width="36" height="36">
-    </div>
-    {{#if isCardStack}}
-      {{#if (ne card.type "hand")}}
-      <div class="control-icon" data-action="shuffle" data-tooltip="CARDS.Shuffle">
-        <img src="{{icons.shuffle}}" width="36" height="36">
-      </div>
-      {{/if}}
+<div class="col middle">
+</div>
+
+<div class="col right">
+  <button type="button" class="control-icon {{visibilityClass}}" data-action="visibility" data-tooltip="HUD.ToggleVis">
+    <img src="{{icons.visibility}}" width="36" height="36">
+  </button>
+  <button type="button" class="control-icon {{lockedClass}}" data-action="locked" data-tooltip="HUD.ToggleLock">
+    <img src="{{icons.lock}}" width="36" height="36">
+  </button>
+  {{#if isCardStack}}
+    {{#if (ne card.type "hand")}}
+    <button type="button" class="control-icon" data-action="shuffle" data-tooltip="CARDS.Shuffle">
+      <img src="{{icons.shuffle}}" width="36" height="36">
+    </button>
     {{/if}}
-    <div class="control-icon {{flippedClass}}" data-action="flip" data-tooltip="{{flipTooltip}}">
-      <img src="{{icons.flip}}" width="36" height="36">
-    </div>
-  </div>
-</form>
+  {{/if}}
+  <button type="button" class="control-icon {{flippedClass}}" data-action="flip" data-tooltip="{{flipTooltip}}">
+    <img src="{{icons.flip}}" width="36" height="36">
+  </button>
+</div>

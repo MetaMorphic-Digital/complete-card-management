@@ -275,11 +275,11 @@ export async function updateUser(user, changed, options, userId) {
 
 /**
  * A hook called when the canvas HUD is rendered during `Canvas#initialize`
- * @param {HeadsUpDisplay} app  - The HeadsUpDisplay application
+ * @param {HeadsUpDisplayContainer} app  - The HeadsUpDisplayContainer application
  * @param {HTMLElement[]} jquery       - A JQuery object of the HUD
- * @param {object} context      - Context passed from HeadsUpDisplay#getData
+ * @param {object} context      - Context passed from HeadsUpDisplayContainer#getData
  */
-export function renderHeadsUpDisplay(app, [html], context) {
+export function renderHeadsUpDisplayContainer(app, html, context, options) {
   if (!app.cards) app.cards = new CONFIG.Card.hudClass;
   // Position the CardHUD within the appropriate HTML
   const cardHudTemplate = document.createElement("template");

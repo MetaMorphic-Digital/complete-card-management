@@ -10,7 +10,7 @@ Hooks.on("dropCanvasData", hooks.dropCanvasData);
 
 Hooks.on("renderSceneConfig", hooks.renderSceneConfig);
 
-Hooks.on("renderHeadsUpDisplay", hooks.renderHeadsUpDisplay);
+Hooks.on("renderHeadsUpDisplayContainer", hooks.renderHeadsUpDisplayContainer);
 Hooks.on("renderUserConfig", hooks.renderUserConfig);
 Hooks.on("renderPlayerList", hooks.renderPlayerList);
 Hooks.on("getUserContextOptions", hooks.getUserContextOptions);

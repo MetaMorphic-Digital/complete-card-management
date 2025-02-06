@@ -451,8 +451,11 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   _onClickLeft2(event) {
     const filePath = this.document.texture.src;
     if (filePath) {
-      const ip = new ImagePopout(filePath, {
-        title: this.document.card.name,
+      const ip = new foundry.applications.apps.ImagePopout({
+        src: filePath,
+        window: {
+          title: this.document.card.name
+        },
         uuid: this.document.card.uuid
       });
       ip.render(true);

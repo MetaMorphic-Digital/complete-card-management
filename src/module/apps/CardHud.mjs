@@ -3,20 +3,34 @@ import CardLayer from "../canvas/CardLayer.mjs";
 import CardObject from "../canvas/CardObject.mjs";
 import {MODULE_ID, generateUpdates, processUpdates} from "../helpers.mjs";
 
+const {api, hud} = foundry.applications;
+
 /**
  * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for {@link CardObject}.
  * This interface provides controls for visibility...
  * The CardHUD implementation is stored at {@link CONFIG.Card.hudClass}.
  * @extends {BasePlaceableHUD<CardObject, CanvasCard, CardLayer>}
  */
-export default class CardHud extends BasePlaceableHUD {
+export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlaceableHUD) {
   /** @override */
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "card-hud",
+  static DEFAULT_OPTIONS = {
+    id: "card-hud",
+    actions: {
+      flip: this._onFlip,
+      rotate: {handler: this._onRotate, buttons: [0, 2]},
+      locked: this._onToggleLocked,
+      visibility: this._onToggleVisibility,
+      shuffle: this._onShuffle
+    }
+  };
+
+  /** @override */
+  static PARTS = {
+    hud: {
+      root: true,
       template: "modules/complete-card-management/templates/canvas/card-hud.hbs"
-    });
-  }
+    }
+  };
 
   /**
    * Getter for the source Card or Cards document
@@ -31,62 +45,44 @@ export default class CardHud extends BasePlaceableHUD {
   }
 
   /** @override */
-  getData(options = {}) {
-    const data = super.getData(options);
-    data.card = this.object.document.card;
-    data.isCardStack = this.object.document.card instanceof Cards;
-    data.lockedClass = this.document.locked ? "active" : "";
-    data.visibilityClass = this.document.hidden ? "active" : "";
-    data.flippedClass = this.document.flipped ? "active" : "";
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
     const typeName = this.card.type === CONST.BASE_DOCUMENT_TYPE
       ? this.card.constructor.metadata.label
       : CONFIG[this.card.documentName].typeLabels[this.card.type];
-    data.flipTooltip = game.i18n.format("CCM.CardLayer.HUD.Flip", {type: game.i18n.localize(typeName)});
-    return data;
-  }
-
-  /** @override */
-  setPosition(options = {}) {
-    const {x, y, width, height} = this.object.frame.bounds;
-    const c = 70;
-    const p = 10;
-    const position = {
-      width: width + (c * 2) + (p * 2),
-      height: height + (p * 2),
-      left: x + this.object.x - c - p,
-      top: y + this.object.y - p
-    };
-    this.element.css(position);
+    Object.assign(context, {
+      card: this.object.document.card,
+      isCardStack: this.object.document.card instanceof Cards,
+      lockedClass: this.document.locked ? "active" : "",
+      visibilityClass: this.document.hidden ? "active" : "",
+      flippedClass: this.document.flipped ? "active" : "",
+      flipTooltip: game.i18n.format("CCM.CardLayer.HUD.Flip", {type: game.i18n.localize(typeName)})
+    });
+    return context;
   }
 
   /**
    * Actions
    */
 
-  /** @override */
-  activateListeners(jq) {
-    super.activateListeners(jq);
-    /** @type {HTMLElement} */
-    const html = jq[0];
-    html.querySelector("[data-action='rotate']").addEventListener("contextmenu", this._onRotate.bind(this));
+  /**
+   * Handle click actions to shuffle the deck.
+   * @this {CardHUD}
+   * @param {PointerEvent} event
+   * @param {HTMLButtonElement} target
+   */
+  static async _onShuffle(event, target) {
+    if (!(this.document.card instanceof Cards)) throw new Error("You can only shuffle a card stack");
+    return this.document.card.shuffle();
   }
 
-  /** @override */
-  _onClickControl(event) {
-    super._onClickControl(event);
-    const button = event.currentTarget;
-    switch (button.dataset.action) {
-      case "flip":
-        return this._onFlip(event);
-      case "rotate":
-        return this._onRotate(event);
-      case "shuffle":
-        if (!(this.document.card instanceof Cards)) throw new Error("You can only shuffle a card stack");
-        return this.document.card.shuffle();
-    }
-  }
-
-  async _onToggleVisibility(event) {
+  /**
+   * Handle click actions to toggle object visibility.
+   * @this {CardHUD}
+   * @param {PointerEvent} event
+   * @param {HTMLButtonElement} target
+   */
+  static async _onToggleVisibility(event) {
     event.preventDefault();
     const updates = generateUpdates(
       this._flagPath + ".hidden",
@@ -96,7 +92,13 @@ export default class CardHud extends BasePlaceableHUD {
     await processUpdates(updates);
   }
 
-  async _onToggleLocked(event) {
+  /**
+   * Handle click actions to toggle object locked state.
+   * @this {CardHUD}
+   * @param {PointerEvent} event
+   * @param {HTMLButtonElement} target
+   */
+  static async _onToggleLocked(event) {
     event.preventDefault();
     const updates = generateUpdates(
       this._flagPath + ".locked",
@@ -108,10 +110,11 @@ export default class CardHud extends BasePlaceableHUD {
 
   /**
    * Flips the selected card and all other controlled cards to match
+   * @this {CardHUD}
    * @param {PointerEvent} event The originating click event
+   * @param {HTMLButtonElement} target
    */
-  async _onFlip(event) {
-    event.preventDefault();
+  static async _onFlip(event, target) {
     let updates;
     if (this.card.documentName === "Card") {
       // TODO: Improve handling for multi-faced cards
@@ -130,10 +133,11 @@ export default class CardHud extends BasePlaceableHUD {
   /**
    * Rotate the selected card 90 degrees and all other controlled cards to match
    * Left click rotates clockwise, right click rotates counter-clockwise
+   * @this {CardHUD}
    * @param {PointerEvent} event The originating click event
+   * @param {HTMLButtonElement} target
    */
-  async _onRotate(event) {
-    event.preventDefault();
+  static async _onRotate(event, target) {
     const rotateValue = event.type === "click" ? 90 : -90;
     const updates = generateUpdates(
       this._flagPath + ".rotation",
