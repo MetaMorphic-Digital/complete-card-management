@@ -98,7 +98,7 @@ export default class CardLayer extends PlaceablesLayer {
     return true;
   }
 
-  /** @inheritDoc */
+  /** @override */
   getSnappedPoint(point) {
     if (canvas.forceSnapVertices) return canvas.grid.getSnappedPoint(point, {mode: CONST.GRID_SNAPPING_MODES.VERTEX});
     return super.getSnappedPoint(point);
@@ -160,6 +160,48 @@ export default class CardLayer extends PlaceablesLayer {
     // Wait for all objects to draw
     await Promise.all(promises);
     this.objects.visible = true;
+  }
+
+  /** @override */
+  static prepareSceneControls() {
+    return {
+      name: "cards",
+      order: 12,
+      title: "CCM.CardLayer.Title",
+      layer: "cards",
+      icon: CONFIG.Cards.sidebarIcon,
+      onChange: (event, active) => {
+        if (active) canvas.cards.activate();
+      },
+      onToolChange: () => canvas.cards.setAllRenderFlags({refreshState: true}),
+      tools: {
+        select: {
+          name: "select",
+          order: 1,
+          title: "CCM.CardLayer.Tools.SelectTitle",
+          icon: "fa-solid fa-expand"
+        },
+        snap: {
+          name: "snap",
+          order: 2,
+          title: "CONTROLS.CommonForceSnap",
+          icon: "fa-solid fa-plus",
+          toggle: true,
+          active: canvas.forceSnapVertices,
+          onChange: (event, toggled) => canvas.forceSnapVertices = toggled
+        },
+        delete: {
+          name: "delete",
+          order: 3,
+          title: "CCM.CardLayer.Tools.ClearTitle",
+          icon: "fa-solid fa-trash",
+          visible: game.user.isGM,
+          button: true,
+          onChange: (event, toggled) => canvas.cards.deleteAll()
+        }
+      },
+      activeTool: "select"
+    };
   }
 
   /**

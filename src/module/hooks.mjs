@@ -272,45 +272,6 @@ export async function updateUser(user, changed, options, userId) {
 /* -------------------------------------------------- */
 
 /**
- * Hook event method for adding cards layer controls.
- * @param {SceneControl[]} controls
- */
-export function getSceneControlButtons(controls) {
-  controls.push({
-    name: "cards",
-    title: "CCM.CardLayer.Title",
-    layer: "cards",
-    icon: CONFIG.Cards.sidebarIcon,
-    tools: [
-      {
-        name: "select",
-        title: "CCM.CardLayer.Tools.SelectTitle",
-        icon: "fa-solid fa-expand"
-      },
-      {
-        name: "snap",
-        title: "CONTROLS.CommonForceSnap",
-        icon: "fa-solid fa-plus",
-        toggle: true,
-        active: canvas.forceSnapVertices,
-        onClick: toggled => canvas.forceSnapVertices = toggled
-      },
-      {
-        name: "delete",
-        title: "CCM.CardLayer.Tools.ClearTitle",
-        icon: "fa-solid fa-trash",
-        visible: game.user.isGM,
-        button: true,
-        onClick: () => canvas.cards.deleteAll()
-      }
-    ],
-    activeTool: "select"
-  });
-}
-
-/* -------------------------------------------------- */
-
-/**
  * A hook called when the canvas HUD is rendered during `Canvas#initialize`
  * @param {HeadsUpDisplay} app  - The HeadsUpDisplay application
  * @param {HTMLElement[]} jquery       - A JQuery object of the HUD
@@ -404,10 +365,11 @@ export function renderPlayerList(app, [html], context) {
 
 /**
  *
- * @param {HTMLElement[]} param0
+ * @param {HTMLElement} html
  * @param {ContextMenuEntry[]} contextOptions
  */
-export function getUserContextOptions([html], contextOptions) {
+export function getUserContextOptions(html, contextOptions) {
+  console.log(html, contextOptions);
   contextOptions.push({
     name: game.i18n.localize("CCM.UserConfig.OpenHand"),
     icon: "<i class=\"fa-solid fa-fw fa-cards\"></i>",
