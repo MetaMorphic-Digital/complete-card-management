@@ -31,19 +31,19 @@ export function init() {
 
   ccm_canvas.CanvasCard.registerSettings();
 
-  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
     label: "CCM.Sheets.Deck", types: ["deck"]
   });
-  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.HandSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.HandSheet, {
     label: "CCM.Sheets.Hand", types: ["hand"]
   });
-  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DockedHandSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DockedHandSheet, {
     label: "CCM.Sheets.DockedHand", types: ["hand"]
   });
-  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.PileSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.PileSheet, {
     label: "CCM.Sheets.Pile", types: ["pile"]
   });
-  DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, {
     label: "CCM.Sheets.Card"
   });
 
@@ -373,12 +373,12 @@ export function getUserContextOptions(html, contextOptions) {
   contextOptions.push({
     name: game.i18n.localize("CCM.UserConfig.OpenHand"),
     icon: "<i class=\"fa-solid fa-fw fa-cards\"></i>",
-    condition: ([li]) => {
+    condition: (li) => {
       const user = game.users.get(li.dataset.userId);
       const handId = user.getFlag(MODULE_ID, "playerHand");
       return game.cards.get(handId)?.visible;
     },
-    callback: ([li]) => {
+    callback: (li) => {
       const user = game.users.get(li.dataset.userId);
       const handId = user.getFlag(MODULE_ID, "playerHand");
       game.cards.get(handId)?.sheet.render(true);
