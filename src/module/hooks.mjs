@@ -5,6 +5,8 @@ import CCM_CONFIG from "./config.mjs";
 import {checkHandDisplayUpdate, MODULE_ID, MoveCardType} from "./helpers.mjs";
 import {addCard, removeCard} from "./patches.mjs";
 
+/** @import SceneConfig from "../../foundry/client-esm/applications/sheets/scene-config.mjs"; */
+
 /**
  * Run on Foundry init
  */
@@ -31,19 +33,19 @@ export function init() {
 
   ccm_canvas.CanvasCard.registerSettings();
 
-  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
     label: "CCM.Sheets.Deck", types: ["deck"]
   });
-  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.HandSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.HandSheet, {
     label: "CCM.Sheets.Hand", types: ["hand"]
   });
-  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DockedHandSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DockedHandSheet, {
     label: "CCM.Sheets.DockedHand", types: ["hand"]
   });
-  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.PileSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.PileSheet, {
     label: "CCM.Sheets.Pile", types: ["pile"]
   });
-  DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, {
     label: "CCM.Sheets.Card"
   });
 
@@ -272,51 +274,12 @@ export async function updateUser(user, changed, options, userId) {
 /* -------------------------------------------------- */
 
 /**
- * Hook event method for adding cards layer controls.
- * @param {SceneControl[]} controls
- */
-export function getSceneControlButtons(controls) {
-  controls.push({
-    name: "cards",
-    title: "CCM.CardLayer.Title",
-    layer: "cards",
-    icon: CONFIG.Cards.sidebarIcon,
-    tools: [
-      {
-        name: "select",
-        title: "CCM.CardLayer.Tools.SelectTitle",
-        icon: "fa-solid fa-expand"
-      },
-      {
-        name: "snap",
-        title: "CONTROLS.CommonForceSnap",
-        icon: "fa-solid fa-plus",
-        toggle: true,
-        active: canvas.forceSnapVertices,
-        onClick: toggled => canvas.forceSnapVertices = toggled
-      },
-      {
-        name: "delete",
-        title: "CCM.CardLayer.Tools.ClearTitle",
-        icon: "fa-solid fa-trash",
-        visible: game.user.isGM,
-        button: true,
-        onClick: () => canvas.cards.deleteAll()
-      }
-    ],
-    activeTool: "select"
-  });
-}
-
-/* -------------------------------------------------- */
-
-/**
  * A hook called when the canvas HUD is rendered during `Canvas#initialize`
- * @param {HeadsUpDisplay} app  - The HeadsUpDisplay application
+ * @param {HeadsUpDisplayContainer} app  - The HeadsUpDisplayContainer application
  * @param {HTMLElement[]} jquery       - A JQuery object of the HUD
- * @param {object} context      - Context passed from HeadsUpDisplay#getData
+ * @param {object} context      - Context passed from HeadsUpDisplayContainer#getData
  */
-export function renderHeadsUpDisplay(app, [html], context) {
+export function renderHeadsUpDisplayContainer(app, html, context, options) {
   if (!app.cards) app.cards = new CONFIG.Card.hudClass;
   // Position the CardHUD within the appropriate HTML
   const cardHudTemplate = document.createElement("template");
@@ -404,19 +367,19 @@ export function renderPlayerList(app, [html], context) {
 
 /**
  *
- * @param {HTMLElement[]} param0
+ * @param {HTMLElement} html
  * @param {ContextMenuEntry[]} contextOptions
  */
-export function getUserContextOptions([html], contextOptions) {
+export function getUserContextOptions(html, contextOptions) {
   contextOptions.push({
     name: game.i18n.localize("CCM.UserConfig.OpenHand"),
     icon: "<i class=\"fa-solid fa-fw fa-cards\"></i>",
-    condition: ([li]) => {
+    condition: (li) => {
       const user = game.users.get(li.dataset.userId);
       const handId = user.getFlag(MODULE_ID, "playerHand");
       return game.cards.get(handId)?.visible;
     },
-    callback: ([li]) => {
+    callback: (li) => {
       const user = game.users.get(li.dataset.userId);
       const handId = user.getFlag(MODULE_ID, "playerHand");
       game.cards.get(handId)?.sheet.render(true);
@@ -427,14 +390,15 @@ export function getUserContextOptions([html], contextOptions) {
 /**
  * Add Scene pile selection
  * @param {SceneConfig} app
- * @param {HTMLElement[]} jquery
+ * @param {HTMLElement} html
  * @param {Record<string, unknown>} context
+ * @param {Record<string, unknown>} options
  */
-export function renderSceneConfig(app, [html], context) {
+export function renderSceneConfig(app, html, context, options) {
   /** @type {Scene} */
   const scene = app.document;
 
-  const options = game.cards.reduce((arr, doc) => {
+  const selectOptions = game.cards.reduce((arr, doc) => {
     if (!doc.visible || (doc.type !== "pile") || !doc.canUserModify(game.user, "update")) return arr;
     arr.push({value: doc.id, label: doc.name});
     return arr;
@@ -443,7 +407,7 @@ export function renderSceneConfig(app, [html], context) {
   const input = foundry.applications.fields.createSelectInput({
     name: `flags.${MODULE_ID}.canvasPile`,
     value: scene.getFlag(MODULE_ID, "canvasPile"),
-    options,
+    options: selectOptions,
     blank: ""
   });
 
@@ -456,7 +420,7 @@ export function renderSceneConfig(app, [html], context) {
 
   const basicOptions = html.querySelector(".tab[data-group=\"ambience\"][data-tab=\"basic\"]");
 
-  basicOptions.append(document.createElement("hr"), group);
+  basicOptions.append(group);
 
   app.setPosition();
 }

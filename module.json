@@ -26,8 +26,8 @@
   ],
   "version": "AUTOMATIC",
   "compatibility": {
-    "minimum": "12.328",
-    "verified": "12.331"
+    "minimum": "13",
+    "verified": "13.335"
   },
   "esmodules": ["./ccm.mjs"],
   "styles": ["./ccm.css"],
@@ -41,7 +41,7 @@
   "flags": {
     "hotReload": {
       "extensions": ["css", "hbs", "json"],
-      "paths": ["./ccm.css", "./lang/en.json", "templates"]
+      "paths": ["ccm.css", "lang/en.json", "templates"]
     }
   },
   "socket": true,

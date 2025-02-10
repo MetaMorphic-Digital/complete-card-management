@@ -526,7 +526,7 @@ export class HandSheet extends CardsSheet {
 export class DockedHandSheet extends HandSheet {
   /** @override */
   static DEFAULT_OPTIONS = {
-    classes: ["docked"],
+    classes: ["docked", "faded-ui"],
     window: {positioned: false}
   };
 

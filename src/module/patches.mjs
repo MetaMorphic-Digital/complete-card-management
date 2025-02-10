@@ -9,7 +9,7 @@
  */
 export function addCard(card) {
   const name = card.objectId;
-  const mesh = this.cardCollection.get(name) ?? this.cardMeshes.addChild(new SpriteMesh(card.texture));
+  const mesh = this.cardCollection.get(name) ?? this.cardMeshes.addChild(new foundry.canvas.containers.SpriteMesh(card.texture));
   mesh.texture = card.texture ?? PIXI.Texture.EMPTY;
   mesh.name = name;
   this.cardCollection.set(name, mesh);

@@ -5,7 +5,7 @@ import CanvasCard from "./CanvasCard.mjs";
 /**
  * The main Card layer
  */
-export default class CardLayer extends PlaceablesLayer {
+export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
   // "Card" is not a valid document name within the scene document
   static documentName = "Card";
 
@@ -98,7 +98,7 @@ export default class CardLayer extends PlaceablesLayer {
     return true;
   }
 
-  /** @inheritDoc */
+  /** @override */
   getSnappedPoint(point) {
     if (canvas.forceSnapVertices) return canvas.grid.getSnappedPoint(point, {mode: CONST.GRID_SNAPPING_MODES.VERTEX});
     return super.getSnappedPoint(point);
@@ -160,6 +160,48 @@ export default class CardLayer extends PlaceablesLayer {
     // Wait for all objects to draw
     await Promise.all(promises);
     this.objects.visible = true;
+  }
+
+  /** @override */
+  static prepareSceneControls() {
+    return {
+      name: "cards",
+      order: 12,
+      title: "CCM.CardLayer.Title",
+      layer: "cards",
+      icon: CONFIG.Cards.sidebarIcon,
+      onChange: (event, active) => {
+        if (active) canvas.cards.activate();
+      },
+      onToolChange: () => canvas.cards.setAllRenderFlags({refreshState: true}),
+      tools: {
+        select: {
+          name: "select",
+          order: 1,
+          title: "CCM.CardLayer.Tools.SelectTitle",
+          icon: "fa-solid fa-expand"
+        },
+        snap: {
+          name: "snap",
+          order: 2,
+          title: "CONTROLS.CommonForceSnap",
+          icon: "fa-solid fa-plus",
+          toggle: true,
+          active: canvas.forceSnapVertices,
+          onChange: (event, toggled) => canvas.forceSnapVertices = toggled
+        },
+        delete: {
+          name: "delete",
+          order: 3,
+          title: "CCM.CardLayer.Tools.ClearTitle",
+          icon: "fa-solid fa-trash",
+          visible: game.user.isGM,
+          button: true,
+          onChange: (event, toggled) => canvas.cards.deleteAll()
+        }
+      },
+      activeTool: "select"
+    };
   }
 
   /**
@@ -275,7 +317,7 @@ export default class CardLayer extends PlaceablesLayer {
 
     // Restrict to objects which can be deleted
     const uuids = objects.reduce((objIds, o) => {
-      const isDragged = (o.interactionState === MouseInteractionManager.INTERACTION_STATES.DRAG);
+      const isDragged = (o.interactionState === foundry.canvas.interaction.MouseInteractionManager.INTERACTION_STATES.DRAG);
       if (isDragged || o.document.locked || !o.document.canUserModify(game.user, "delete")) return objIds;
       if (this.hover === o) this.hover = null;
       objIds.push(o.id);

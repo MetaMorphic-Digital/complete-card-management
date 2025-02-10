@@ -2,15 +2,31 @@
 .ccm.card, .ccm.cards {
   max-height: 90%;
 
-  & h1 {
-    font-family: unset;
-    [name=name] { font-size: 18px; }
+  header {
+    img {
+      flex: 0 0 64px;
+      height: 64px;
+      margin-right: 6px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: unset;
+      [name=name] {
+        font-size: 18px;
+        height: 48px;
+        line-height: 48px;
+        margin: 8px 2%;
+        width: 96%;
+      }
+    }
+
   }
 
   &.docked {
-    bottom: 65px;
-    left: 220px;
-    width: var(--hotbar-width);
+    left: 250px;
+    bottom: 150px;
+    width: calc(100% - 250px - 312px);
     [data-application-part="cardList"] {
       .cards {
         list-style: none;
@@ -81,7 +97,7 @@
     font-size: 12px;
     padding: 0 5px;
 
-    & input {
+    input {
       height: 24px;
     }
 
@@ -103,6 +119,7 @@
     .cards {
       list-style: none;
       padding: 0;
+      margin: 0;
       min-height: 200px;
     }
 
@@ -144,7 +161,7 @@
         }
       }
 
-      & img {
+      img {
         width: 40px;
         flex: 0 0 40px;
         margin: 0 10px;

@@ -6,7 +6,7 @@ import CardLayer from "./CardLayer.mjs";
  * A CardObject is an implementation of PlaceableObject which represents a single Card document within the Scene.
  * CardObjects are drawn inside of the {@link CardLayer} container
  */
-export default class CardObject extends PlaceableObject {
+export default class CardObject extends foundry.canvas.placeables.PlaceableObject {
   constructor(canvasCard) {
     if (!(canvasCard instanceof CanvasCard)) {
       throw new Error("You must provide a CanvasCard to construct a CardObject");
@@ -140,7 +140,7 @@ export default class CardObject extends PlaceableObject {
     let texture;
     if (this._original) texture = this._original.texture?.clone();
     else if (this.document.texture.src) {
-      texture = await loadTexture(this.document.texture.src, {
+      texture = await foundry.canvas.loadTexture(this.document.texture.src, {
         fallback: "cards/backs/light-soft.webp"
       });
     }
@@ -191,7 +191,7 @@ export default class CardObject extends PlaceableObject {
    * @returns {PreciseText}
    */
   #drawText() {
-    const text = new PreciseText(this.document.text || "", this._getTextStyle());
+    const text = new foundry.canvas.containers.PreciseText(this.document.text || "", this._getTextStyle());
     text.eventMode = "none";
     text.anchor.set(0.5, 0.5);
     return text;
@@ -212,7 +212,7 @@ export default class CardObject extends PlaceableObject {
   _getTextStyle() {
     const {fontSize, fontFamily, textColor, width} = this.document;
     const stroke = Math.max(Math.round(fontSize / 32), 2);
-    return PreciseText.getTextStyle({
+    return foundry.canvas.containers.PreciseText.getTextStyle({
       fontFamily: fontFamily,
       fontSize: fontSize,
       fill: textColor,
@@ -293,7 +293,7 @@ export default class CardObject extends PlaceableObject {
    */
   _refreshPosition() {
     const {x, y, width, height} = this.document;
-    if ((this.position.x !== x) || (this.position.y !== y)) MouseInteractionManager.emulateMoveEvent();
+    if ((this.position.x !== x) || (this.position.y !== y)) foundry.canvas.interaction.MouseInteractionManager.emulateMoveEvent();
     this.position.set(x, y);
     if (!this.mesh) {
       this.bg.position.set(width / 2, height / 2);
@@ -355,7 +355,7 @@ export default class CardObject extends PlaceableObject {
     bounds.width = width - 2 * offsetX;
     bounds.height = height - 2 * offsetY;
     bounds.rotate(Math.toRadians(rotation));
-    MouseInteractionManager.emulateMoveEvent();
+    foundry.canvas.interaction.MouseInteractionManager.emulateMoveEvent();
 
     // Draw the border
     const thickness = CONFIG.Canvas.objectBorderThickness;
@@ -451,8 +451,11 @@ export default class CardObject extends PlaceableObject {
   _onClickLeft2(event) {
     const filePath = this.document.texture.src;
     if (filePath) {
-      const ip = new ImagePopout(filePath, {
-        title: this.document.card.name,
+      const ip = new foundry.applications.apps.ImagePopout({
+        src: filePath,
+        window: {
+          title: this.document.card.name
+        },
         uuid: this.document.card.uuid
       });
       ip.render(true);

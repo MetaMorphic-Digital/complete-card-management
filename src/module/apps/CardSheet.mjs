@@ -27,7 +27,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     },
     window: {
       contentClasses: ["standard-form"],
-      icon: "fa-solid fa-cards",
+      icon: "fa-solid fa-card-spade",
       contentTag: "div"
     }
   };
@@ -110,7 +110,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     }, {});
 
     // Details
-    context.type = makeField("type", {choices: CONFIG.Card.typeLabels, label: "CARD.Type"});
+    context.type = makeField("type", {choices: CONFIG.Card.typeLabels});
     context.suit = makeField("suit");
     context.value = makeField("value");
     context.width = makeField("width", {placeholder: game.i18n.localize("Width")});
