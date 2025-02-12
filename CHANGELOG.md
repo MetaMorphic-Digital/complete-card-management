@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.0.1
+
+- Added German support
+
+## 2.0.0 Foundry v13
+
+- Increased minimum version to Foundry v13
+- Many internal changes to achieve compatibility
+
+## 1.0.2
+
+- Changed the Deal dialog from a multi-checkbox to multi-select
+
 ## 1.0.1
 
 - Removed `compatibility.systems` field from the module.json, allowing this module to be used with any system, not just SWADE and UTS. [#146]
