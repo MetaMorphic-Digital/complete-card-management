@@ -1,129 +1,129 @@
 {
   "CCM": {
     "Sheets": {
-      "Cards": "Complete Card Management Cards Sheet",
-      "Card": "Complete Card Management Card Sheet",
+      "Cards": "Complete Card Management Karten Sheet",
+      "Card": "Complete Card Management Karte Sheet",
       "Deck": "Complete Card Management Deck Sheet",
       "Hand": "Complete Card Management Hand Sheet",
-      "DockedHand": "Complete Card Management Hand Sheet (Docked)",
-      "Pile": "Complete Card Management Pile Sheet"
+      "DockedHand": "Complete Card Management Hand Sheet (Angedockt)",
+      "Pile": "Complete Card Management Stapel Sheet"
     },
     "MoveCardBehavior": {
       "FIELDS": {
         "targetStack": {
-          "hint": "The Deck, Hand, or Pile to move a card into.",
-          "label": "Target Stack"
+          "hint": "The Deck, Hand, or Pile to move a card into. Deck, Hand oder Stapel in den die Karte geschoben werden soll. ",
+          "label": "Zielstapel"
         },
         "keepCanvasCard": {
-          "hint": "Whether to keep any cards moved into this region on the canvas.",
-          "label": "Keep Canvas Card"
+          "hint": "Ob alle Karten, die in diese Region geschoben werden, auf der Szene behalten werden sollen.",
+          "label": "Karte auf Szene belassen"
         }
       },
-      "NoGM": "No active GM to manage scene data!",
-      "NoStack": "Could not find a valid Cards document for this region",
-      "AddCard": "Adding {name} to {stack}",
-      "RemoveCard": "Removing {name} from {stack}"
+      "NoGM": "Kein GM aktiv um die Szenendaten zu administrieren!",
+      "NoStack": "Konnte kein valides Karten Dokument für diese Region finden.",
+      "AddCard": "Füge {name} zu {stack} hinzu",
+      "RemoveCard": "Entferne {name} from {stack}"
     },
     "REGION_EVENTS": {
       "CardMoveIn": {
-        "label": "Card Moved In"
+        "label": "Karte eingeschoben"
       },
       "CardMoveOut": {
-        "label": "Card Moved Out"
+        "label": "Karte herausgenommen"
       }
     },
     "CardLayer": {
-      "Title": "Card Controls",
+      "Title": "Kartensteuerung",
       "Tools": {
-        "SelectTitle": "Select Cards",
-        "ClearTitle": "Clear Cards"
+        "SelectTitle": "Karten auswählen",
+        "ClearTitle": "Karten löschen"
       },
       "HUD": {
-        "Flip": "Flip {type}",
-        "Rotate": "Rotate 90 degrees"
+        "Flip": "Wende {type}",
+        "Rotate": "Drehe um 90 grad"
       },
-      "DragCardFromDeck": "Dragging card from {name}"
+      "DragCardFromDeck": "Ziehe Karte aus {name}"
     },
     "CardSheet": {
       "CardParentTitle": "{stackName}: {cardName}",
-      "Add": "Add",
-      "Save": "Save Card",
-      "AddFace": "Add Face",
-      "DeleteFace": "Delete Face",
-      "TabDetails": "Card Details",
-      "TabFaces": "Card Faces",
-      "TabBack": "Card Back",
-      "TabConfiguration": "Configuration",
-      "TabCards": "Cards",
-      "BacksideUp": "Backside Up",
-      "FaceName": "Face Name",
-      "Unnamed": "Unnamed ({idx})",
-      "DeleteFacePrompt": "Delete this face? This action cannot be undone.",
-      "DeleteFaceTitle": "Delete Face",
-      "ScryingContext": "Scry",
-      "ScryingTitle": "Scrying on: {name}",
-      "ScryingMessage": "{name} is scrying on {number} cards in {deck}.",
-      "ScryingMessageReorder": "{name} shuffled the {number} revealed cards back into {deck}.",
-      "ScryingShuffleAndReplace": "Shuffle and Replace",
-      "ScryPromptHint": "Choose the amount of cards to scry on from this set of cards.",
-      "ScryPromptLabel": "Amount",
-      "ScryMoveTop": "Sort card to top of deck",
-      "ScryMoveBottom": "Sort card to bottom of deck",
-      "CardType": "Type",
+      "Add": "Hinzufügen",
+      "Save": "Karte speichern",
+      "AddFace": "Vorderseite hinzufügen",
+      "DeleteFace": "Vorderseite löschen",
+      "TabDetails": "Karten Details",
+      "TabFaces": "Karten Vorderseite",
+      "TabBack": "Karten Rückseite",
+      "TabConfiguration": "Konfiguration",
+      "TabCards": "Karten",
+      "BacksideUp": "Rückseite Oben",
+      "FaceName": "Vorderseite Name",
+      "Unnamed": "Unbenannt ({idx})",
+      "DeleteFacePrompt": "Vorderseite löschen? Dies kann nicht Rückgängig gemacht werden.",
+      "DeleteFaceTitle": "Vorderseite löschen",   
+      "ScryingContext": "Hellsehen",
+      "ScryingTitle": "Hellsehen auf: {name}",
+      "ScryingMessage": "{name} verwendet Hellsehen auf {number} Karten in {deck}.",
+      "ScryingMessageReorder": "{name} mischt {number} enthüllte Karten zurück in {deck}.",
+      "ScryingShuffleAndReplace": "Mischen und Austauschen",
+      "ScryPromptHint": "Entscheide wie viele Karten von diesem Set du dir mit Hellsehen ansehen willst.",
+      "ScryPromptLabel": "Anzahl",
+      "ScryMoveTop": "Lege die Karte oben aufs Deck",
+      "ScryMoveBottom": "Lege die Karte unter das Deck",
+      "CardType": "Typ",
       "CardSuit": "Suit",
-      "CardValue": "Value",
-      "CardDrawn": "Drawn",
-      "CardFace": "Face",
-      "CreateCard": "Create Card",
-      "EditCard": "Edit Card",
-      "DeleteCard": "Delete Card",
-      "NextFace": "Next Face",
-      "PreviousFace": "Previous Face",
-      "RecallCard": "Recall Card",
-      "RecalledCard": "Recalled {card} in {deck}.",
-      "PrimaryOwner": "Primary Owner"
+      "CardValue": "Wert",
+      "CardDrawn": "Gezogen",
+      "CardFace": "Vorderseite",
+      "CreateCard": "Karte erstellen",
+      "EditCard": "Karte bearbeiten",
+      "DeleteCard": "Karte löschen",
+      "NextFace": "Nächste Vorderseite",
+      "PreviousFace": "Vorherige Vorderseite",
+      "RecallCard": "Karte zurücklegen",
+      "RecalledCard": "{card} zurückgelegt in {deck}.",
+      "PrimaryOwner": "Hauptbesitzer"
     },
     "Settings": {
       "ShowNames": {
-        "Label": "Show Card Owner Name",
-        "Hint": "Display the owner of each card on the canvas"
+        "Label": "Zeige den Namen des Kartenbesitzers",
+        "Hint": "Zeige den Kartenbesitzer auf den Szenen"
       },
       "OwnerFontSize": {
-        "Label": "Font Size",
-        "Hint": "Font size of the text displayed if \"Show Card Owner\" is checked"
+        "Label": "Schriftgröße",
+        "Hint": "Schriftgröße von dem Text der gezeigt wird wenn \"Zeige den Namen des Kartenbesitzers\" aktiviert ist"
       },
       "OwnerTextColor": {
-        "Label": "Text Color",
-        "Hint": "Text color of the text displayed if \"Show Card Owner\" is checked"
+        "Label": "Text Farbe",
+        "Hint": "Textfarbe von dem Text der gezeigt wird wenn \"Zeige den Namen des Kartenbesitzers\" aktiviert ist"
       },
       "OwnerTextAlpha": {
         "Label": "Text Alpha",
-        "Hint": "Text alpha of the text displayed if \"Show Card Owner\" is checked"
+        "Hint": "Die Sichtbarkeit des Textes wenn \"Zeige den Namen des Kartenbesitzers\" aktiviert ist"
       }
     },
     "SceneConfig": {
-      "CanvasPileLabel": "Canvas Pile",
-      "CanvasPileHint": "Treat the entire canvas as a card pile. Regions with the Allocate Card type will override this within their coverage."
+      "CanvasPileLabel": "Szenen Stapel",
+      "CanvasPileHint": "Behandle die komplette Szene als Kartenstapel. Regionen mit dem Karte zuteilen Typ überschreiben dieses Verhalten innerhalb ihrer Region"
     },
     "UserConfig": {
-      "PlayerHand": "Player Hand",
-      "ShowCardCount": "Show Card Count",
-      "OpenHand": "Open Player Hand",
-      "CardCount": "{count} cards in {stack}"
+      "PlayerHand": "Spielerhand",
+      "ShowCardCount": "Zeige Anzahl Karten",
+      "OpenHand": "Öffne Spielerhand",
+      "CardCount": "{count} Karten in {stack}"
     },
     "Warning": {
-      "NoCardsAvailable": "This {type} has no cards available.",
-      "CardDrawn": "This card cannot be added to the canvas as it has already been drawn and added to a pile or hand.",
-      "FailDraw": "Failed to draw card",
-      "FailCanvasDeck": "The top card of this deck is already on the canvas. Move it to a another card stack, such as with a region, to draw a new card.",
-      "AlreadyInside": "{card} is already contained within {stack}.",
-      "NoCopyPaste": "Canvas cards cannot be copied and pasted.",
-      "DeckOwnerNotFound": "No owner of the deck was found to be able to perform this action.",
-      "NoScryDrop": "You can't drop external cards on the scrying dialog"
+      "NoCardsAvailable": "This {type} has no cards available. {type} enthält keine Karten.",
+      "CardDrawn": "Diese Karte kann nicht auf der Szene platziert werden, weil sie schon gezogen und einem Stapel oder einer Hand hinzugefügt wurden.",
+      "FailDraw": "Karte ziehen fehlgeschlagen",
+      "FailCanvasDeck": "Die oberste Karte dieses Decks ist schon auf der Szene. Schiebe es in einen anderen Stapel, zum Beispiel mit einer Region, um eine neue Karte zu ziehen.",
+      "AlreadyInside": "{card} ist bereits in {stack} enthalten.",
+      "NoCopyPaste": "Karten auf einer Szene können nicht kopiert und eingefügt werden.",
+      "DeckOwnerNotFound": "Es wurde kein Besitzer zu diesem Deck gefunden der diese Aktion durchführen kann.",
+      "NoScryDrop": "Du kannst keine externen Karten im Hellsehen Dialog ablegen."
     },
     "API": {
-      "LayoutScene": "Laid out cards on scene {name}."
+      "LayoutScene": "Karte auf Szene {name} gelegt."
     }
   },
-  "TYPES.RegionBehavior.complete-card-management.moveCard": "Allocate Card"
+  "TYPES.RegionBehavior.complete-card-management.moveCard": "Karte zuteilen"
 }
