@@ -47,19 +47,14 @@
     "CardSheet": {
       "CardParentTitle": "{stackName}: {cardName}",
       "Add": "Hinzufügen",
-      "Save": "Karte speichern",
-      "AddFace": "Vorderseite hinzufügen",
-      "DeleteFace": "Vorderseite löschen",
       "TabDetails": "Karten Details",
       "TabFaces": "Karten Vorderseite",
       "TabBack": "Karten Rückseite",
       "TabConfiguration": "Konfiguration",
       "TabCards": "Karten",
       "BacksideUp": "Rückseite Oben",
-      "FaceName": "Vorderseite Name",
       "Unnamed": "Unbenannt ({idx})",
-      "DeleteFacePrompt": "Vorderseite löschen? Dies kann nicht Rückgängig gemacht werden.",
-      "DeleteFaceTitle": "Vorderseite löschen",   
+
       "ScryingContext": "Hellsehen",
       "ScryingTitle": "Hellsehen auf: {name}",
       "ScryingMessage": "{name} verwendet Hellsehen auf {number} Karten in {deck}.",
@@ -69,18 +64,10 @@
       "ScryPromptLabel": "Anzahl",
       "ScryMoveTop": "Lege die Karte oben aufs Deck",
       "ScryMoveBottom": "Lege die Karte unter das Deck",
-      "CardType": "Typ",
-      "CardSuit": "Suit",
-      "CardValue": "Wert",
-      "CardDrawn": "Gezogen",
-      "CardFace": "Vorderseite",
-      "CreateCard": "Karte erstellen",
-      "EditCard": "Karte bearbeiten",
-      "DeleteCard": "Karte löschen",
-      "NextFace": "Nächste Vorderseite",
-      "PreviousFace": "Vorherige Vorderseite",
+
       "RecallCard": "Karte zurücklegen",
       "RecalledCard": "{card} zurückgelegt in {deck}.",
+
       "PrimaryOwner": "Hauptbesitzer"
     },
     "Settings": {

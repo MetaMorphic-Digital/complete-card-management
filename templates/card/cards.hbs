@@ -4,20 +4,20 @@
     {{#if isPile}}
     <span class="sort"></span>
     {{else}}
-    <a class="sort" data-tooltip="CARDS.SortMode" data-action="toggleSort">
+    <a class="sort" data-tooltip="CARDS.ACTIONS.ToggleSortMode" data-action="toggleSort">
       <i class="fa-solid fa-sort fa-fw"></i>
     </a>
     {{/if}}
     <span class="name">{{localize "Name"}}</span>
-    <span class="type">{{localize "CCM.CardSheet.CardType"}}</span>
-    <span class="suit">{{localize "CCM.CardSheet.CardSuit"}}</span>
-    <span class="value">{{localize "CCM.CardSheet.CardValue"}}</span>
+    <span class="type">{{localize "CARD.FIELDS.type.label"}}</span>
+    <span class="suit">{{localize "CARD.FIELDS.suit.label"}}</span>
+    <span class="value">{{localize "CARD.FIELDS.value.label"}}</span>
     {{#if isDeck}}
-    <span class="drawn">{{localize "CCM.CardSheet.CardDrawn"}}</span>
+    <span class="drawn">{{localize "CARD.FIELDS.drawn.label"}}</span>
     {{/if}}
-    <span class="face">{{localize "CCM.CardSheet.CardFace"}}</span>
+    <span class="face">{{localize "CARD.FIELDS.face.label"}}</span>
     {{#if isDeck}}
-    <a class="controls" data-tooltip="CCM.CardSheet.CreateCard" data-action="createCard">
+    <a class="controls" data-tooltip="CARDS.ACTIONS.Create" data-action="createCard">
       <i class="fa-solid fa-plus"></i>
       {{localize "CCM.CardSheet.Add"}}
     </a>
@@ -49,19 +49,19 @@
       {{/if}}
       {{/if}}
       <span class="face">
-        <a data-action="nextFace" data-tooltip="CCM.CardSheet.NextFace" {{#unless card.hasNextFace}}disabled{{/unless}}>
+        <a data-action="nextFace" data-tooltip="CARDS.ACTIONS.NextFace" {{#unless card.hasNextFace}}disabled{{/unless}}>
           <i class="fa-solid fa-caret-up"></i>
         </a>
-        <a data-action="previousFace" data-tooltip="CCM.CardSheet.PreviousFace" {{#unless card.hasPreviousFace}}disabled{{/unless}}>
+        <a data-action="previousFace" data-tooltip="CARDS.ACTIONS.PreviousFace" {{#unless card.hasPreviousFace}}disabled{{/unless}}>
           <i class="fa-solid fa-caret-down"></i>
         </a>
       </span>
       {{#if @root.isDeck}}
       <span class="controls">
-        <a data-action="editCard" data-tooltip="CCM.CardSheet.EditCard">
+        <a data-action="editCard" data-tooltip="CARDS.ACTIONS.Edit">
           <i class="fa-solid fa-edit"></i>
         </a>
-        <a data-action="deleteCard" data-tooltip="CCM.CardSheet.DeleteCard">
+        <a data-action="deleteCard" data-tooltip="CARDS.ACTIONS.Delete">
           <i class="fa-solid fa-trash"></i>
         </a>
       </span>
