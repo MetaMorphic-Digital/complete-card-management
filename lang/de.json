@@ -11,7 +11,7 @@
     "MoveCardBehavior": {
       "FIELDS": {
         "targetStack": {
-          "hint": "The Deck, Hand, or Pile to move a card into. Deck, Hand oder Stapel in den die Karte geschoben werden soll. ",
+          "hint": "Deck, Hand oder Stapel in den die Karte geschoben werden soll. ",
           "label": "Zielstapel"
         },
         "keepCanvasCard": {
@@ -99,7 +99,7 @@
       "CardCount": "{count} Karten in {stack}"
     },
     "Warning": {
-      "NoCardsAvailable": "This {type} has no cards available. {type} enthält keine Karten.",
+      "NoCardsAvailable": "{type} enthält keine Karten.",
       "CardDrawn": "Diese Karte kann nicht auf der Szene platziert werden, weil sie schon gezogen und einem Stapel oder einer Hand hinzugefügt wurden.",
       "FailDraw": "Karte ziehen fehlgeschlagen",
       "FailCanvasDeck": "Die oberste Karte dieses Decks ist schon auf der Szene. Schiebe es in einen anderen Stapel, zum Beispiel mit einer Region, um eine neue Karte zu ziehen.",
