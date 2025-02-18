@@ -1,0 +1,116 @@
+{
+  "CCM": {
+    "Sheets": {
+      "Cards": "Complete Card Management Karten Sheet",
+      "Card": "Complete Card Management Karte Sheet",
+      "Deck": "Complete Card Management Deck Sheet",
+      "Hand": "Complete Card Management Hand Sheet",
+      "DockedHand": "Complete Card Management Hand Sheet (Angedockt)",
+      "Pile": "Complete Card Management Stapel Sheet"
+    },
+    "MoveCardBehavior": {
+      "FIELDS": {
+        "targetStack": {
+          "hint": "Deck, Hand oder Stapel in den die Karte geschoben werden soll. ",
+          "label": "Zielstapel"
+        },
+        "keepCanvasCard": {
+          "hint": "Ob alle Karten, die in diese Region geschoben werden, auf der Szene behalten werden sollen.",
+          "label": "Karte auf Szene belassen"
+        }
+      },
+      "NoGM": "Kein GM aktiv um die Szenendaten zu administrieren!",
+      "NoStack": "Konnte kein valides Karten Dokument für diese Region finden.",
+      "AddCard": "Füge {name} zu {stack} hinzu",
+      "RemoveCard": "Entferne {name} from {stack}"
+    },
+    "REGION_EVENTS": {
+      "CardMoveIn": {
+        "label": "Karte eingeschoben"
+      },
+      "CardMoveOut": {
+        "label": "Karte herausgenommen"
+      }
+    },
+    "CardLayer": {
+      "Title": "Kartensteuerung",
+      "Tools": {
+        "SelectTitle": "Karten auswählen",
+        "ClearTitle": "Karten löschen"
+      },
+      "HUD": {
+        "Flip": "Wende {type}",
+        "Rotate": "Drehe um 90 grad"
+      },
+      "DragCardFromDeck": "Ziehe Karte aus {name}"
+    },
+    "CardSheet": {
+      "CardParentTitle": "{stackName}: {cardName}",
+      "Add": "Hinzufügen",
+      "TabDetails": "Karten Details",
+      "TabFaces": "Karten Vorderseite",
+      "TabBack": "Karten Rückseite",
+      "TabConfiguration": "Konfiguration",
+      "TabCards": "Karten",
+      "BacksideUp": "Rückseite Oben",
+      "Unnamed": "Unbenannt ({idx})",
+
+      "ScryingContext": "Hellsehen",
+      "ScryingTitle": "Hellsehen auf: {name}",
+      "ScryingMessage": "{name} verwendet Hellsehen auf {number} Karten in {deck}.",
+      "ScryingMessageReorder": "{name} mischt {number} enthüllte Karten zurück in {deck}.",
+      "ScryingShuffleAndReplace": "Mischen und Austauschen",
+      "ScryPromptHint": "Entscheide wie viele Karten von diesem Set du dir mit Hellsehen ansehen willst.",
+      "ScryPromptLabel": "Anzahl",
+      "ScryMoveTop": "Lege die Karte oben aufs Deck",
+      "ScryMoveBottom": "Lege die Karte unter das Deck",
+
+      "RecallCard": "Karte zurücklegen",
+      "RecalledCard": "{card} zurückgelegt in {deck}.",
+
+      "PrimaryOwner": "Hauptbesitzer"
+    },
+    "Settings": {
+      "ShowNames": {
+        "Label": "Zeige den Namen des Kartenbesitzers",
+        "Hint": "Zeige den Kartenbesitzer auf den Szenen"
+      },
+      "OwnerFontSize": {
+        "Label": "Schriftgröße",
+        "Hint": "Schriftgröße von dem Text der gezeigt wird wenn \"Zeige den Namen des Kartenbesitzers\" aktiviert ist"
+      },
+      "OwnerTextColor": {
+        "Label": "Text Farbe",
+        "Hint": "Textfarbe von dem Text der gezeigt wird wenn \"Zeige den Namen des Kartenbesitzers\" aktiviert ist"
+      },
+      "OwnerTextAlpha": {
+        "Label": "Text Alpha",
+        "Hint": "Die Sichtbarkeit des Textes wenn \"Zeige den Namen des Kartenbesitzers\" aktiviert ist"
+      }
+    },
+    "SceneConfig": {
+      "CanvasPileLabel": "Szenen Stapel",
+      "CanvasPileHint": "Behandle die komplette Szene als Kartenstapel. Regionen mit dem Karte zuteilen Typ überschreiben dieses Verhalten innerhalb ihrer Region"
+    },
+    "UserConfig": {
+      "PlayerHand": "Spielerhand",
+      "ShowCardCount": "Zeige Anzahl Karten",
+      "OpenHand": "Öffne Spielerhand",
+      "CardCount": "{count} Karten in {stack}"
+    },
+    "Warning": {
+      "NoCardsAvailable": "{type} enthält keine Karten.",
+      "CardDrawn": "Diese Karte kann nicht auf der Szene platziert werden, weil sie schon gezogen und einem Stapel oder einer Hand hinzugefügt wurden.",
+      "FailDraw": "Karte ziehen fehlgeschlagen",
+      "FailCanvasDeck": "Die oberste Karte dieses Decks ist schon auf der Szene. Schiebe es in einen anderen Stapel, zum Beispiel mit einer Region, um eine neue Karte zu ziehen.",
+      "AlreadyInside": "{card} ist bereits in {stack} enthalten.",
+      "NoCopyPaste": "Karten auf einer Szene können nicht kopiert und eingefügt werden.",
+      "DeckOwnerNotFound": "Es wurde kein Besitzer zu diesem Deck gefunden der diese Aktion durchführen kann.",
+      "NoScryDrop": "Du kannst keine externen Karten im Hellsehen Dialog ablegen."
+    },
+    "API": {
+      "LayoutScene": "Karte auf Szene {name} gelegt."
+    }
+  },
+  "TYPES.RegionBehavior.complete-card-management.moveCard": "Karte zuteilen"
+}

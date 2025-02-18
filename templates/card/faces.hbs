@@ -4,7 +4,7 @@
     <div class="form-fields">
       {{formInput face.field localize=true value=face.value choices=face.choices sort=false blank=face.blank}}
     </div>
-    <button type="button" data-action="addFace" data-tooltip="CCM.CardSheet.AddFace">
+    <button type="button" data-action="addFace" data-tooltip="CARD.ACTIONS.AddFace">
       <i class="fa-solid fa-plus"></i>
     </button>
   </div>
@@ -13,7 +13,7 @@
   <fieldset class="faces" data-idx="{{@index}}">
     <legend>
       {{formInput name.field value=name.value placeholder=name.placeholder name=name.name}}
-      <button type="button" data-action="deleteFace" data-tooltip="CCM.CardSheet.DeleteFace">
+      <button type="button" data-action="deleteFace" data-tooltip="CARD.ACTIONS.DeleteFace.Title">
         <i class="fa-solid fa-trash"></i>
       </button>
     </legend>

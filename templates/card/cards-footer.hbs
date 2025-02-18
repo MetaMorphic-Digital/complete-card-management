@@ -2,33 +2,33 @@
   {{#unless isHand}}
   <button type="button" data-action="shuffleCards" {{disabled footer.shuffle}}>
     <i class="fa-solid fa-random"></i>
-    <label>{{localize "CARDS.Shuffle"}}</label>
+    <label>{{localize "CARDS.ACTIONS.Shuffle"}}</label>
   </button>
   {{/unless}}
 
   {{#if isHand}}
   <button type="button" data-action="drawCards" {{disabled footer.draw}}>
     <i class="fa-solid fa-plus"></i>
-    <label>{{localize "CARDS.Draw"}}</label>
+    <label>{{localize "CARDS.ACTIONS.Draw"}}</label>
   </button>
   {{/if}}
 
   {{#unless isDeck}}
   <button type="button" data-action="passCards" {{disabled footer.pass}}>
     <i class="fa-solid fa-share-square"></i>
-    <label>{{localize "CARDS.Pass"}}</label>
+    <label>{{localize "CARDS.ACTIONS.Pass"}}</label>
   </button>
   {{/unless}}
 
   {{#if isDeck}}
   <button type="button" data-action="dealCards" {{disabled footer.deal}}>
     <i class="fa-solid fa-share-square"></i>
-    <label>{{localize "CARDS.Deal"}}</label>
+    <label>{{localize "CARDS.ACTIONS.Deal"}}</label>
   </button>
   {{/if}}
 
   <button type="button" data-action="resetCards" {{disabled footer.reset}}>
     <i class="fa-solid fa-undo"></i>
-    <label>{{localize "CARDS.Reset"}}</label>
+    <label>{{localize "CARDS.ACTIONS.Reset"}}</label>
   </button>
 </footer>

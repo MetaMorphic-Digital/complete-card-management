@@ -129,7 +129,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
       blank: this.document.back.name || "CCM.CardSheet.BacksideUp"
     });
     context.faces = [];
-    const fph = game.i18n.localize("CCM.CardSheet.FaceName");
+    const fph = game.i18n.localize("CARD.FIELDS.faces.name.label");
     const schema = this.document.schema.getField("faces.element");
     for (const face of this.document.faces) {
       const idx = context.faces.length;
@@ -202,11 +202,11 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   static async _onDeleteFace(event, target) {
     const confirm = await foundry.applications.api.DialogV2.confirm({
       rejectClose: false,
-      content: game.i18n.localize("CCM.CardSheet.DeleteFacePrompt"),
+      content: game.i18n.localize("CARD.ACTIONS.DeleteFace.Warning"),
       modal: true,
       window: {
         icon: "fa-solid fa-cards",
-        title: "CCM.CardSheet.DeleteFaceTitle"
+        title: "CARD.ACTIONS.DeleteFace.Title"
       }
     });
     if (!confirm) return;
