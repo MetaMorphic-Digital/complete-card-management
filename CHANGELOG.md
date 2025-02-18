@@ -2,6 +2,7 @@
 
 ## 2.0.1
 
+- Migrated i18n usage to rely more on core, fixing some broken strings in the process
 - Added German support
 
 ## 2.0.0 Foundry v13
