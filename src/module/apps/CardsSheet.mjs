@@ -193,10 +193,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   get cards() {
     return this.document;
   }
-  get object() {
-    // Compatibility with CardsConfig prototype methods.
-    return this.document;
-  }
 
   /* -------------------------------------------------- */
 
@@ -266,7 +262,8 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       },
       callbacks: {
         dragstart: this._onDragStart.bind(this),
-        drop: CardsConfig.prototype._onDrop.bind(sheet)
+        // Easy way to copy implementation from core sheet
+        drop: this._onDrop.bind(sheet)
       }
     });
     dd.bind(this.element);
@@ -277,6 +274,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /**
    * Handle dragstart event.
    * @param {DragEvent} event     The triggering drag event.
+   * @protected
    */
   _onDragStart(event) {
     const id = event.currentTarget.closest("[data-card-id]")?.dataset.cardId;
@@ -284,13 +282,41 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     if (card) event.dataTransfer.setData("text/plain", JSON.stringify(card.toDragData()));
   }
 
-  /* -------------------------------------------------- */
+  /**
+   * The "dragdrop" event handler for individual cards
+   * @param {DragEvent} event
+   * @protected
+   */
+  async _onDrop(event) {
+    const data = TextEditor.getDragEventData(event);
+    if (data.type !== "Card") return;
+    const card = await getDocumentClass("Card").fromDropData(data);
+    const stack = this.document;
+    if (card.parent.id === stack.id) return this.#onSortCard(event, card);
+    try {
+      return await card.pass(stack);
+    } catch (err) {
+      Hooks.onError("CardsConfig##onDrop", err, {log: "error", notify: "error"});
+    }
+  }
+
+  /* -------------------------------------------- */
 
   /**
-   * Sorting is performed the same way as on the standard sheet.
+   * Handle sorting a Card relative to other siblings within this document
+   * @param {Event} event     The drag drop event
+   * @param {Card} card       The card being dragged
    */
-  _onSortCard(event, card) {
-    CardsConfig.prototype._onSortCard.call(this, event, card);
+  async #onSortCard(event, card) {
+    const stack = this.document;
+    const li = event.target.closest("[data-card-id]");
+    const target = stack.cards.get(li?.dataset.cardId);
+    if (!target || (card === target)) return;
+    const siblings = stack.cards.filter(c => c.id !== card.id);
+    const updateData = SortingHelpers
+      .performIntegerSort(card, {target, siblings})
+      .map(u => ({_id: u.target.id, sort: u.update.sort}));
+    await stack.updateEmbeddedDocuments("Card", updateData);
   }
 
   /* -------------------------------------------------- */
@@ -302,6 +328,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onCreateCard(event, target) {
     if (!this.isEditable) return;
@@ -321,6 +348,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onEditCard(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
@@ -334,6 +362,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onDeleteCard(event, target) {
     if (!this.isEditable) return;
@@ -348,6 +377,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onShuffleCards(event, target) {
     if (!this.isEditable) return;
@@ -362,6 +392,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onDealCards(event, target) {
     if (!this.isEditable) return;
@@ -375,6 +406,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onResetCards(event, target) {
     if (!this.isEditable) return;
@@ -388,6 +420,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onToggleSort(event, target) {
     if (!this.isEditable) return;
@@ -403,6 +436,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onPreviousFace(event, target) {
     if (!this.isEditable) return;
@@ -418,6 +452,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onNextFace(event, target) {
     if (!this.isEditable) return;
@@ -433,6 +468,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onDrawCards(event, target) {
     if (!this.isEditable) return;
@@ -446,6 +482,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onPassCards(event, target) {
     if (!this.isEditable) return;
@@ -459,6 +496,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
+   * @protected
    */
   static _onPlayCard(event, target) {
     if (!this.isEditable) return;
@@ -541,10 +579,7 @@ export class DockedHandSheet extends HandSheet {
 
   /* -------------------------------------------------- */
 
-  /**
-   * Handle dragstart event.
-   * @param {DragEvent} event     The triggering drag event.
-   */
+  /** @override */
   _onDragStart(event) {
     super._onDragStart(event);
     const img = event.target.querySelector("img");

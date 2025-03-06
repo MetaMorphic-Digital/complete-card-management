@@ -11,7 +11,6 @@ import {addCard, removeCard} from "./patches.mjs";
  * Run on Foundry init
  */
 export function init() {
-  // TODO: Consider ASCII art
   console.log("Complete Card Management | Initializing");
   CONFIG.CCM = CCM_CONFIG;
 
@@ -159,6 +158,10 @@ export function passCards(origin, destination, context) {
     }
     cardCollectionRemovals.add(card.uuid);
   }
+  if (!canvas.scene) {
+    console.warn("Not viewing a scene to handle Card Layer updates");
+    return;
+  }
   const canUpdateScene = canvas.scene.canUserModify(game.user, "update");
   if (canUpdateScene) {
     const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
@@ -188,6 +191,7 @@ export function passCards(origin, destination, context) {
  * @param {string} userId                           The ID of the User who triggered the creation workflow
  */
 export async function createCard(card, options, userId) {
+  if (!canvas.scene) return;
   if (card.getFlag(MODULE_ID, canvas.scene.id)) {
     const synthetic = new ccm_canvas.CanvasCard(card);
     card.canvasCard = synthetic;
@@ -219,7 +223,7 @@ export async function updateCard(card, changed, options, userId) {
       card.parent.canvasCard.refreshFace();
     }
   }
-  else if (canvas.scene.id in moduleFlags) { // New cards
+  else if (canvas.scene?.id in moduleFlags) { // New cards
     if (card.drawn && card.isHome) {
       ui.notifications.error("CCM.Warning.CardDrawn", {localize: true});
       return;

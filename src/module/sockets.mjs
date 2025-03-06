@@ -51,6 +51,10 @@ export default class CCMSocketHandler {
    */
   #passCardHandler(payload) {
     if (!game.users.activeGM?.isSelf) return;
+    if (!canvas.scene) {
+      console.error("Not viewing a scene to handle Card Layer updates");
+      return;
+    }
     const {cardCollectionRemovals, originId, destinationId} = payload;
     const cardCollection = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection"));
     for (const uuid of cardCollection) {
