@@ -13,7 +13,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       throw new Error("The card object model takes a Card document as its only argument");
     }
 
-    const data = card.getFlag(MODULE_ID, canvas.scene.id);
+    const data = card.getFlag(MODULE_ID, canvas.scene?.id);
 
     if (!data) {
       throw new Error("The card doesn't have location data for the current scene");
