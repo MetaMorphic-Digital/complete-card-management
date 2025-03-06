@@ -11,7 +11,6 @@ import {addCard, removeCard} from "./patches.mjs";
  * Run on Foundry init
  */
 export function init() {
-  // TODO: Consider ASCII art
   console.log("Complete Card Management | Initializing");
   CONFIG.CCM = CCM_CONFIG;
 
