@@ -13,7 +13,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
     };
   }
 
-  /** @override */
+  /** @inheritdoc */
   static _createEventsField({events, initial} = {}) {
     const setFieldOptions = {
       label: "BEHAVIOR.TYPES.base.FIELDS.events.label",
@@ -29,7 +29,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
     }), setFieldOptions);
   }
 
-  /** @override */
+  /** @inheritdoc */
   static events = {
     [CCM_CONFIG.REGION_EVENTS.CARD_MOVE_IN]: this.#onCardMoveIn,
     [CCM_CONFIG.REGION_EVENTS.CARD_MOVE_OUT]: this.#onCardMoveOut

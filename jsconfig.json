@@ -4,7 +4,7 @@
     "target": "ES6"
   },
   "exclude": ["node_modules", "**/node_modules/*"],
-  "include": ["ccm.mjs", "foundry/**/*.js", "foundry/**/*.mjs"],
+  "include": ["ccm.mjs", "foundry/client/client.mjs"],
   "typeAcquisition": {
     "include": ["jquery", "PIXI"]
   }

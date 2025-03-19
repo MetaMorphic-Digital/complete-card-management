@@ -39,13 +39,13 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     return CardLayer.name;
   }
 
-  /** @override */
+  /** @inheritdoc */
   get hud() {
     return canvas.hud.cards;
   }
 
   // TODO: investigate if there's caching performance improvements
-  /** @override */
+  /** @inheritdoc */
   get documentCollection() {
     const activeScene = canvas.scene;
     if (!activeScene) return null;
@@ -57,7 +57,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     }, new foundry.utils.Collection());
   }
 
-  /** @override */
+  /** @inheritdoc */
   getMaxSort() {
     let sort = -Infinity;
     const collection = this.documentCollection;
@@ -65,7 +65,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     return sort;
   }
 
-  /** @override */
+  /** @inheritdoc */
   async _sendToBackOrBringToFront(front) {
     if (!this.controlled.length) return true;
 
@@ -98,13 +98,13 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     return true;
   }
 
-  /** @override */
+  /** @inheritdoc */
   getSnappedPoint(point) {
     if (canvas.forceSnapVertices) return canvas.grid.getSnappedPoint(point, {mode: CONST.GRID_SNAPPING_MODES.VERTEX});
     return super.getSnappedPoint(point);
   }
 
-  /** @override */
+  /** @inheritdoc */
   async _draw(options) {
 
     // Setting up the group functionality
@@ -162,7 +162,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     this.objects.visible = true;
   }
 
-  /** @override */
+  /** @inheritdoc */
   static prepareSceneControls() {
     return {
       name: "cards",
@@ -237,7 +237,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     this.sortDirty = false;
   };
 
-  /** @override */
+  /** @inheritdoc */
   async rotateMany({angle, delta, snap, ids, includeLocked = false} = {}) {
 
     if ((angle ?? delta ?? null) === null) {
@@ -267,7 +267,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     return objects;
   }
 
-  /** @override */
+  /** @inheritdoc */
   async deleteAll() {
     const type = this.constructor.documentName;
     if (!game.user.isGM) {
@@ -298,13 +298,13 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     }
   }
 
-  /** @override */
+  /** @inheritdoc */
   copyObjects() {
     ui.notifications.warn("CCM.Warning.NoCopyPaste", {localize: true});
     return [];
   }
 
-  /** @override */
+  /** @inheritdoc */
   async _onDeleteKey(event) {
     if (game.paused && !game.user.isGM) {
       ui.notifications.warn("GAME.PausedWarning", {localize: true});

@@ -1,5 +1,5 @@
 class CardDialog extends foundry.applications.api.DialogV2 {
-  /** @override */
+  /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     classes: ["ccm", "dialog"],
     modal: true,
@@ -12,7 +12,7 @@ class CardDialog extends foundry.applications.api.DialogV2 {
     }
   };
 
-  /** @override */
+  /** @inheritdoc */
   static async wait({rejectClose = false, ...options} = {}) {
     return super.wait({rejectClose, ...options});
   }
@@ -81,7 +81,7 @@ export async function passDialog() {
     ok: {
       label: "CARDS.Pass",
       callback: (event, button, html) => {
-        const fd = new FormDataExtended(button.form).object;
+        const fd = new foundry.applications.ux.FormDataExtended(button.form).object;
         const to = game.cards.get(fd.to);
         const options = {action: "pass", how: fd.how, updateData: fd.down ? {face: null} : {}};
         return this.deal([to], fd.number, options).catch(err => {
@@ -160,7 +160,7 @@ export async function dealDialog() {
     ok: {
       label: "CARDS.Deal",
       callback: (event, button, html) => {
-        const fd = new FormDataExtended(button.form).object;
+        const fd = new foundry.applications.ux.FormDataExtended(button.form).object;
         if (!fd.to) return this;
         const toIds = fd.to instanceof Array ? fd.to : [fd.to];
         const to = toIds.reduce((arr, id) => {
@@ -255,7 +255,7 @@ export async function playDialog(card) {
     ok: {
       label: "CARD.Play",
       callback: (event, button, html) => {
-        const fd = new FormDataExtended(button.form).object;
+        const fd = new foundry.applications.ux.FormDataExtended(button.form).object;
         const to = game.cards.get(fd.to);
         const options = {action: "play", updateData: fd.down ? {face: null} : {}};
         return this.pass(to, [card.id], options).catch(err => {
@@ -325,7 +325,7 @@ export async function drawDialog() {
     ok: {
       label: "CARDS.Draw",
       callback: (event, button, html) => {
-        const fd = new FormDataExtended(button.form).object;
+        const fd = new foundry.applications.ux.FormDataExtended(button.form).object;
         const from = game.cards.get(fd.from);
         const options = {how: fd.how, updateData: fd.down ? {face: null} : {}};
         return this.draw(from, fd.number, options).catch(err => {

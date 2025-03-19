@@ -12,7 +12,7 @@ const {api, hud} = foundry.applications;
  * @extends {BasePlaceableHUD<CardObject, CanvasCard, CardLayer>}
  */
 export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlaceableHUD) {
-  /** @override */
+  /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     id: "card-hud",
     actions: {
@@ -24,7 +24,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
     }
   };
 
-  /** @override */
+  /** @inheritdoc */
   static PARTS = {
     hud: {
       root: true,
@@ -44,7 +44,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
     return `flags.${MODULE_ID}.${this.object.scene.id}`;
   }
 
-  /** @override */
+  /** @inheritdoc */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     const typeName = this.card.type === CONST.BASE_DOCUMENT_TYPE

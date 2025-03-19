@@ -5,7 +5,7 @@ import CCM_CONFIG from "./config.mjs";
 import {checkHandDisplayUpdate, MODULE_ID, MoveCardType} from "./helpers.mjs";
 import {addCard, removeCard} from "./patches.mjs";
 
-/** @import SceneConfig from "../../foundry/client-esm/applications/sheets/scene-config.mjs"; */
+/** @import SceneConfig from "../../foundry/client/applications/sheets/scene-config.mjs"; */
 
 /**
  * Run on Foundry init
@@ -291,7 +291,7 @@ export function renderHeadsUpDisplayContainer(app, html, context, options) {
   html.appendChild(cardHudTemplate);
 }
 
-/** @import UserConfig from "../../foundry/client-esm/applications/sheets/user-config.mjs" */
+/** @import UserConfig from "../../foundry/client/applications/sheets/user-config.mjs" */
 
 /**
  * A hook called when the UserConfig application opens
@@ -477,17 +477,19 @@ export async function createScene(scene, options, userId) {
 
 /* -------------------------------------------------- */
 
+/** @typedef {import("../../foundry/client/applications/sidebar/tabs/cards-directory.mjs").default} CardsDirectory */
+
 /**
  * Add additional context options to cards in cards directory.
- * @param {HTMLElement} html      The sidebar html.
+ * @param {CardsDirectory} app    The sidebar html.
  * @param {object[]} options      The array of context menu options.
  */
-export function addCardsDirectoryOptions(html, options) {
+export function addCardsDirectoryOptions(app, options) {
   options.push({
     name: "CCM.CardSheet.ScryingContext",
     icon: "<i class='fa-solid fa-eye'></i>",
-    callback: async ([li]) => {
-      const id = li.dataset.documentId;
+    callback: async (li) => {
+      const id = li.dataset.entryId;
       const cards = game.cards.get(id);
       const data = await promptAmount(cards);
       if (!data) return;
@@ -539,7 +541,7 @@ async function promptAmount(cards) {
     position: {width: 400},
     ok: {
       callback: (event, button, html) => {
-        const {amount, mode} = new FormDataExtended(button.form).object;
+        const {amount, mode} = new foundry.applications.ux.FormDataExtended(button.form).object;
         return {amount, mode};
       }
     }
