@@ -11,7 +11,7 @@ const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
  * AppV2 card sheet
  */
 export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
-  /** @override */
+  /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     classes: ["ccm", "card"],
     position: {
@@ -32,7 +32,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     }
   };
 
-  /** @override */
+  /** @inheritdoc */
   tabGroups = {
     primary: "details"
   };
@@ -47,7 +47,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     back: {id: "back", group: "primary", label: "CCM.CardSheet.TabBack", icon: "fa-solid fa-mask"}
   };
 
-  /** @override */
+  /** @inheritdoc */
   static PARTS = {
     header: {template: "modules/complete-card-management/templates/card/header.hbs"},
     nav: {template: "modules/complete-card-management/templates/card/nav.hbs"},
@@ -57,7 +57,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     footer: {template: "modules/complete-card-management/templates/card/footer.hbs"}
   };
 
-  /** @override */
+  /** @inheritdoc */
   get title() {
     const stack = this.document.parent;
     if (!stack) return super.title;
@@ -67,7 +67,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     });
   }
 
-  /** @override */
+  /** @inheritdoc */
   _onRender(...T) {
     super._onRender(...T);
     this.#faces = this.element.querySelector("[name=face]");
@@ -77,7 +77,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     this.element.querySelector("[name='back.name']").addEventListener("change", this._onChangeFaceName.bind(this));
   }
 
-  /** @override */
+  /** @inheritdoc */
   async _prepareContext(_options) {
     const context = {};
     const src = this.document.toObject();

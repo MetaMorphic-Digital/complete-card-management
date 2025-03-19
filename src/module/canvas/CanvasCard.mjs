@@ -179,22 +179,22 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     });
   }
 
-  /** @override */
+  /** @inheritdoc */
   get id() {
     return this.card.id;
   }
 
-  /** @override */
+  /** @inheritdoc */
   get documentName() {
     return this.card.documentName;
   }
 
-  /** @override */
+  /** @inheritdoc */
   get layer() {
     return canvas.cards;
   }
 
-  /** @override */
+  /** @inheritdoc */
   get sheet() {
     // TODO: Custom sheet? I think?
     return this.card.sheet;
@@ -248,7 +248,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return 1;
   }
 
-  /** @override */
+  /** @inheritdoc */
   clone(data = {}, context = {}) {
     // TODO: Possible refactor actually using the data and context object?
     return new this.constructor(this.card);

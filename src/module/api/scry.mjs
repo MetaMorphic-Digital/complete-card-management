@@ -54,7 +54,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     classes: ["ccm", "scry"],
     modal: true,
@@ -78,7 +78,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   static PARTS = {
     cards: {template: "modules/complete-card-management/templates/card/scrying.hbs"},
     footer: {template: "modules/complete-card-management/templates/card/scrying-footer.hbs"}
@@ -86,7 +86,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   async _prepareContext(options) {
     const context = {};
     context.cards = this.#cards;
@@ -96,7 +96,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     return context;
   }
 
-  /** @override */
+  /** @inheritdoc */
   _onRender(...T) {
     super._onRender(...T);
     // Can't rearrange random pulls
@@ -139,7 +139,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   get title() {
     return game.i18n.format("CCM.CardSheet.ScryingTitle", {name: this.#deck.name});
   }

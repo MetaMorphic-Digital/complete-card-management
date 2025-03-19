@@ -25,10 +25,10 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     }
     super(document);
 
-    /** @override */
+    /** @inheritdoc */
     this.scene = canvasCard.parent;
 
-    /** @override */
+    /** @inheritdoc */
     this.document = canvasCard;
   }
 
@@ -76,14 +76,14 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   };
 
   /**
-   * @override
+   * @inheritdoc
    * @returns {CardLayer}
    */
   get layer() {
     return canvas["cards"];
   }
 
-  /** @override */
+  /** @inheritdoc */
   get bounds() {
     let {x, y, width, height, texture, rotation} = this.document;
 
@@ -122,19 +122,19 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     return !this.document.hidden || game.user.isGM;
   }
 
-  /** @override */
+  /** @inheritdoc */
   get id() {
     return this.document.card.uuid;
   }
 
-  /** @override */
+  /** @inheritdoc */
   get objectId() {
     let id = `${this.document.card.uuid}`;
     if (this.isPreview) id += ".preview";
     return id;
   }
 
-  /** @override */
+  /** @inheritdoc */
   async _draw(options) {
     // Load Card texture
     let texture;
@@ -197,7 +197,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     return text;
   }
 
-  /** @override */
+  /** @inheritdoc */
   _destroy(options) {
     canvas.interface.removeCard(this);
     this.texture?.destroy();
@@ -413,13 +413,13 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
 
   /* -------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   _onCreate(data, options, userId) {
     canvas.cards.objects.addChild(this);
     this.draw();
   }
 
-  /** @override */
+  /** @inheritdoc */
   _onUpdate(changed, options, userId) {
     super._onUpdate(changed, options, userId);
     const restrictionsChanged = ("restrictions" in changed) && !foundry.utils.isEmpty(changed.restrictions);
@@ -447,7 +447,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   /*  Interactivity                               */
   /* -------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   _onClickLeft2(event) {
     const filePath = this.document.texture.src;
     if (filePath) {
@@ -463,7 +463,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     if (!this._propagateLeftClick(event)) event.stopPropagation();
   }
 
-  /** @override */
+  /** @inheritdoc */
   _canDragLeftStart(user, event) {
     if (game.paused && !game.user.isGM) {
       ui.notifications.warn("GAME.PausedWarning", {localize: true});
@@ -484,7 +484,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     return CONST.CARD_DRAW_MODES.FIRST;
   }
 
-  /** @override */
+  /** @inheritdoc */
   _onDragLeftStart(event) {
 
     /** @type {this[]} */
@@ -521,7 +521,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     event.interactionData.clones = clones;
   }
 
-  /** @override */
+  /** @inheritdoc */
   _onDragLeftDrop(event) {
     // Ensure that we landed in bounds
     const {clones, destination} = event.interactionData;

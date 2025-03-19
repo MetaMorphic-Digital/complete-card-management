@@ -9,7 +9,7 @@ const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
 /** AppV2 cards sheet (Deck, Hand, Pile) */
 export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
-  /** @override */
+  /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     classes: ["ccm", "cards"],
     position: {
@@ -42,7 +42,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   tabGroups = {
     primary: "cards"
   };
@@ -70,7 +70,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   static PARTS = {
     header: {template: "modules/complete-card-management/templates/card/header.hbs"},
     navigation: {template: "modules/complete-card-management/templates/card/nav.hbs"},
@@ -92,7 +92,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   async _prepareContext(options) {
     const context = {};
     const src = this.document.toObject();
@@ -175,7 +175,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   _onRender(...T) {
     super._onRender(...T);
     this.#setupDragDrop();
@@ -507,7 +507,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 }
 
 export class DeckSheet extends CardsSheet {
-  /** @override */
+  /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     classes: ["deck"],
     actions: {
@@ -517,14 +517,14 @@ export class DeckSheet extends CardsSheet {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   tabGroups = {
     primary: "configuration"
   };
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.isDeck = true;
@@ -545,14 +545,14 @@ export class DeckSheet extends CardsSheet {
 }
 
 export class HandSheet extends CardsSheet {
-  /** @override */
+  /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     classes: ["hand"]
   };
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.isHand = true;
@@ -562,7 +562,7 @@ export class HandSheet extends CardsSheet {
 }
 
 export class DockedHandSheet extends HandSheet {
-  /** @override */
+  /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     classes: ["docked", "faded-ui"],
     window: {positioned: false}
@@ -570,7 +570,7 @@ export class DockedHandSheet extends HandSheet {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   static PARTS = {
     cardList: {
       template: "modules/complete-card-management/templates/card/docked.hbs"
@@ -579,7 +579,7 @@ export class DockedHandSheet extends HandSheet {
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   _onDragStart(event) {
     super._onDragStart(event);
     const img = event.target.querySelector("img");
@@ -591,14 +591,14 @@ export class DockedHandSheet extends HandSheet {
 }
 
 export class PileSheet extends CardsSheet {
-  /** @override */
+  /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     classes: ["pile"]
   };
 
   /* -------------------------------------------------- */
 
-  /** @override */
+  /** @inheritdoc */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.isPile = true;
