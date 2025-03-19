@@ -226,7 +226,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * Set up search filter.
    */
   #setupSearch() {
-    const search = new SearchFilter({
+    const search = new foundry.applications.ux.SearchFilter({
       inputSelector: "input[type=search]",
       contentSelector: "ol.cards",
       initial: this.#search ?? "",
@@ -253,7 +253,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    */
   #setupDragDrop() {
     const sheet = this;
-    const dd = new DragDrop({
+    const dd = new foundry.applications.ux.DragDrop({
       dragSelector: (this.document.type === "deck") ? "ol.cards li.card" : "ol.cards li.card .name",
       dropSelector: "ol.cards",
       permissions: {
@@ -585,7 +585,7 @@ export class DockedHandSheet extends HandSheet {
     const img = event.target.querySelector("img");
     const w = 67;
     const h = 100;
-    const preview = DragDrop.createDragImage(img, w, h);
+    const preview = foundry.applications.ux.DragDrop.createDragImage(img, w, h);
     event.dataTransfer.setDragImage(preview, w / 2, h / 2);
   }
 }

@@ -152,7 +152,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * Set up drag and drop.
    */
   #setupDragDrop() {
-    const dd = new DragDrop({
+    const dd = new foundry.applications.ux.DragDrop({
       dragSelector: "[data-card-id]",
       dropSelector: "fieldset.cards",
       callbacks: {
