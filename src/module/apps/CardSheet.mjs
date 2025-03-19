@@ -189,7 +189,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
    * @param {HTMLElement} target      The current target of the event.
    */
   static _onAddFace(event, target) {
-    const formData = foundry.utils.expandObject(new FormDataExtended(this.element).object);
+    const formData = foundry.utils.expandObject(new foundry.applications.ux.FormDataExtended(this.element).object);
     formData.faces = Object.values(formData.faces ?? {}).concat([{name: "", img: "", text: ""}]);
     this.document.update(formData);
   }
@@ -212,7 +212,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     if (!confirm) return;
 
     target.closest(".faces").remove();
-    const formData = foundry.utils.expandObject(new FormDataExtended(this.element).object);
+    const formData = foundry.utils.expandObject(new foundry.applications.ux.FormDataExtended(this.element).object);
     formData.faces = Object.values(formData.faces ?? {});
     if (formData.face >= formData.faces.length) formData.face = 0;
     this.document.update(formData);

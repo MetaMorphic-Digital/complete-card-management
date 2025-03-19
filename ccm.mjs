@@ -29,4 +29,4 @@ Hooks.on("deleteCards", hooks.deleteCard);
 
 Hooks.on("createScene", hooks.createScene);
 
-Hooks.on("getCardsDirectoryEntryContext", hooks.addCardsDirectoryOptions);
+Hooks.on("getCardsContextOptions", hooks.addCardsDirectoryOptions);
