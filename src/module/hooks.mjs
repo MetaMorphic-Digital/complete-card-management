@@ -5,7 +5,7 @@ import CCM_CONFIG from "./config.mjs";
 import {checkHandDisplayUpdate, MODULE_ID, MoveCardType} from "./helpers.mjs";
 import {addCard, removeCard} from "./patches.mjs";
 
-/** @import SceneConfig from "../../foundry/client-esm/applications/sheets/scene-config.mjs"; */
+/** @import SceneConfig from "../../foundry/client/applications/sheets/scene-config.mjs"; */
 
 /**
  * Run on Foundry init
@@ -291,7 +291,7 @@ export function renderHeadsUpDisplayContainer(app, html, context, options) {
   html.appendChild(cardHudTemplate);
 }
 
-/** @import UserConfig from "../../foundry/client-esm/applications/sheets/user-config.mjs" */
+/** @import UserConfig from "../../foundry/client/applications/sheets/user-config.mjs" */
 
 /**
  * A hook called when the UserConfig application opens

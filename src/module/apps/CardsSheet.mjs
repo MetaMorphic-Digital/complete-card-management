@@ -2,11 +2,6 @@ import {MODULE_ID} from "../helpers.mjs";
 
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
-/**
- * @import {ApplicationRenderContext, ApplicationRenderOptions}
- * from "../../../foundry/client-esm/applications/_types.mjs"
- */
-
 /** AppV2 cards sheet (Deck, Hand, Pile) */
 export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /** @inheritdoc */
