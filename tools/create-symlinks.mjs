@@ -15,6 +15,7 @@ if (fs.existsSync("foundry-config.yaml")) {
     const nested = fs.existsSync(path.join(foundryConfig.installPath, "resources", "app"));
 
     if (nested) fileRoot = path.join(foundryConfig.installPath, "resources", "app");
+    else fileRoot = foundryConfig.installPath;
   } catch (err) {
     console.error(`Error reading foundry-config.yaml: ${err}`);
   }
