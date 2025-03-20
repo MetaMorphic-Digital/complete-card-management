@@ -5,8 +5,6 @@ import CCM_CONFIG from "./config.mjs";
 import {checkHandDisplayUpdate, MODULE_ID, MoveCardType} from "./helpers.mjs";
 import {addCard, removeCard} from "./patches.mjs";
 
-/** @import SceneConfig from "../../foundry/client/applications/sheets/scene-config.mjs"; */
-
 /**
  * Run on Foundry init
  */
@@ -32,19 +30,21 @@ export function init() {
 
   ccm_canvas.CanvasCard.registerSettings();
 
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
+  const {DocumentSheetConfig} = foundry.applications.apps;
+
+  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
     label: "CCM.Sheets.Deck", types: ["deck"]
   });
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.HandSheet, {
+  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.HandSheet, {
     label: "CCM.Sheets.Hand", types: ["hand"]
   });
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DockedHandSheet, {
+  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DockedHandSheet, {
     label: "CCM.Sheets.DockedHand", types: ["hand"]
   });
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.PileSheet, {
+  DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.PileSheet, {
     label: "CCM.Sheets.Pile", types: ["pile"]
   });
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, {
+  DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, {
     label: "CCM.Sheets.Card"
   });
 
@@ -291,7 +291,7 @@ export function renderHeadsUpDisplayContainer(app, html, context, options) {
   html.appendChild(cardHudTemplate);
 }
 
-/** @import UserConfig from "../../foundry/client/applications/sheets/user-config.mjs" */
+/** @import UserConfig from "@client/applications/sheets/user-config.mjs" */
 
 /**
  * A hook called when the UserConfig application opens
@@ -391,6 +391,8 @@ export function getUserContextOptions(html, contextOptions) {
   });
 }
 
+/** @typedef {import("@client/applications/sheets/scene-config.mjs").default} SceneConfig */
+
 /**
  * Add Scene pile selection
  * @param {SceneConfig} app
@@ -477,7 +479,7 @@ export async function createScene(scene, options, userId) {
 
 /* -------------------------------------------------- */
 
-/** @typedef {import("../../foundry/client/applications/sidebar/tabs/cards-directory.mjs").default} CardsDirectory */
+/** @typedef {import("@client/applications/sidebar/tabs/cards-directory.mjs").default} CardsDirectory */
 
 /**
  * Add additional context options to cards in cards directory.

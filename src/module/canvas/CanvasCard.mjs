@@ -215,7 +215,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return CONFIG.defaultFontFamily || "Signika";
   }
 
-  /** @import Color from "../../../foundry/common/utils/color.mjs" */
+  /** @import Color from "@common/utils/color.mjs" */
 
   /**
    * The color of the text displayed within this card
