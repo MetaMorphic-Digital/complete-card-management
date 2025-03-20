@@ -11,7 +11,10 @@ if (fs.existsSync("foundry-config.yaml")) {
 
     const foundryConfig = yaml.load(fc);
 
-    fileRoot = path.join(foundryConfig.installPath, "resources", "app");
+    // As of 13.338, the Node install is *not* nested but electron installs *are*
+    const nested = fs.existsSync(path.join(foundryConfig.installPath, "resources", "app"));
+
+    if (nested) fileRoot = path.join(foundryConfig.installPath, "resources", "app");
   } catch (err) {
     console.error(`Error reading foundry-config.yaml: ${err}`);
   }
