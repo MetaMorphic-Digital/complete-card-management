@@ -426,7 +426,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * @param {*} userId
    */
   delete(options, userId) {
-    this._object?._onDelete(options, userId);
+    // fix for #136, ensures that draw is complete before attempting to delete
+    this._object?._partialDraw(() => this._object._onDelete(options, userId));
     this.card.canvasCard = undefined;
   }
 
