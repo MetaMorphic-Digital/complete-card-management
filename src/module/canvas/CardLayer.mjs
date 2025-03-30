@@ -300,8 +300,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
   }
 
   /** @inheritdoc */
-  copyObjects() {
-    ui.notifications.warn("CCM.Warning.NoCopyPaste", {localize: true});
+  _getCopyableObjects(options) {
+    ui.notifications.warn("CCM.Warning.NoCopyCutPaste", {localize: true});
     return [];
   }
 

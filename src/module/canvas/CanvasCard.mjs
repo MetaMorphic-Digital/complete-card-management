@@ -193,6 +193,14 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   }
 
   /**
+   * The linked card's UUID
+   * @type {string}
+   */
+  get uuid() {
+    return this.card.uuid;
+  }
+
+  /**
    * The linked card's document name
    * @type {"Card" | "Cards"}
    */
