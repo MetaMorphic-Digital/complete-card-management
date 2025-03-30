@@ -2,6 +2,8 @@ import CardObject from "./CardObject.mjs";
 import {MODULE_ID, generateUpdates, processUpdates} from "../helpers.mjs";
 import CanvasCard from "./CanvasCard.mjs";
 
+/** @import {PlaceablesLayerOptions} from "@client/canvas/layers/_types.mjs" */
+
 /**
  * The main Card layer
  */
@@ -11,8 +13,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
 
   /**
    * Configuration options for the CardLayer
-   *
-   * @returns {PlaceablesLayerOptions} The Options
+   * @returns {PlaceablesLayerOptions}
    */
   static get layerOptions() {
     return foundry.utils.mergeObject(super.layerOptions, {

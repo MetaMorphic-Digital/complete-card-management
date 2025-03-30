@@ -1,4 +1,9 @@
+
 import {MODULE_ID} from "../helpers.mjs";
+
+/** @import CardLayer from "./CardLayer.mjs"; */
+/** @import DocumentSheetV2 from "@client/applications/api/document-sheet.mjs"; */
+/** @import {Card, Cards} from "@client/documents/_module.mjs" */
 
 /**
  * A data model that captures the necessary characteristics for a CardObject on the canvas
@@ -179,24 +184,36 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     });
   }
 
-  /** @inheritdoc */
+  /**
+   * The linked card's ID
+   * @type {string}
+   */
   get id() {
     return this.card.id;
   }
 
-  /** @inheritdoc */
+  /**
+   * The linked card's document name
+   * @type {"Card" | "Cards"}
+   */
   get documentName() {
     return this.card.documentName;
   }
 
-  /** @inheritdoc */
+  /**
+   * The canvas card layer
+   * @type {CardLayer}
+   */
   get layer() {
     return canvas.cards;
   }
 
-  /** @inheritdoc */
+  /**
+   * The linked document sheet for the Card
+   * @type {DocumentSheetV2}
+   */
   get sheet() {
-    // TODO: Custom sheet? I think?
+    // TODO: Consider a custom sheet for these at some point
     return this.card.sheet;
   }
 

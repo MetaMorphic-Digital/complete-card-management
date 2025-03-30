@@ -485,7 +485,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   }
 
   /** @inheritdoc */
-  _onDragLeftStart(event) {
+  _initializeDragLeft(event) {
 
     /** @type {this[]} */
     const objects = this.layer.controlled;
