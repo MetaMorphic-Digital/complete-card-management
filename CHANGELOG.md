@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.3
+- v13.339+ compatibility
+- Updated internal type import handling
+- Fixed ghost card bug (#136)
+- Various i18n fixes
+
 ## 2.0.2
 - Fixed errors that would occur if no scene was active on the canvas
 - Fixed cards sheet drag and drop for v13.336+
