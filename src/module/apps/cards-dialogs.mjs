@@ -323,7 +323,7 @@ export async function drawDialog() {
       title: "CARDS.DrawTitle"
     },
     ok: {
-      label: "CARDS.Draw",
+      label: "CARDS.ACTIONS.Draw",
       callback: (event, button, html) => {
         const fd = new foundry.applications.ux.FormDataExtended(button.form).object;
         const from = game.cards.get(fd.from);

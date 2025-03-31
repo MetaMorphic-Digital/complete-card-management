@@ -104,7 +104,9 @@
       "FailDraw": "Karte ziehen fehlgeschlagen",
       "FailCanvasDeck": "Die oberste Karte dieses Decks ist schon auf der Szene. Schiebe es in einen anderen Stapel, zum Beispiel mit einer Region, um eine neue Karte zu ziehen.",
       "AlreadyInside": "{card} ist bereits in {stack} enthalten.",
+      "NoCopyCutPaste": "Canvas cards cannot be copied, cut, or pasted.",
       "NoCopyPaste": "Karten auf einer Szene können nicht kopiert und eingefügt werden.",
+      "NoCopy": "Karten auf einer Szene können nicht kopiert werden.",
       "DeckOwnerNotFound": "Es wurde kein Besitzer zu diesem Deck gefunden der diese Aktion durchführen kann.",
       "NoScryDrop": "Du kannst keine externen Karten im Hellsehen Dialog ablegen."
     },
