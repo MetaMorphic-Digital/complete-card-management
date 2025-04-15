@@ -236,7 +236,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     const canPerform = this.#deck.isOwner;
     if (canPerform) this.#deck.updateEmbeddedDocuments("Card", updates);
     else {
-      const userId = game.users.find(u => u.active && this.#deck.testUserPermission(u, "OWNER"))?.id;
+      const userId = game.users.getDesignatedUser(u => u.active && this.#deck.testUserPermission(u, "OWNER"))?.id;
       if (!userId) {
         ui.notifications.warn("CCM.Warning.DeckOwnerNotFound", {localize: true});
         return;

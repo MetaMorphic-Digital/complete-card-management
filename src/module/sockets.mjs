@@ -1,3 +1,4 @@
+import {placeCard} from "./api/singles.mjs";
 import {MODULE_ID} from "./helpers.mjs";
 
 export default class CCMSocketHandler {
@@ -19,6 +20,9 @@ export default class CCMSocketHandler {
       switch (type) {
         case "passCardHandler":
           this.#passCardHandler(payload);
+          break;
+        case "placeCardHandler":
+          this.#placeCardHandler(payload);
           break;
         case "updateEmbeddedCards":
           this.#updateEmbeddedCards(payload);
@@ -50,7 +54,7 @@ export default class CCMSocketHandler {
    * @param {object} payload.destinationId            The ID of the destination card stack
    */
   #passCardHandler(payload) {
-    if (!game.users.activeGM?.isSelf) return;
+    if (!game.user.isActiveGM) return;
     if (!canvas.scene) {
       console.error("Not viewing a scene to handle Card Layer updates");
       return;
@@ -63,6 +67,25 @@ export default class CCMSocketHandler {
       cardCollection.add(uuid.replace(originId, destinationId));
       canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection));
     }
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Delegate placing a card to the Active GM
+   * @param {object} payload
+   * @param {string} payload.uuid       UUID for the card to place
+   * @param {string} payload.sceneId    ID for the scene to add the card to
+   * @param {number} payload.x          Center of the card's horizontal location
+   * @param {number} payload.y          Center of the card's vertical location
+   * @param {number} [payload.rotation] Center of the card's horizontal location
+   * @param {number} [payload.sort]     Center of the card's vertical location
+   */
+  #placeCardHandler(payload) {
+    if (!game.user.isActiveGM) return;
+    const {uuid, ...data} = payload;
+    const card = fromUuidSync(uuid);
+    placeCard(card, data);
   }
 
   /* -------------------------------------------------- */
