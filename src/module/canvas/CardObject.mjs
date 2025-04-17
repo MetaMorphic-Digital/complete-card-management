@@ -1,3 +1,4 @@
+import {placeCard} from "../api/singles.mjs";
 import {MODULE_ID} from "../helpers.mjs";
 import CanvasCard from "./CanvasCard.mjs";
 import CardLayer from "./CardLayer.mjs";
@@ -119,7 +120,8 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
    * @type {boolean}
    */
   get isVisible() {
-    return !this.document.hidden || game.user.isGM;
+    const access = this.document.testUserPermission(game.user, "OBSERVER");
+    return access || !this.document.hidden || game.user.isGM;
   }
 
   /** @inheritdoc */
@@ -494,7 +496,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
       if (!o._canDrag(game.user, event)) continue;
       else if (o.document.locked) {
         if ((this.document.documentName === "Card")) continue;
-        else if ((objects.length > 1) || !canvas.scene.canUserModify(game.user, "update")) continue;
+        else if ((objects.length > 1) || !game.users.activeGM) continue;
         try {
           const [card] = o.document.card._drawCards(1, this.cardDrawMode);
           if (card.canvasCard?.object) {
@@ -573,10 +575,16 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
             ui.notifications.error("CCM.Warning.FailDraw", {localize: true});
             return cards;
           }
-          updateData._id = card.id;
-          cards[d.id] = [updateData];
-          const currentCards = new Set(canvas.scene.getFlag(MODULE_ID, "cardCollection")).add(card.uuid);
-          canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
+          const data = updateData.flags[MODULE_ID][this.scene.id];
+
+          // Adjust for offset differences between dropping from application
+          data.x += ((card.width ?? 2) * canvas.grid.sizeX) / 2;
+          data.y += ((card.height ?? 3) * canvas.grid.sizeY) / 2;
+
+          // Reusing API function because it has the socket handling
+          placeCard(card, data);
+          this.layer.clearPreviewContainer();
+          return;
         }
       } else {
         const parentSlot = cards[d.parent.id];
@@ -585,6 +593,8 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
       }
       return cards;
     }, {});
+
+    if (!processedUpdates) return;
 
     await Cards.implementation.updateDocuments(cardStackUpdates);
 

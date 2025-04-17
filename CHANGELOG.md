@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.4
+- v13.340 compatibility
+- Added socket to allow players to place individual cards.
+
 ## 2.0.3
 - v13.339+ compatibility
 - Updated internal type import handling
