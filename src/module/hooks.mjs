@@ -528,18 +528,12 @@ async function promptAmount(cards) {
 
   const title = game.i18n.format("CCM.CardSheet.ScryingTitle", {name: cards.name});
 
-  const data = await foundry.applications.api.DialogV2.prompt({
+  const data = await foundry.applications.api.DialogV2.input({
     modal: true,
     rejectClose: false,
     content: `<fieldset>${rangePicker}${drawMode}</fieldset>`,
     window: {title: title, icon: "fa-solid fa-eye"},
-    position: {width: 400},
-    ok: {
-      callback: (event, button, html) => {
-        const {amount, mode} = new foundry.applications.ux.FormDataExtended(button.form).object;
-        return {amount, mode};
-      }
-    }
+    position: {width: 400}
   });
   return data;
 }

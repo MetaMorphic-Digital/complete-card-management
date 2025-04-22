@@ -66,7 +66,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     window: {
       icon: "fa-solid fa-eye",
-      contentClasses: ["standard-form", "scrollable"]
+      contentClasses: ["standard-form"]
     },
     actions: {
       shuffleReplace: this.#shuffleCards,
