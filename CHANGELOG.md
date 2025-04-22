@@ -3,6 +3,7 @@
 ## 2.0.4
 - v13.340 compatibility
 - Added socket to allow players to place individual cards.
+- Removed overrides for core pass, deal, reset, play, and draw dialogs.
 
 ## 2.0.3
 - v13.339+ compatibility
