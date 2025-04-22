@@ -125,7 +125,9 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       value: src.img || ""
     });
     context.description = makeField("description", {
-      enriched: await TextEditor.enrichHTML(this.document.description, {relativeTo: this.document})
+      enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.document.description, {
+        relativeTo: this.document
+      })
     });
     context.width = makeField("width", {placeholder: game.i18n.localize("Width")});
     context.height = makeField("height", {placeholder: game.i18n.localize("Height")});
@@ -283,7 +285,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @protected
    */
   async _onDrop(event) {
-    const data = TextEditor.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     if (data.type !== "Card") return;
     const card = await getDocumentClass("Card").fromDropData(data);
     const stack = this.document;

@@ -213,6 +213,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     margin-right: 0.5rem;
+    max-height: 45rem;
 
     .thumbnail {
       /* opacity: 0.5; */

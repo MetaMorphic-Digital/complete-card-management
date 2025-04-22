@@ -120,7 +120,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
       placeholder: game.i18n.localize("Rotation")
     });
     context.description = makeField("description", {
-      enriched: await TextEditor.enrichHTML(this.document.description, {relativeTo: this.document})
+      enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.document.description, {relativeTo: this.document})
     });
 
     // Faces
@@ -140,7 +140,9 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
           schema: schema,
           document: face,
           name: `faces.${idx}.text`,
-          enriched: await TextEditor.enrichHTML(face.text, {relativeTo: this.document})
+          enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(face.text, {
+            relativeTo: this.document
+          })
         })
       };
       context.face.choices[idx] = f.name.value || game.i18n.format("CCM.CardSheet.Unnamed", {idx: idx});
@@ -155,7 +157,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     context.backText = makeField("text", {
       schema: back,
       document: backDoc,
-      enriched: await TextEditor.enrichHTML(backDoc.text, {relativeTo: this.document})
+      enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(backDoc.text, {relativeTo: this.document})
     });
 
     return context;

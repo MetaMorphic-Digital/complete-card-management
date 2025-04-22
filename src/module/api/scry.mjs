@@ -66,7 +66,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     window: {
       icon: "fa-solid fa-eye",
-      contentClasses: ["standard-form", "scrollable"]
+      contentClasses: ["standard-form"]
     },
     actions: {
       shuffleReplace: this.#shuffleCards,
@@ -182,7 +182,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {DragEvent} event     The triggering drag event.
    */
   async _onDrop(event) {
-    const data = TextEditor.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     if (data.type !== "Card") return;
     const card = await Card.implementation.fromDropData(data);
     if (card.parent.id !== this.document.id) {
