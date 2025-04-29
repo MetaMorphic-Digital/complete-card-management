@@ -1,5 +1,7 @@
 import {MODULE_ID} from "../helpers.mjs";
 
+/** @import Card from "@client/documents/card.mjs"; */
+
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
 /** AppV2 cards sheet (Deck, Hand, Pile) */
@@ -12,18 +14,18 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       height: "auto"
     },
     actions: {
-      createCard: CardsSheet._onCreateCard,
-      editCard: CardsSheet._onEditCard,
-      deleteCard: CardsSheet._onDeleteCard,
-      shuffleCards: CardsSheet._onShuffleCards,
-      dealCards: CardsSheet._onDealCards,
-      resetCards: CardsSheet._onResetCards,
-      toggleSort: CardsSheet._onToggleSort,
-      previousFace: CardsSheet._onPreviousFace,
-      nextFace: CardsSheet._onNextFace,
-      drawCards: CardsSheet._onDrawCards,
-      passCards: CardsSheet._onPassCards,
-      playCard: CardsSheet._onPlayCard
+      createCard: CardsSheet.#onCreateCard,
+      editCard: CardsSheet.#onEditCard,
+      deleteCard: CardsSheet.#onDeleteCard,
+      shuffleCards: CardsSheet.#onShuffleCards,
+      dealCards: CardsSheet.#onDealCards,
+      resetCards: CardsSheet.#onResetCards,
+      toggleSort: CardsSheet.#onToggleSort,
+      previousFace: CardsSheet.#onPreviousFace,
+      nextFace: CardsSheet.#onNextFace,
+      drawCards: CardsSheet.#onDrawCards,
+      passCards: CardsSheet.#onPassCards,
+      playCard: CardsSheet.#onPlayCard
     },
     form: {
       submitOnChange: true,
@@ -327,7 +329,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onCreateCard(event, target) {
+  static #onCreateCard(event, target) {
     if (!this.isEditable) return;
     getDocumentClass("Card").createDialog({
       faces: [{}],
@@ -347,7 +349,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onEditCard(event, target) {
+  static #onEditCard(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
     this.document.cards.get(id).sheet.render({force: true});
   }
@@ -361,7 +363,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onDeleteCard(event, target) {
+  static #onDeleteCard(event, target) {
     if (!this.isEditable) return;
     const id = target.closest("[data-card-id]").dataset.cardId;
     this.document.cards.get(id).deleteDialog();
@@ -376,7 +378,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onShuffleCards(event, target) {
+  static #onShuffleCards(event, target) {
     if (!this.isEditable) return;
     this.sort = this.constructor.SORT_TYPES.SHUFFLED;
     this.document.shuffle();
@@ -391,7 +393,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onDealCards(event, target) {
+  static #onDealCards(event, target) {
     if (!this.isEditable) return;
     this.document.dealDialog();
   }
@@ -405,7 +407,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onResetCards(event, target) {
+  static #onResetCards(event, target) {
     if (!this.isEditable) return;
     this.document.resetDialog();
   }
@@ -419,7 +421,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onToggleSort(event, target) {
+  static #onToggleSort(event, target) {
     if (!this.isEditable) return;
     const {SHUFFLED, STANDARD} = this.constructor.SORT_TYPES;
     this.sort = (this.sort === SHUFFLED) ? STANDARD : SHUFFLED;
@@ -435,7 +437,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onPreviousFace(event, target) {
+  static #onPreviousFace(event, target) {
     if (!this.isEditable) return;
     const id = target.closest("[data-card-id]").dataset.cardId;
     const card = this.document.cards.get(id);
@@ -451,7 +453,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onNextFace(event, target) {
+  static #onNextFace(event, target) {
     if (!this.isEditable) return;
     const id = target.closest("[data-card-id]").dataset.cardId;
     const card = this.document.cards.get(id);
@@ -467,7 +469,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onDrawCards(event, target) {
+  static #onDrawCards(event, target) {
     if (!this.isEditable) return;
     this.document.drawDialog();
   }
@@ -481,7 +483,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onPassCards(event, target) {
+  static #onPassCards(event, target) {
     if (!this.isEditable) return;
     this.document.passDialog();
   }
@@ -495,7 +497,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    * @protected
    */
-  static _onPlayCard(event, target) {
+  static #onPlayCard(event, target) {
     if (!this.isEditable) return;
     const id = target.closest("[data-card-id]").dataset.cardId;
     const card = this.document.cards.get(id);
@@ -508,7 +510,8 @@ export class DeckSheet extends CardsSheet {
   static DEFAULT_OPTIONS = {
     classes: ["deck"],
     actions: {
-      recallCard: this.#recallCard
+      recallCard: this.#recallCard,
+      viewCard: this.#viewCard
     }
   };
 
@@ -535,9 +538,30 @@ export class DeckSheet extends CardsSheet {
   /*   Event handlers                                   */
   /* -------------------------------------------------- */
 
+  /**
+   * @this DeckSheet
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
   static #recallCard(event, target) {
     const cardId = target.closest("[data-card-id]").dataset.cardId;
     ccm.api.recallCard(this.document, cardId);
+  }
+
+  /**
+   * @this DeckSheet
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
+  static #viewCard(event, target) {
+    const id = target.closest("[data-card-id]").dataset.cardId;
+    /** @type {Card} */
+    const card = this.document.cards.get(id);
+    new foundry.applications.apps.ImagePopout({
+      src: card.currentFace.img,
+      uuid: card.uuid,
+      window: {title: card.name}
+    }).render({force: true});
   }
 }
 
