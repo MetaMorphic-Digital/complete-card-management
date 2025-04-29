@@ -28,11 +28,15 @@
     {{#each cards}}
     <li class="card" data-card-id="{{card.id}}">
       <span class="sort">
-        {{#unless @root.isDeck}}
+        {{#if @root.isDeck}}
+        <a data-action="viewCard">
+          <i class="fa-solid fa-eye"></i>
+        </a>
+        {{else}}
         <a data-action="playCard">
           <i class="fa-solid fa-circle-play"></i>
         </a>
-        {{/unless}}
+        {{/if}}
         <img src="{{card.img}}" alt="{{card.name}}">
       </span>
       <span class="name">{{card.name}}</span>
