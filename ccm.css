@@ -39,7 +39,7 @@
           width: fit-content;
           display: inline-block;
 
-          [data-action=playCard] {
+          [data-action="playCard"] {
             padding: 0 20px;
             position: absolute;
             display: flex;
@@ -138,7 +138,8 @@
         position: relative;
         transition: opacity 200ms ease;
 
-        [data-action=playCard] {
+        [data-action="playCard"],
+        [data-action="viewCard"] {
           position: absolute;
           display: flex;
           width: 100%;
