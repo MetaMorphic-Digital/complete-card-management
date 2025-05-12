@@ -138,7 +138,7 @@
         position: relative;
         transition: opacity 200ms ease;
 
-        [data-action=playCard],
+        [data-action="playCard"],
         [data-action="viewCard"] {
           position: absolute;
           display: flex;
