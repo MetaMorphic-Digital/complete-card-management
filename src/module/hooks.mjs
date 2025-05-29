@@ -337,14 +337,17 @@ export function renderUserConfig(app, html) {
   cardSelect.append(showCardCountGroup);
 }
 
+/** @import Players from "@client/applications/ui/players.mjs" */
+
 /**
  * Add card displays to the player list
- * @param {PlayerList} app
- * @param {HTMLElement[]} jquery
- * @param {Record<string, unknown>} context
+ * @param {Players} app
+ * @param {HTMLElement} html
+ * @param {object} context
+ * @param {object} options
  */
-export function renderPlayerList(app, [html], context) {
-  const list = html.querySelector("ol#player-list");
+export function renderPlayers(app, html, context, options) {
+  const list = html.querySelector("#players-active ol.players-list");
   for (const li of list.children) {
     const user = game.users.get(li.dataset.userId);
     const showCards = user.getFlag(MODULE_ID, "showCardCount");

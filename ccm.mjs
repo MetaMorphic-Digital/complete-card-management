@@ -12,7 +12,7 @@ Hooks.on("renderSceneConfig", hooks.renderSceneConfig);
 
 Hooks.on("renderHeadsUpDisplayContainer", hooks.renderHeadsUpDisplayContainer);
 Hooks.on("renderUserConfig", hooks.renderUserConfig);
-Hooks.on("renderPlayerList", hooks.renderPlayerList);
+Hooks.on("renderPlayers", hooks.renderPlayers);
 Hooks.on("getUserContextOptions", hooks.getUserContextOptions);
 Hooks.on("updateUser", hooks.updateUser);
 
