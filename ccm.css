@@ -245,6 +245,6 @@
 #players {
   .card-count {
     flex: 0 0 22px;
-    text-align: right;
+    text-align: center;
   }
 }
