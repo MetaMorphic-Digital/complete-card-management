@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.6
+- Reintroduced card count in the players list
+
+## 2.0.5
+- Added "View Card" button to decks
+- Privated various sheet actions to avoid API interaction confusion
+
 ## 2.0.4
 - v13.340 compatibility
 - Added socket to allow players to place individual cards.
