@@ -558,7 +558,7 @@ export class DeckSheet extends CardsSheet {
     /** @type {Card} */
     const card = this.document.cards.get(id);
     new foundry.applications.apps.ImagePopout({
-      src: card.currentFace.img,
+      src: card.currentFace?.img ?? card.back.img,
       uuid: card.uuid,
       window: {title: card.name}
     }).render({force: true});
