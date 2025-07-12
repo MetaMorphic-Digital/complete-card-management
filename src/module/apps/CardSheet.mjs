@@ -94,7 +94,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     };
 
     // Header
-    context.currentFace = this.document.faces[this.document.face]?.img || this.document.constructor.DEFAULT_ICON;
+    context.currentFace = this.document.currentFace?.img || this.document.constructor.DEFAULT_ICON;
     context.name = makeField("name", {value: src.name, placeholder: game.i18n.localize("Name")});
 
     // Navigation
@@ -129,7 +129,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
       blank: this.document.back.name || "CCM.CardSheet.BacksideUp"
     });
     context.faces = [];
-    const fph = game.i18n.localize("CARD.FIELDS.faces.name.label");
+    const fph = game.i18n.localize("DOCUMENT.FIELDS.name.label");
     const schema = this.document.schema.getField("faces.element");
     for (const face of this.document.faces) {
       const idx = context.faces.length;

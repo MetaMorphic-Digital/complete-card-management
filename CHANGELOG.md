@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.7
+- Increased system minimum to v13.346
+- Fixed core i18n usage
+- Fixed image display for cards with their backs up
+
 ## 2.0.6
 - Reintroduced card count in the players list
 
