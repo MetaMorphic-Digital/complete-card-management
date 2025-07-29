@@ -6,6 +6,7 @@ const {HandlebarsApplicationMixin, ApplicationV2} = foundry.applications.api;
  * @param {object} [options={}]                                   Options that modify the scrying.
  * @param {number} [options.amount=1]                             The number of cards to reveal.
  * @param {number} [options.how=CONST.CARD_DRAW_MODES.FIRST]      From where in the deck to draw the cards to scry on.
+ * @returns {Promise<ScryDialog>}
  */
 export async function scry(deck, {amount = 1, how = CONST.CARD_DRAW_MODES.FIRST} = {}) {
   const cards = deck._drawCards(amount, how);

@@ -4,6 +4,7 @@
 - Increased system minimum to v13.346
 - Fixed core i18n usage
 - Fixed image display for cards with their backs up
+- Privated various HUD actions to avoid API interaction confusion
 
 ## 2.0.6
 - Reintroduced card count in the players list
