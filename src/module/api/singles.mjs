@@ -1,6 +1,10 @@
 import {MODULE_ID} from "../helpers.mjs";
 
 /**
+ * @import {Card, Cards, Scene} from "@client/documents/_module.mjs";
+ */
+
+/**
  * Places a card on the scene or updates its location
  * @param {Card | Cards} card      Card or Cards to place
  * @param {object} data            Data for the CanvasCard

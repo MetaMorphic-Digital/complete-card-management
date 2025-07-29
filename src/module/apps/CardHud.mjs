@@ -16,11 +16,11 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
   static DEFAULT_OPTIONS = {
     id: "card-hud",
     actions: {
-      flip: this._onFlip,
-      rotate: {handler: this._onRotate, buttons: [0, 2]},
-      locked: this._onToggleLocked,
-      visibility: this._onToggleVisibility,
-      shuffle: this._onShuffle
+      flip: this.#onFlip,
+      rotate: {handler: this.#onRotate, buttons: [0, 2]},
+      locked: this.#onToggleLocked,
+      visibility: this.#onToggleVisibility,
+      shuffle: this.#onShuffle
     }
   };
 
@@ -71,7 +71,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
    * @param {PointerEvent} event
    * @param {HTMLButtonElement} target
    */
-  static async _onShuffle(event, target) {
+  static async #onShuffle(event, target) {
     if (!(this.document.card instanceof Cards)) throw new Error("You can only shuffle a card stack");
     return this.document.card.shuffle();
   }
@@ -82,7 +82,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
    * @param {PointerEvent} event
    * @param {HTMLButtonElement} target
    */
-  static async _onToggleVisibility(event) {
+  static async #onToggleVisibility(event) {
     event.preventDefault();
     const updates = generateUpdates(
       this._flagPath + ".hidden",
@@ -98,7 +98,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
    * @param {PointerEvent} event
    * @param {HTMLButtonElement} target
    */
-  static async _onToggleLocked(event) {
+  static async #onToggleLocked(event) {
     event.preventDefault();
     const updates = generateUpdates(
       this._flagPath + ".locked",
@@ -114,7 +114,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
    * @param {PointerEvent} event The originating click event
    * @param {HTMLButtonElement} target
    */
-  static async _onFlip(event, target) {
+  static async #onFlip(event, target) {
     let updates;
     if (this.card.documentName === "Card") {
       // TODO: Improve handling for multi-faced cards
@@ -137,7 +137,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
    * @param {PointerEvent} event The originating click event
    * @param {HTMLButtonElement} target
    */
-  static async _onRotate(event, target) {
+  static async #onRotate(event, target) {
     const rotateValue = event.type === "click" ? 90 : -90;
     const updates = generateUpdates(
       this._flagPath + ".rotation",
