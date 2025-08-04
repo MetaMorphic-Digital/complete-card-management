@@ -100,9 +100,9 @@ export async function grid(config, options = {}) {
 /* -------------------------------------------------- */
 
 /**
- *
- * @param {Partial<InputOptions>} dialogOptions
- * @returns
+ * A helper function that prompts a dialog to place cards in a grid.
+ * @param {Partial<InputOptions>} dialogOptions     Options to modify the dialog.
+ * @returns {Promise<Card[] | void>}                   A promise that resolves to the drawn cards.
  */
 export async function gridDialog(dialogOptions = {}) {
   const typeMap = {
@@ -308,9 +308,9 @@ export async function triangle(config, options = {}) {
 /* -------------------------------------------------- */
 
 /**
- *
- * @param {Partial<InputOptions>} dialogOptions
- * @returns
+ * A helper function that prompts a dialog to place cards in a triangle.
+ * @param {Partial<InputOptions>} dialogOptions     Options to modify the dialog.
+ * @returns {Promise<Card[] | void>}                   A promise that resolves to the drawn cards.
  */
 export async function triangleDialog(dialogOptions = {}) {
   const typeMap = {
