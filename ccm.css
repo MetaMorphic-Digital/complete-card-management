@@ -224,6 +224,15 @@
           transition: inherit;
         }
       }
+    .card {
+      contain: layout;
+      .thumbnail {
+        /* opacity: 0.5; */
+        &:hover {
+          opacity: 0.5;
+          transition: inherit;
+        }
+      }
 
       .overlay {
         position: absolute;
