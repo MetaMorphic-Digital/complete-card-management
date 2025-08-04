@@ -1,7 +1,9 @@
 # Changelog
 
-## 2.0.7
+## 2.1.0
 - Increased system minimum to v13.346
+- Created new deck sheet that emphasizes display
+- Improved display of card image
 - Fixed core i18n usage
 - Fixed image display for cards with their backs up
 - Privated various HUD actions to avoid API interaction confusion
