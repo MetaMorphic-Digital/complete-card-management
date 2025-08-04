@@ -167,7 +167,21 @@ export async function gridDialog(dialogOptions = {}) {
     })
   });
 
-  content.append(fromInput, toInput, rowInput, columnInput);
+  const offsetXInput = createFormGroup({
+    label: "CCM.API.OffsetX.label",
+    hint: "CCM.API.OffsetX.hint",
+    localize: true,
+    input: HTMLRangePickerElement.create({name: "offsetX", min: 0, value: 0, step: 1, max: sceneWidth})
+  });
+
+  const offsetYInput = createFormGroup({
+    label: "CCM.API.OffsetY.label",
+    hint: "CCM.API.OffsetY.hint",
+    localize: true,
+    input: HTMLRangePickerElement.create({name: "offsetY", min: 0, value: 0, step: 1, max: sceneHeight})
+  });
+
+  content.append(fromInput, toInput, rowInput, columnInput, offsetXInput, offsetYInput);
 
   const dialogDefaults = {
     content,
@@ -188,7 +202,10 @@ export async function gridDialog(dialogOptions = {}) {
     columns: fd.columns
   };
 
-  const options = {};
+  const options = {
+    offsetX: fd.offsetX,
+    offsetY: fd.offsetY
+  };
 
   return grid(config, options);
 }
