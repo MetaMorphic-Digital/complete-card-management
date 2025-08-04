@@ -1,6 +1,15 @@
 import {MODULE_ID} from "../helpers.mjs";
 
 /**
+ * @import { ApplicationConfiguration } from "@client/applications/_types.mjs";
+ * @import { DialogV2Configuration, DialogV2WaitOptions } from "@client/applications/api/dialog.mjs";
+ */
+
+/**
+ * @typedef {ApplicationConfiguration & DialogV2Configuration & DialogV2WaitOptions} InputOptions
+ */
+
+/**
  * Creates a grid of placed cards
  * @param {object} config                       Mandatory configuration object
  * @param {Cards} config.from                   The Cards document to draw from
@@ -86,6 +95,85 @@ export async function grid(config, options = {}) {
   await scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
   if (options.sceneId) ui.notifications.info(game.i18n.format("CCM.API.LayoutScene", {name: scene.name}));
   return cards;
+}
+
+/* -------------------------------------------------- */
+
+/**
+ *
+ * @param {Partial<InputOptions>} dialogOptions
+ * @returns
+ */
+export async function gridDialog(dialogOptions = {}) {
+  const typeMap = {
+    deck: game.i18n.localize("CARDS.CardsDeck"),
+    hand: game.i18n.localize("CARDS.CardsHand"),
+    pile: game.i18n.localize("CARDS.CardsPile")
+  };
+
+  const stackOptions = game.cards.filter(c => c.isOwner)
+    .map(c => ({type: c.type, value: c.id, label: c.name, group: typeMap[c.type]}));
+
+  const content = document.createElement("div");
+
+  const {createFormGroup, createNumberInput, createSelectInput} = foundry.applications.fields;
+
+  const fromInput = createFormGroup({
+    label: "CCM.API.FromStack.label",
+    hint: "CCM.API.FromStack.hint",
+    localize: true,
+    input: createSelectInput({
+      name: "from",
+      options: stackOptions,
+      value: stackOptions.find(o => o.group === typeMap["deck"])?.value
+    })
+  });
+
+  const toInput = createFormGroup({
+    label: "CCM.API.ToStack.label",
+    hint: "CCM.API.ToStack.hint",
+    localize: true,
+    input: createSelectInput({name: "to", options: stackOptions, value: canvas.scene.getFlag(MODULE_ID, "canvasPile")})
+  });
+
+  const rowInput = createFormGroup({
+    label: "CCM.API.GridDialog.Rows.label",
+    hint: "CCM.API.GridDialog.Rows.hint",
+    localize: true,
+    input: createNumberInput({name: "rows", min: 1, value: 1, step: 1})
+  });
+
+  const columnInput = createFormGroup({
+    label: "CCM.API.GridDialog.Columns.label",
+    hint: "CCM.API.GridDialog.Columns.hint",
+    localize: true,
+    input: createNumberInput({name: "columns", min: 1, value: 1, step: 1})
+  });
+
+  content.append(fromInput, toInput, rowInput, columnInput);
+
+  const dialogDefaults = {
+    content,
+    window: {
+      title: "CCM.API.GridDialog.Title",
+      icon: CONFIG.Cards.sidebarIcon
+    }
+  };
+
+  const fd = await foundry.applications.api.Dialog.input(foundry.utils.mergeObject(dialogDefaults, dialogOptions));
+
+  if (!fd) return;
+
+  const config = {
+    from: game.cards.get(fd.from),
+    to: game.cards.get(fd.to),
+    rows: fd.rows,
+    columns: fd.columns
+  };
+
+  const options = {};
+
+  return grid(config, options);
 }
 
 /* -------------------------------------------------- */
@@ -198,4 +286,75 @@ export async function triangle(config, options = {}) {
   await scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
   if (options.sceneId) ui.notifications.info(game.i18n.format("CCM.API.LayoutScene", {name: scene.name}));
   return cards;
+}
+
+/* -------------------------------------------------- */
+
+/**
+ *
+ * @param {Partial<InputOptions>} dialogOptions
+ * @returns
+ */
+export async function triangleDialog(dialogOptions = {}) {
+  const typeMap = {
+    deck: game.i18n.localize("CARDS.CardsDeck"),
+    hand: game.i18n.localize("CARDS.CardsHand"),
+    pile: game.i18n.localize("CARDS.CardsPile")
+  };
+
+  const stackOptions = game.cards.filter(c => c.isOwner)
+    .map(c => ({type: c.type, value: c.id, label: c.name, group: typeMap[c.type]}));
+
+  const content = document.createElement("div");
+
+  const {createFormGroup, createNumberInput, createSelectInput} = foundry.applications.fields;
+
+  const fromInput = createFormGroup({
+    label: "CCM.API.FromStack.label",
+    hint: "CCM.API.FromStack.hint",
+    localize: true,
+    input: createSelectInput({
+      name: "from",
+      options: stackOptions,
+      value: stackOptions.find(o => o.group === typeMap["deck"])?.value
+    })
+  });
+
+  const toInput = createFormGroup({
+    label: "CCM.API.ToStack.label",
+    hint: "CCM.API.ToStack.hint",
+    localize: true,
+    input: createSelectInput({name: "to", options: stackOptions, value: canvas.scene.getFlag(MODULE_ID, "canvasPile")})
+  });
+
+  const baseInput = createFormGroup({
+    label: "CCM.API.TriangleDialog.Base.label",
+    hint: "CCM.API.TriangleDialog.Base.hint",
+    localize: true,
+    input: createNumberInput({name: "base", min: 1, value: 1, step: 1})
+  });
+
+  content.append(fromInput, toInput, baseInput);
+
+  const dialogDefaults = {
+    content,
+    window: {
+      title: "CCM.API.TriangleDialog.Title",
+      icon: CONFIG.Cards.sidebarIcon
+    }
+  };
+
+  const fd = await foundry.applications.api.Dialog.input(foundry.utils.mergeObject(dialogDefaults, dialogOptions));
+
+  if (!fd) return;
+
+  const config = {
+    from: game.cards.get(fd.from),
+    to: game.cards.get(fd.to),
+    base: fd.base
+  };
+
+  const options = {};
+
+  return triangle(config, options);
 }

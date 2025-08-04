@@ -36,6 +36,8 @@
       "Title": "Card Controls",
       "Tools": {
         "SelectTitle": "Select Cards",
+        "CreateGrid": "Layout Card Grid",
+        "CreateTriangle": "Layout Card Triangle",
         "ClearTitle": "Clear Cards"
       },
       "HUD": {
@@ -111,7 +113,33 @@
       "NoScryDrop": "You can't drop external cards on the scrying dialog"
     },
     "API": {
-      "LayoutScene": "Laid out cards on scene {name}."
+      "LayoutScene": "Laid out cards on scene {name}.",
+      "FromStack": {
+        "label": "From",
+        "hint": "Stack of cards to draw from."
+      },
+      "ToStack": {
+        "label": "To",
+        "hint": "Stack of cards to play to."
+      },
+      "GridDialog": {
+        "Title": "Layout Card Grid",
+        "Rows": {
+          "label": "Rows",
+          "hint": "Number of rows, limited by the size of the current scene."
+        },
+        "Columns": {
+          "label": "Columns",
+          "hint": "Number of columns, limited by the size of the current scene."
+        }
+      },
+      "TriangleDialog": {
+        "Title": "Layout Card Triangle",
+        "Base": {
+          "label": "Base",
+          "hint": "Number of cards per side."
+        }
+      }
     }
   },
   "TYPES.RegionBehavior.complete-card-management.moveCard": "Allocate Card"
