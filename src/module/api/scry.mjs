@@ -58,8 +58,6 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     classes: ["ccm", "scry"],
-    modal: true,
-    rejectClose: false,
     position: {
       width: 600,
       top: 100,
@@ -96,6 +94,8 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     context.isBottom = this.#how === CONST.CARD_DRAW_MODES.BOTTOM;
     return context;
   }
+
+  /* -------------------------------------------------- */
 
   /** @inheritdoc */
   _onRender(...T) {
