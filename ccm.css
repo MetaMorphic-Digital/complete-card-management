@@ -207,7 +207,7 @@
     }
   }
 }
-.ccm.scry {
+.ccm.scry, .ccm.card-gallery {
   max-height: 90%;
 
   [data-application-part=cards] {

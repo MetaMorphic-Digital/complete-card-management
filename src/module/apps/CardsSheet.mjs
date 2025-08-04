@@ -1,4 +1,5 @@
 import {MODULE_ID} from "../helpers.mjs";
+import CardGallery from "./CardGallery.mjs";
 
 /** @import Card from "@client/documents/card.mjs"; */
 
@@ -14,6 +15,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       height: "auto"
     },
     actions: {
+      showGallery: CardsSheet.#onShowGallery,
       createCard: CardsSheet.#onCreateCard,
       editCard: CardsSheet.#onEditCard,
       deleteCard: CardsSheet.#onDeleteCard,
@@ -33,7 +35,12 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     },
     window: {
       contentClasses: ["standard-form"],
-      icon: "fa-solid fa-cards"
+      icon: "fa-solid fa-cards",
+      controls: [{
+        icon: "fa-solid fa-rectangle-vertical-history",
+        label: "CCM.CardSheet.GalleryView.ButtonLabel",
+        action: "showGallery"
+      }]
     }
   };
 
@@ -323,11 +330,21 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /* -------------------------------------------------- */
 
   /**
+   * Open a Card Gallery for the cards in this stack.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
+  static async #onShowGallery(event, target) {
+    const gallery = new CardGallery({document: this.document});
+    await gallery.render({force: true});
+  }
+
+  /**
    * Handle creation of a new card.
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onCreateCard(event, target) {
     if (!this.isEditable) return;
@@ -347,7 +364,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onEditCard(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
@@ -361,7 +377,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onDeleteCard(event, target) {
     if (!this.isEditable) return;
@@ -376,7 +391,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onShuffleCards(event, target) {
     if (!this.isEditable) return;
@@ -391,7 +405,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onDealCards(event, target) {
     if (!this.isEditable) return;
@@ -405,7 +418,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onResetCards(event, target) {
     if (!this.isEditable) return;
@@ -419,7 +431,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onToggleSort(event, target) {
     if (!this.isEditable) return;
@@ -435,7 +446,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onPreviousFace(event, target) {
     if (!this.isEditable) return;
@@ -451,7 +461,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onNextFace(event, target) {
     if (!this.isEditable) return;
@@ -467,7 +476,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onDrawCards(event, target) {
     if (!this.isEditable) return;
@@ -481,7 +489,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onPassCards(event, target) {
     if (!this.isEditable) return;
@@ -495,7 +502,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onPlayCard(event, target) {
     if (!this.isEditable) return;

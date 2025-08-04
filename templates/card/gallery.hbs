@@ -1,0 +1,13 @@
+<fieldset class="cards scrollable">
+  {{#each cards as |card index|}}
+  <figure data-card-id="{{card.id}}" data-index="{{index}}">
+    <div class="overlay">
+      <a data-action="playCard">
+        <i class="fa-solid fa-circle-play"></i>
+      </a>
+    </div>
+    <img class="thumbnail" src="{{card.img}}">
+    <figcaption>{{card.name}}</figcaption>
+  </figure>
+  {{/each}}
+</fieldset>
