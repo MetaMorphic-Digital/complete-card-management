@@ -116,7 +116,8 @@ export async function gridDialog(dialogOptions = {}) {
 
   const content = document.createElement("div");
 
-  const {createFormGroup, createNumberInput, createSelectInput} = foundry.applications.fields;
+  const {createFormGroup, createSelectInput} = foundry.applications.fields;
+  const {HTMLRangePickerElement} = foundry.applications.elements;
 
   const fromInput = createFormGroup({
     label: "CCM.API.FromStack.label",
@@ -136,18 +137,34 @@ export async function gridDialog(dialogOptions = {}) {
     input: createSelectInput({name: "to", options: stackOptions, value: canvas.scene.getFlag(MODULE_ID, "canvasPile")})
   });
 
+  const {sceneHeight, sceneWidth} = canvas.scene.dimensions;
+
   const rowInput = createFormGroup({
     label: "CCM.API.GridDialog.Rows.label",
     hint: "CCM.API.GridDialog.Rows.hint",
     localize: true,
-    input: createNumberInput({name: "rows", min: 1, value: 1, step: 1})
+    input: HTMLRangePickerElement.create({
+      name: "rows",
+      min: 1,
+      value: 1,
+      step: 1,
+      // Using default of 3 spaces tall + 1 space gap
+      max: Math.floor((sceneHeight + canvas.scene.grid.sizeY) / (canvas.scene.grid.sizeY * 4))
+    })
   });
 
   const columnInput = createFormGroup({
     label: "CCM.API.GridDialog.Columns.label",
     hint: "CCM.API.GridDialog.Columns.hint",
     localize: true,
-    input: createNumberInput({name: "columns", min: 1, value: 1, step: 1})
+    input: HTMLRangePickerElement.create({
+      name: "columns",
+      min: 1,
+      value: 1,
+      step: 1,
+      // Using default of 2 spaces wide + 1 space gap
+      max: Math.floor((sceneWidth + canvas.scene.grid.sizeX) / (canvas.scene.grid.sizeX * 3))
+    })
   });
 
   content.append(fromInput, toInput, rowInput, columnInput);
@@ -307,7 +324,9 @@ export async function triangleDialog(dialogOptions = {}) {
 
   const content = document.createElement("div");
 
-  const {createFormGroup, createNumberInput, createSelectInput} = foundry.applications.fields;
+  const {createFormGroup, createSelectInput} = foundry.applications.fields;
+
+  const {HTMLRangePickerElement} = foundry.applications.elements;
 
   const fromInput = createFormGroup({
     label: "CCM.API.FromStack.label",
@@ -327,14 +346,57 @@ export async function triangleDialog(dialogOptions = {}) {
     input: createSelectInput({name: "to", options: stackOptions, value: canvas.scene.getFlag(MODULE_ID, "canvasPile")})
   });
 
+  const {sceneHeight, sceneWidth} = canvas.scene.dimensions;
+
   const baseInput = createFormGroup({
     label: "CCM.API.TriangleDialog.Base.label",
     hint: "CCM.API.TriangleDialog.Base.hint",
     localize: true,
-    input: createNumberInput({name: "base", min: 1, value: 1, step: 1})
+    input: HTMLRangePickerElement.create({
+      name: "base",
+      min: 1,
+      value: 1,
+      step: 1,
+      // Can't be wider than the width or taller than the height; functionally a square limit
+      max: Math.min(
+        // Using default of 2 spaces wide + 1 space gap
+        Math.floor((sceneWidth + canvas.scene.grid.sizeX) / (canvas.scene.grid.sizeX * 3)),
+        // Using default of 3 spaces tall + 1 space gap
+        Math.floor((sceneHeight + canvas.scene.grid.sizeY) / (canvas.scene.grid.sizeY * 4))
+      )
+    })
   });
 
-  content.append(fromInput, toInput, baseInput);
+  const directionInput = createFormGroup({
+    label: "CCM.API.TriangleDialog.Direction.label",
+    hint: "CCM.API.TriangleDialog.Direction.hint",
+    localize: true,
+    input: createSelectInput({
+      name: "direction",
+      options: [
+        {value: "UP"},
+        {value: "DOWN"},
+        {value: "LEFT"},
+        {value: "RIGHT"}
+      ]
+    })
+  });
+
+  const offsetXInput = createFormGroup({
+    label: "CCM.API.OffsetX.label",
+    hint: "CCM.API.OffsetX.hint",
+    localize: true,
+    input: HTMLRangePickerElement.create({name: "offsetX", min: 0, value: 0, step: 1, max: sceneWidth})
+  });
+
+  const offsetYInput = createFormGroup({
+    label: "CCM.API.OffsetY.label",
+    hint: "CCM.API.OffsetY.hint",
+    localize: true,
+    input: HTMLRangePickerElement.create({name: "offsetY", min: 0, value: 0, step: 1, max: sceneHeight})
+  });
+
+  content.append(fromInput, toInput, baseInput, directionInput, offsetXInput, offsetYInput);
 
   const dialogDefaults = {
     content,
@@ -354,7 +416,11 @@ export async function triangleDialog(dialogOptions = {}) {
     base: fd.base
   };
 
-  const options = {};
+  const options = {
+    offsetX: fd.offsetX,
+    offsetY: fd.offsetY,
+    direction: fd.direction
+  };
 
   return triangle(config, options);
 }

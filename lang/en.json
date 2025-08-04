@@ -122,6 +122,14 @@
         "label": "To",
         "hint": "Stack of cards to play to."
       },
+      "OffsetX": {
+        "label": "X Axis Offset",
+        "hint": "Offset for the top left of the layout from the top left of the scene bounds."
+      },
+      "OffsetY": {
+        "label": "Y Axis Offset",
+        "hint": "Offset for the top left of the layout from the top left of the scene bounds."
+      },
       "GridDialog": {
         "Title": "Layout Card Grid",
         "Rows": {
@@ -138,6 +146,10 @@
         "Base": {
           "label": "Base",
           "hint": "Number of cards per side."
+        },
+        "Direction": {
+          "label": "Direction",
+          "hint": "Which way to point the triangle."
         }
       }
     }
