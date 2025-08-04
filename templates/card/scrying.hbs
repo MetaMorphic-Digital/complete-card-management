@@ -1,6 +1,6 @@
 <fieldset class="cards scrollable">
   {{#each cards as |card index|}}
-  <figure data-card-id="{{card.id}}" data-index="{{index}}">
+  <figure class="card" data-card-id="{{card.id}}" data-index="{{index}}">
     <div class="overlay">
       {{#if @root.isBottom}}
       <a data-action="moveCard" data-tooltip="{{localize 'CCM.CardSheet.ScryMoveTop'}}">
