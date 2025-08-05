@@ -122,6 +122,13 @@
         "label": "To",
         "hint": "Stack of cards to play to."
       },
+      "Face": {
+        "label": "Face",
+        "hint": "Optionally force cards onto their first face or back.",
+        "blank": "No change",
+        "front": "First Face",
+        "back": "Back"
+      },
       "OffsetX": {
         "label": "X Axis Offset",
         "hint": "Offset for the top left of the layout from the top left of the scene bounds."
