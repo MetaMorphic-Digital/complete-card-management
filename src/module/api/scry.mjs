@@ -79,7 +79,10 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /** @inheritdoc */
   static PARTS = {
-    cards: {template: "modules/complete-card-management/templates/card/scrying.hbs"},
+    cards: {
+      template: "modules/complete-card-management/templates/card/scrying.hbs",
+      scrollable: [""]
+    },
     footer: {template: "modules/complete-card-management/templates/card/scrying-footer.hbs"}
   };
 

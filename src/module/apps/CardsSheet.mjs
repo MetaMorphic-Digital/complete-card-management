@@ -182,8 +182,8 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
-  _onRender(...T) {
-    super._onRender(...T);
+  async _onRender(context, options) {
+    await super._onRender(context, options);
     this.#setupDragDrop();
     this.#setupSearch();
   }
@@ -268,7 +268,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       },
       callbacks: {
         dragstart: this._onDragStart.bind(this),
-        // Easy way to copy implementation from core sheet
         drop: this._onDrop.bind(sheet)
       }
     });
@@ -319,8 +318,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     const target = stack.cards.get(li?.dataset.cardId);
     if (!target || (card === target)) return;
     const siblings = stack.cards.filter(c => c.id !== card.id);
-    const updateData = SortingHelpers
-      .performIntegerSort(card, {target, siblings})
+    const updateData = foundry.utils.performIntegerSort(card, {target, siblings})
       .map(u => ({_id: u.target.id, sort: u.update.sort}));
     await stack.updateEmbeddedDocuments("Card", updateData);
   }
