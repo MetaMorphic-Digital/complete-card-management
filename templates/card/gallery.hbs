@@ -2,9 +2,15 @@
   {{#each cards as |card index|}}
   <figure class="card" data-card-id="{{card.id}}" data-index="{{index}}">
     <div class="overlay">
+      {{#unless card.drawn}}
       <a data-action="playCard">
         <i class="fa-solid fa-circle-play"></i>
       </a>
+      {{else}}
+      <a data-action="recallCard">
+        <i class="fa-solid fa-recycle"></i>
+      </a>
+      {{/unless}}
     </div>
     <img class="thumbnail" src="{{card.img}}">
     <figcaption>{{card.name}}</figcaption>
