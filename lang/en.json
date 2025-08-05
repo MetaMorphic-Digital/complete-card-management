@@ -36,6 +36,8 @@
       "Title": "Card Controls",
       "Tools": {
         "SelectTitle": "Select Cards",
+        "CreateGrid": "Layout Card Grid",
+        "CreateTriangle": "Layout Card Triangle",
         "ClearTitle": "Clear Cards"
       },
       "HUD": {
@@ -111,7 +113,56 @@
       "NoScryDrop": "You can't drop external cards on the scrying dialog"
     },
     "API": {
-      "LayoutScene": "Laid out cards on scene {name}."
+      "LayoutScene": "Laid out cards on scene {name}.",
+      "FromStack": {
+        "label": "From",
+        "hint": "Stack of cards to draw from."
+      },
+      "ToStack": {
+        "label": "To",
+        "hint": "Stack of cards to play to."
+      },
+      "Face": {
+        "label": "Face",
+        "hint": "Optionally force cards onto their first face or back.",
+        "blank": "No change",
+        "front": "First Face",
+        "back": "Back"
+      },
+      "OffsetX": {
+        "label": "X Axis Offset",
+        "hint": "Offset for the top left of the layout from the top left of the scene bounds."
+      },
+      "OffsetY": {
+        "label": "Y Axis Offset",
+        "hint": "Offset for the top left of the layout from the top left of the scene bounds."
+      },
+      "GridDialog": {
+        "Title": "Layout Card Grid",
+        "Rows": {
+          "label": "Rows",
+          "hint": "Number of rows, limited by the size of the current scene."
+        },
+        "Columns": {
+          "label": "Columns",
+          "hint": "Number of columns, limited by the size of the current scene."
+        }
+      },
+      "TriangleDialog": {
+        "Title": "Layout Card Triangle",
+        "Base": {
+          "label": "Base",
+          "hint": "Number of cards per side."
+        },
+        "Direction": {
+          "label": "Direction",
+          "hint": "Which way to point the triangle.",
+          "Up": "Up",
+          "Down": "Down",
+          "Left": "Left",
+          "Right": "Right"
+        }
+      }
     }
   },
   "TYPES.RegionBehavior.complete-card-management.moveCard": "Allocate Card"
