@@ -156,7 +156,11 @@
         },
         "Direction": {
           "label": "Direction",
-          "hint": "Which way to point the triangle."
+          "hint": "Which way to point the triangle.",
+          "Up": "Up",
+          "Down": "Down",
+          "Left": "Left",
+          "Right": "Right"
         }
       }
     }

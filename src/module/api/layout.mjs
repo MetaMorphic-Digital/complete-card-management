@@ -425,11 +425,12 @@ export async function triangleDialog(dialogOptions = {}, updateData = {}) {
     input: createSelectInput({
       name: "direction",
       options: [
-        {value: "UP"},
-        {value: "DOWN"},
-        {value: "LEFT"},
-        {value: "RIGHT"}
-      ]
+        {value: "UP", label: "CCM.API.TriangleDialog.Direction.Up"},
+        {value: "DOWN", label: "CCM.API.TriangleDialog.Direction.Down"},
+        {value: "LEFT", label: "CCM.API.TriangleDialog.Direction.Left"},
+        {value: "RIGHT", label: "CCM.API.TriangleDialog.Direction.Right"}
+      ],
+      localize: true
     })
   });
 
