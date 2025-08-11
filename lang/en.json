@@ -58,7 +58,7 @@
       "Unnamed": "Unnamed ({idx})",
 
       "GalleryView": {
-        "ButtonLabel": "Gallery View"
+        "ButtonLabel": "Toggle Gallery View"
       },
 
       "ScryingContext": "Scry",

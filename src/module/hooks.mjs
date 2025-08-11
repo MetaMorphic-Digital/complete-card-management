@@ -534,6 +534,7 @@ async function promptAmount(cards) {
   const data = await foundry.applications.api.DialogV2.input({
     modal: true,
     rejectClose: false,
+    classes: ["ccm"],
     content: `<fieldset>${rangePicker}${drawMode}</fieldset>`,
     window: {title: title, icon: "fa-solid fa-eye"},
     position: {width: 400}

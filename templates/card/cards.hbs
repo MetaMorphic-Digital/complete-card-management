@@ -1,13 +1,15 @@
 <div class="{{tabs.cards.tabCssClass}}" data-group="primary" data-tab="cards">
   <input type="search" placeholder="{{localize 'SIDEBAR.Search' types=(localize 'DOCUMENT.Cards')}}">
-  <header class="header">
+  <header class="header {{#if galleryView}}gallery{{/if}}">
     {{#if isPile}}
     <span class="sort"></span>
     {{else}}
     <a class="sort" data-tooltip="CARDS.ACTIONS.ToggleSortMode" data-action="toggleSort">
       <i class="fa-solid fa-sort fa-fw"></i>
+      {{#if galleryView}} {{localize "CARDS.ACTIONS.ToggleSortMode"}}{{/if}}
     </a>
     {{/if}}
+    {{#unless galleryView}}
     <span class="name">{{localize "Name"}}</span>
     <span class="type">{{localize "DOCUMENT.FIELDS.type.label"}}</span>
     <span class="suit">{{localize "CARD.FIELDS.suit.label"}}</span>
@@ -16,6 +18,7 @@
     <span class="drawn">{{localize "CARD.FIELDS.drawn.label"}}</span>
     {{/if}}
     <span class="face">{{localize "CARD.FIELDS.face.label"}}</span>
+    {{/unless}}
     {{#if isDeck}}
     <a class="controls" data-tooltip="CARDS.ACTIONS.Create" data-action="createCard">
       <i class="fa-solid fa-plus"></i>
@@ -23,7 +26,7 @@
     </a>
     {{/if}}
   </header>
-
+  {{#unless galleryView}}
   <ol class="cards">
     {{#each cards}}
     <li class="card" data-card-id="{{card.id}}">
@@ -73,4 +76,25 @@
     </li>
     {{/each}}
   </ol>
+  {{else}}
+  <fieldset class="gallery cards">
+    {{#each cards}}
+    <figure class="card" data-card-id="{{card.id}}">
+      <div class="overlay">
+        {{#unless card.drawn}}
+        <a data-action="playCard">
+          <i class="fa-solid fa-circle-play"></i>
+        </a>
+        {{else}}
+        <a data-action="recallCard">
+          <i class="fa-solid fa-recycle"></i>
+        </a>
+        {{/unless}}
+      </div>
+      <img class="thumbnail" src="{{card.img}}">
+      <figcaption class="name">{{card.name}}</figcaption>
+    </figure>
+    {{/each}}
+  </fieldset>
+  {{/unless}}
 </div>

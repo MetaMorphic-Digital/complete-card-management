@@ -15,7 +15,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       height: "auto"
     },
     actions: {
-      showGallery: CardsSheet.#onShowGallery,
+      toggleGallery: CardsSheet.#onToggleGallery,
       createCard: CardsSheet.#onCreateCard,
       editCard: CardsSheet.#onEditCard,
       deleteCard: CardsSheet.#onDeleteCard,
@@ -39,7 +39,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       controls: [{
         icon: "fa-solid fa-rectangle-vertical-history",
         label: "CCM.CardSheet.GalleryView.ButtonLabel",
-        action: "showGallery"
+        action: "toggleGallery"
       }]
     }
   };
@@ -96,9 +96,28 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
+  /**
+   * Is this currently rendering the cards tab in gallery view?
+   * Can be modified via render options.
+   * @type {boolean}
+   */
+  #galleryView = false;
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
+  _configureRenderOptions(options) {
+    super._configureRenderOptions(options);
+    if ("galleryView" in options) this.#galleryView = options.galleryView;
+  }
+
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   async _prepareContext(options) {
-    const context = {};
+    const context = {
+      galleryView: this.#galleryView
+    };
     const src = this.document.toObject();
 
     const makeField = (name, options = {}) => {
@@ -234,7 +253,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   #setupSearch() {
     const search = new foundry.applications.ux.SearchFilter({
       inputSelector: "input[type=search]",
-      contentSelector: "ol.cards",
+      contentSelector: "[data-application-part=cards] .cards",
       initial: this.#search ?? "",
       callback: (event, value, rgx, element) => {
         for (const card of element.querySelectorAll(".card")) {
@@ -259,9 +278,10 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    */
   #setupDragDrop() {
     const sheet = this;
+    const cardsSection = "[data-application-part=cards] .cards";
     const dd = new foundry.applications.ux.DragDrop({
-      dragSelector: (this.document.type === "deck") ? "ol.cards li.card" : "ol.cards li.card .name",
-      dropSelector: "ol.cards",
+      dragSelector: cardsSection + (this.document.type === "deck") ? " .card" : " .card .name",
+      dropSelector: cardsSection,
       permissions: {
         dragstart: () => sheet.isEditable,
         drop: () => sheet.isEditable
@@ -333,9 +353,8 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
    */
-  static async #onShowGallery(event, target) {
-    const gallery = new CardGallery({document: this.document});
-    await gallery.render({force: true});
+  static async #onToggleGallery(event, target) {
+    this.render({galleryView: !this.#galleryView, tab: {primary: "cards"}});
   }
 
   /**

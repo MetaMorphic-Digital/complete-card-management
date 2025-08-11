@@ -116,14 +116,13 @@
 
   [data-tab=cards] {
 
-    .cards {
+    .cards:not(.gallery) {
       list-style: none;
       padding: 0;
       margin: 0;
       min-height: 200px;
     }
-
-    .header, .card {
+    .header, .cards:not(.gallery) .card {
       display: flex;
 
       &.card { padding-left: 0; }
@@ -188,6 +187,9 @@
 
       .drawn input:checked::before { color: var(--checkbox-checked-color); }
     }
+    .header.gallery .sort {
+      flex: 0 0 140px;
+    }
   }
 }
 
@@ -197,24 +199,18 @@
   &.active { text-shadow: 0 0 8px var(--color-shadow-primary); }
 }
 
-/* Styling for various cards dialogs. */
-.ccm.dialog {
-  &.pass, &.deal, &.play, &.draw {
-    .dialog-content {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
+.ccm.scry {
+  max-height: 90%;
+  .ccm.scry [data-application-part=cards] {
+    max-height: 45rem;
   }
 }
-.ccm.scry, .ccm.card-gallery {
-  max-height: 90%;
 
-  [data-application-part=cards] {
+.ccm.scry [data-application-part=cards], .ccm.cards [data-application-part=cards] .gallery.cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     margin-right: 0.5rem;
-    max-height: 45rem;
+    /* max-height: 45rem; */
     .card {
       contain: layout;
       .thumbnail {
@@ -241,7 +237,6 @@
       }
     }
   }
-}
 
 #players {
   .card-count {
