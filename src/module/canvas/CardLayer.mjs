@@ -1,6 +1,7 @@
 import CardObject from "./CardObject.mjs";
 import {MODULE_ID, generateUpdates, processUpdates} from "../helpers.mjs";
 import CanvasCard from "./CanvasCard.mjs";
+import {gridDialog, triangleDialog} from "../api/layout.mjs";
 
 /** @import {PlaceablesLayerOptions} from "@client/canvas/layers/_types.mjs" */
 
@@ -191,9 +192,25 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
           active: canvas.forceSnapVertices,
           onChange: (event, toggled) => canvas.forceSnapVertices = toggled
         },
+        createGrid: {
+          name: "createGrid",
+          order: 3,
+          title: "CCM.CardLayer.Tools.CreateGrid",
+          icon: "fa-solid fa-square",
+          button: true,
+          onChange: (event) => gridDialog()
+        },
+        createTriangle: {
+          name: "createTriangle",
+          order: 3,
+          title: "CCM.CardLayer.Tools.CreateTriangle",
+          icon: "fa-solid fa-triangle",
+          button: true,
+          onChange: (event) => triangleDialog()
+        },
         delete: {
           name: "delete",
-          order: 3,
+          order: 5,
           title: "CCM.CardLayer.Tools.ClearTitle",
           icon: "fa-solid fa-trash",
           visible: game.user.isGM,
