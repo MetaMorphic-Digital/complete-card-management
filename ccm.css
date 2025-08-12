@@ -115,14 +115,15 @@
   }
 
   [data-tab=cards] {
+    max-height: 60vh;
 
-    .cards:not(.gallery) {
+    ol.cards {
       list-style: none;
       padding: 0;
       margin: 0;
       min-height: 200px;
     }
-    .header, .cards:not(.gallery) .card {
+    .header, ol.cards .card {
       display: flex;
 
       &.card { padding-left: 0; }
@@ -201,16 +202,13 @@
 
 .ccm.scry {
   max-height: 90%;
-  .ccm.scry [data-application-part=cards] {
-    max-height: 45rem;
-  }
 }
 
 .ccm.scry [data-application-part=cards], .ccm.cards [data-application-part=cards] .gallery.cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     margin-right: 0.5rem;
-    /* max-height: 45rem; */
+    height: 100rem;
     .card {
       contain: layout;
       .thumbnail {

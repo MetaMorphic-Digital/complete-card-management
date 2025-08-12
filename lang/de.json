@@ -47,11 +47,13 @@
     "CardSheet": {
       "CardParentTitle": "{stackName}: {cardName}",
       "Add": "Hinzufügen",
+      "Tabs": {
+        "configuration": "Konfiguration",
+        "cards": "Karten"
+      },
       "TabDetails": "Karten Details",
       "TabFaces": "Karten Vorderseite",
       "TabBack": "Karten Rückseite",
-      "TabConfiguration": "Konfiguration",
-      "TabCards": "Karten",
       "BacksideUp": "Rückseite Oben",
       "Unnamed": "Unbenannt ({idx})",
 

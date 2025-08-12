@@ -1,4 +1,4 @@
-<div class="{{tabs.cards.tabCssClass}}" data-group="primary" data-tab="cards">
+<section class="tab {{tabs.cards.cssClass}}" data-group="primary" data-tab="cards">
   <input type="search" placeholder="{{localize 'SIDEBAR.Search' types=(localize 'DOCUMENT.Cards')}}">
   <header class="header {{#if galleryView}}gallery{{/if}}">
     {{#if isPile}}
@@ -27,7 +27,7 @@
     {{/if}}
   </header>
   {{#unless galleryView}}
-  <ol class="cards">
+  <ol class="cards scrollable">
     {{#each cards}}
     <li class="card" data-card-id="{{card.id}}">
       <span class="sort">
@@ -77,7 +77,7 @@
     {{/each}}
   </ol>
   {{else}}
-  <fieldset class="gallery cards">
+  <fieldset class="gallery cards scrollable">
     {{#each cards}}
     <figure class="card" data-card-id="{{card.id}}">
       <div class="overlay">
@@ -97,4 +97,4 @@
     {{/each}}
   </fieldset>
   {{/unless}}
-</div>
+</section>

@@ -1,7 +1,9 @@
 import {MODULE_ID} from "../helpers.mjs";
-import CardGallery from "./CardGallery.mjs";
 
-/** @import Card from "@client/documents/card.mjs"; */
+/**
+ * @import Card from "@client/documents/card.mjs";
+ * @import { ApplicationTabsConfiguration } from "@client/applications/_types.mjs";
+ */
 
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
@@ -53,22 +55,21 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
-  /**
-   * Tabs that are present on this sheet.
-   * @enum {TabConfiguration}
-   */
+  /** @inheritdoc */
   static TABS = {
-    configuration: {
-      id: "configuration",
-      group: "primary",
-      label: "CCM.CardSheet.TabConfiguration",
-      icon: "fa-solid fa-cogs"
-    },
-    cards: {
-      id: "cards",
-      group: "primary",
-      label: "CCM.CardSheet.TabCards",
-      icon: "fa-solid fa-id-badge"
+    primary: {
+      tabs: [
+        {
+          id: "configuration",
+          icon: "fa-solid fa-cogs"
+        },
+        {
+          id: "cards",
+          icon: "fa-solid fa-id-badge"
+        }
+      ],
+      initial: "cards",
+      labelPrefix: "CCM.CardSheet.Tabs"
     }
   };
 
@@ -115,9 +116,10 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /** @inheritdoc */
   async _prepareContext(options) {
-    const context = {
-      galleryView: this.#galleryView
-    };
+    const context = await super._prepareContext(options);
+
+    context.galleryView = this.#galleryView;
+
     const src = this.document.toObject();
 
     const makeField = (name, options = {}) => {
@@ -136,16 +138,16 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     context.currentFace = this.document.img;
 
     // Navigation
-    context.tabs = Object.values(this.constructor.TABS).reduce((acc, v) => {
-      const isActive = this.tabGroups[v.group] === v.id;
-      acc[v.id] = {
-        ...v,
-        active: isActive,
-        cssClass: isActive ? "item active" : "item",
-        tabCssClass: isActive ? "tab scrollable active" : "tab scrollable"
-      };
-      return acc;
-    }, {});
+    // context.tabs = Object.values(this.constructor.TABS).reduce((acc, v) => {
+    //   const isActive = this.tabGroups[v.group] === v.id;
+    //   acc[v.id] = {
+    //     ...v,
+    //     active: isActive,
+    //     cssClass: isActive ? "item active" : "item",
+    //     tabCssClass: isActive ? "tab scrollable active" : "tab scrollable"
+    //   };
+    //   return acc;
+    // }, {});
 
     // Configuration
     context.img = makeField("img", {
