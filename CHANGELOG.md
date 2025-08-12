@@ -2,8 +2,7 @@
 
 ## 2.1.0
 - Increased system minimum to v13.346
-- Added a header button to the cards sheets that opens a gallery-style display of the card images.
-- Improved display of card image
+- Added a header button to the cards sheets switches the sheet to a gallery-style display of card images
 - Fixed core i18n usage
 - Fixed image display for cards with their backs up
 - Privated various HUD actions to avoid API interaction confusion

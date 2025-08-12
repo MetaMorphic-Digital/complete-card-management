@@ -80,7 +80,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     header: {template: "modules/complete-card-management/templates/card/header.hbs"},
     navigation: {template: "modules/complete-card-management/templates/card/nav.hbs"},
     configuration: {template: "modules/complete-card-management/templates/card/configuration.hbs"},
-    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
+    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [".cards"]},
     footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
   };
 
@@ -136,18 +136,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     // Header
     context.name = makeField("name");
     context.currentFace = this.document.img;
-
-    // Navigation
-    // context.tabs = Object.values(this.constructor.TABS).reduce((acc, v) => {
-    //   const isActive = this.tabGroups[v.group] === v.id;
-    //   acc[v.id] = {
-    //     ...v,
-    //     active: isActive,
-    //     cssClass: isActive ? "item active" : "item",
-    //     tabCssClass: isActive ? "tab scrollable active" : "tab scrollable"
-    //   };
-    //   return acc;
-    // }, {});
 
     // Configuration
     context.img = makeField("img", {

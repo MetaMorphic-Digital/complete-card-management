@@ -81,15 +81,15 @@
     {{#each cards}}
     <figure class="card" data-card-id="{{card.id}}">
       <div class="overlay">
-        {{#unless card.drawn}}
-        <a data-action="playCard">
-          <i class="fa-solid fa-circle-play"></i>
-        </a>
-        {{else}}
+        {{#if (and card.drawn (eq @root.document.type "deck"))}}
         <a data-action="recallCard">
           <i class="fa-solid fa-recycle"></i>
         </a>
-        {{/unless}}
+        {{else}}
+        <a data-action="playCard">
+          <i class="fa-solid fa-circle-play"></i>
+        </a>
+        {{/if}}
       </div>
       <img class="thumbnail" src="{{card.img}}">
       <figcaption class="name">{{card.name}}</figcaption>
