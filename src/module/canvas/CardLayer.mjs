@@ -296,6 +296,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
         title: "CONTROLS.ClearAll",
         icon: "fa-solid fa-cards"
       },
+      classes: ["ccm"],
       content: game.i18n.format("CONTROLS.ClearAllHint", {type}),
       rejectClose: false,
       modal: true
@@ -352,6 +353,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
             width: 400,
             height: "auto"
           },
+          classes: ["ccm"],
           content: `<p>${game.i18n.localize("AreYouSure")}</p>`,
           rejectClose: false,
           modal: true

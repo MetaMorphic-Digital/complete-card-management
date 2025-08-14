@@ -1,4 +1,4 @@
-<div class="{{tabs.configuration.tabCssClass}}" data-group="primary" data-tab="configuration">
+<section class="tab {{tabs.configuration.cssClass}} scrollable" data-group="primary" data-tab="configuration">
   {{formGroup img.field localize=true value=img.value placeholder=img.placeholder}}
   <div class="form-group">
     <label>{{localize "CARD.Dimensions"}}</label>
@@ -10,4 +10,4 @@
   </div>
   {{formGroup primaryOwner.field localize=true value=primaryOwner.value placeholder=primaryOwner.placeholder}}
   {{formGroup description.field localize=true value=description.value enriched=description.enriched button=true toggled=false height=300}}
-</div>
+</section>

@@ -50,12 +50,18 @@
       "CardParentTitle": "{stackName}: {cardName}",
       "Add": "Add",
       "TabDetails": "Card Details",
+      "Tabs": {
+        "configuration": "Configuration",
+        "cards": "Cards"
+      },
       "TabFaces": "Card Faces",
       "TabBack": "Card Back",
-      "TabConfiguration": "Configuration",
-      "TabCards": "Cards",
       "BacksideUp": "Backside Up",
       "Unnamed": "Unnamed ({idx})",
+
+      "GalleryView": {
+        "ButtonLabel": "Toggle Gallery View"
+      },
 
       "ScryingContext": "Scry",
       "ScryingTitle": "Scrying on: {name}",

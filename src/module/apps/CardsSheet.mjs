@@ -1,6 +1,9 @@
 import {MODULE_ID} from "../helpers.mjs";
 
-/** @import Card from "@client/documents/card.mjs"; */
+/**
+ * @import Card from "@client/documents/card.mjs";
+ * @import { ApplicationTabsConfiguration } from "@client/applications/_types.mjs";
+ */
 
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
@@ -14,6 +17,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       height: "auto"
     },
     actions: {
+      toggleGallery: CardsSheet.#onToggleGallery,
       createCard: CardsSheet.#onCreateCard,
       editCard: CardsSheet.#onEditCard,
       deleteCard: CardsSheet.#onDeleteCard,
@@ -33,7 +37,12 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     },
     window: {
       contentClasses: ["standard-form"],
-      icon: "fa-solid fa-cards"
+      icon: "fa-solid fa-cards",
+      controls: [{
+        icon: "fa-solid fa-rectangle-vertical-history",
+        label: "CCM.CardSheet.GalleryView.ButtonLabel",
+        action: "toggleGallery"
+      }]
     }
   };
 
@@ -46,22 +55,21 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
-  /**
-   * Tabs that are present on this sheet.
-   * @enum {TabConfiguration}
-   */
+  /** @inheritdoc */
   static TABS = {
-    configuration: {
-      id: "configuration",
-      group: "primary",
-      label: "CCM.CardSheet.TabConfiguration",
-      icon: "fa-solid fa-cogs"
-    },
-    cards: {
-      id: "cards",
-      group: "primary",
-      label: "CCM.CardSheet.TabCards",
-      icon: "fa-solid fa-id-badge"
+    primary: {
+      tabs: [
+        {
+          id: "configuration",
+          icon: "fa-solid fa-cogs"
+        },
+        {
+          id: "cards",
+          icon: "fa-solid fa-id-badge"
+        }
+      ],
+      initial: "cards",
+      labelPrefix: "CCM.CardSheet.Tabs"
     }
   };
 
@@ -72,7 +80,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     header: {template: "modules/complete-card-management/templates/card/header.hbs"},
     navigation: {template: "modules/complete-card-management/templates/card/nav.hbs"},
     configuration: {template: "modules/complete-card-management/templates/card/configuration.hbs"},
-    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [""]},
+    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [".cards"]},
     footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
   };
 
@@ -89,9 +97,29 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
 
   /* -------------------------------------------------- */
 
+  /**
+   * Is this currently rendering the cards tab in gallery view?
+   * Can be modified via render options.
+   * @type {boolean}
+   */
+  #galleryView = false;
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
+  _configureRenderOptions(options) {
+    super._configureRenderOptions(options);
+    if ("galleryView" in options) this.#galleryView = options.galleryView;
+  }
+
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   async _prepareContext(options) {
-    const context = {};
+    const context = await super._prepareContext(options);
+
+    context.galleryView = this.#galleryView;
+
     const src = this.document.toObject();
 
     const makeField = (name, options = {}) => {
@@ -108,18 +136,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     // Header
     context.name = makeField("name");
     context.currentFace = this.document.img;
-
-    // Navigation
-    context.tabs = Object.values(this.constructor.TABS).reduce((acc, v) => {
-      const isActive = this.tabGroups[v.group] === v.id;
-      acc[v.id] = {
-        ...v,
-        active: isActive,
-        cssClass: isActive ? "item active" : "item",
-        tabCssClass: isActive ? "tab scrollable active" : "tab scrollable"
-      };
-      return acc;
-    }, {});
 
     // Configuration
     context.img = makeField("img", {
@@ -175,8 +191,8 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
-  _onRender(...T) {
-    super._onRender(...T);
+  async _onRender(context, options) {
+    await super._onRender(context, options);
     this.#setupDragDrop();
     this.#setupSearch();
   }
@@ -227,7 +243,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   #setupSearch() {
     const search = new foundry.applications.ux.SearchFilter({
       inputSelector: "input[type=search]",
-      contentSelector: "ol.cards",
+      contentSelector: "[data-application-part=cards] .cards",
       initial: this.#search ?? "",
       callback: (event, value, rgx, element) => {
         for (const card of element.querySelectorAll(".card")) {
@@ -252,16 +268,16 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    */
   #setupDragDrop() {
     const sheet = this;
+    const cardsSection = "[data-application-part=cards] .cards";
     const dd = new foundry.applications.ux.DragDrop({
-      dragSelector: (this.document.type === "deck") ? "ol.cards li.card" : "ol.cards li.card .name",
-      dropSelector: "ol.cards",
+      dragSelector: cardsSection + (this.document.type === "deck") ? " .card" : " .card .name",
+      dropSelector: cardsSection,
       permissions: {
         dragstart: () => sheet.isEditable,
         drop: () => sheet.isEditable
       },
       callbacks: {
         dragstart: this._onDragStart.bind(this),
-        // Easy way to copy implementation from core sheet
         drop: this._onDrop.bind(sheet)
       }
     });
@@ -312,8 +328,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     const target = stack.cards.get(li?.dataset.cardId);
     if (!target || (card === target)) return;
     const siblings = stack.cards.filter(c => c.id !== card.id);
-    const updateData = SortingHelpers
-      .performIntegerSort(card, {target, siblings})
+    const updateData = foundry.utils.performIntegerSort(card, {target, siblings})
       .map(u => ({_id: u.target.id, sort: u.update.sort}));
     await stack.updateEmbeddedDocuments("Card", updateData);
   }
@@ -323,11 +338,20 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /* -------------------------------------------------- */
 
   /**
+   * Open a Card Gallery for the cards in this stack.
+   * @this {CardsSheet}
+   * @param {PointerEvent} event      Triggering click event.
+   * @param {HTMLElement} target      The element that defined a [data-action].
+   */
+  static async #onToggleGallery(event, target) {
+    this.render({galleryView: !this.#galleryView, tab: {primary: "cards"}});
+  }
+
+  /**
    * Handle creation of a new card.
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onCreateCard(event, target) {
     if (!this.isEditable) return;
@@ -347,7 +371,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onEditCard(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
@@ -361,7 +384,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onDeleteCard(event, target) {
     if (!this.isEditable) return;
@@ -376,7 +398,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onShuffleCards(event, target) {
     if (!this.isEditable) return;
@@ -391,7 +412,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onDealCards(event, target) {
     if (!this.isEditable) return;
@@ -405,7 +425,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onResetCards(event, target) {
     if (!this.isEditable) return;
@@ -419,7 +438,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onToggleSort(event, target) {
     if (!this.isEditable) return;
@@ -435,7 +453,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onPreviousFace(event, target) {
     if (!this.isEditable) return;
@@ -451,7 +468,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onNextFace(event, target) {
     if (!this.isEditable) return;
@@ -467,7 +483,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onDrawCards(event, target) {
     if (!this.isEditable) return;
@@ -481,7 +496,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onPassCards(event, target) {
     if (!this.isEditable) return;
@@ -495,7 +509,6 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @this {CardsSheet}
    * @param {PointerEvent} event      Triggering click event.
    * @param {HTMLElement} target      The element that defined a [data-action].
-   * @protected
    */
   static #onPlayCard(event, target) {
     if (!this.isEditable) return;

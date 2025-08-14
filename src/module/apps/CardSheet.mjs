@@ -206,6 +206,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
       rejectClose: false,
       content: game.i18n.localize("CARD.ACTIONS.DeleteFace.Warning"),
       modal: true,
+      classes: ["ccm"],
       window: {
         icon: "fa-solid fa-cards",
         title: "CARD.ACTIONS.DeleteFace.Title"
