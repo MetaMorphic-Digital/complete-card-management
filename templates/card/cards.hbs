@@ -77,7 +77,7 @@
     {{/each}}
   </ol>
   {{else}}
-  <fieldset class="gallery cards scrollable">
+  <section class="gallery cards scrollable">
     {{#each cards}}
     <figure class="card" data-card-id="{{card.id}}">
       <div class="overlay">
@@ -95,6 +95,6 @@
       <figcaption class="name">{{card.name}}</figcaption>
     </figure>
     {{/each}}
-  </fieldset>
+  </section>
   {{/unless}}
 </section>

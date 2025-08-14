@@ -206,16 +206,21 @@
 
 .ccm.scry [data-application-part=cards], .ccm.cards [data-application-part=cards] .gallery.cards {
     display: grid;
+    gap: 0.5rem;
     grid-template-columns: repeat(3, 1fr);
     margin-right: 0.5rem;
     height: 100rem;
+    overflow-x: visible;
+
     .card {
+      transition: transform 200ms ease;
       contain: layout;
-      .thumbnail {
-        /* opacity: 0.5; */
-        &:hover {
-          opacity: 0.5;
-          transition: inherit;
+
+      &:hover {
+        transform: scale(1.01);
+
+        .overlay {
+          opacity: 1;
         }
       }
 
@@ -225,13 +230,12 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-size: 36px;
-        height: 100%;
+        font-size: 46px;
+        height: 95%;
         width: 100%;
         opacity: 0;
-        &:hover {
-          opacity: 1;
-        }
+        text-shadow: 0 0 5px black;
+        color: white;
       }
     }
   }
