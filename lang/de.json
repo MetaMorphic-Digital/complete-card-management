@@ -36,6 +36,8 @@
       "Title": "Kartensteuerung",
       "Tools": {
         "SelectTitle": "Karten auswählen",
+        "CreateGrid": "Karten als Raster auslegen",
+        "CreateTriangle": "Karten als Dreieck auslegen",
         "ClearTitle": "Karten löschen"
       },
       "HUD": {
@@ -47,15 +49,19 @@
     "CardSheet": {
       "CardParentTitle": "{stackName}: {cardName}",
       "Add": "Hinzufügen",
+      "TabDetails": "Karten Details",
       "Tabs": {
         "configuration": "Konfiguration",
         "cards": "Karten"
       },
-      "TabDetails": "Karten Details",
       "TabFaces": "Karten Vorderseite",
       "TabBack": "Karten Rückseite",
       "BacksideUp": "Rückseite Oben",
       "Unnamed": "Unbenannt ({idx})",
+
+      "GalleryView": {
+        "ButtonLabel": "Gallerie-Ansicht umschalten"
+      },
 
       "ScryingContext": "Hellsehen",
       "ScryingTitle": "Hellsehen auf: {name}",
@@ -113,7 +119,56 @@
       "NoScryDrop": "Du kannst keine externen Karten im Hellsehen Dialog ablegen."
     },
     "API": {
-      "LayoutScene": "Karte auf Szene {name} gelegt."
+      "LayoutScene": "Karte auf Szene {name} gelegt.",
+      "FromStack": {
+        "label": "Von",
+        "hint": "Stapel von dem gezogen wird."
+      },
+      "ToStack": {
+        "label": "Zu",
+        "hint": "Stapel in den die Karten abgelegt werden."
+      },
+      "Face": {
+        "label": "Vorderseite",
+        "hint": "Optional können Karten auf ihre Vorderseite oder Rückseite gedreht werden.",
+        "blank": "Keine Änderung",
+        "front": "Vorderseite",
+        "back": "Rückseite"
+      },
+      "OffsetX": {
+        "label": "X-Achsen-Versatz",
+        "hint": "Versatz für die obere linke Ecke des Layouts von der oberen linken Ecke der Szenengrenzen."
+      },
+      "OffsetY": {
+        "label": "Y-Achsen-Versatz",
+        "hint": "Versatz für die obere linke Ecke des Layouts von der oberen linken Ecke der Szenengrenzen."
+      },
+      "GridDialog": {
+        "Title": "Karten als Raster auslegen",
+        "Rows": {
+          "label": "Reihen",
+          "hint": "Anzahl der Zeilen, begrenzt durch die Größe der aktuellen Szene."
+        },
+        "Columns": {
+          "label": "Spalten",
+          "hint": "Anzahl der Spalten, begrenzt durch die Größe der aktuellen Szene."
+        }
+      },
+      "TriangleDialog": {
+        "Title": "Karten als Dreieck auslegen",
+        "Base": {
+          "label": "Grundlinie",
+          "hint": "Anzahl der Karten pro Seite."
+        },
+        "Direction": {
+          "label": "Richtung",
+          "hint": "In welche Richtung soll das Dreieck zeigen?",
+          "Up": "Hoch",
+          "Down": "Runter",
+          "Left": "Links",
+          "Right": "Rechts"
+        }
+      }
     }
   },
   "TYPES.RegionBehavior.complete-card-management.moveCard": "Karte zuteilen"
