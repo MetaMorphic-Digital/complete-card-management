@@ -85,6 +85,8 @@ export async function grid(config, options = {}) {
     for (let j = 0; j < config.columns; j++) {
       const card = cards[j * config.rows + i];
       const cardUpdate = {
+        width: options.defaultWidth ?? 2,
+        height: options.defaultHeight ?? 3,
         _id: card._id,
         [`flags.${MODULE_ID}.${scene.id}`]: {
           x: offsetX + j * (cardWidth + spacing.x),
@@ -327,6 +329,8 @@ export async function triangle(config, options = {}) {
       const loop_y = isVertical ? i : j;
       const card = cards[index];
       const cardUpdate = {
+        width: options.defaultWidth ?? 2,
+        height: options.defaultHeight ?? 3,
         _id: card._id,
         [`flags.${MODULE_ID}.${scene.id}`]: {
           x: offsetX + loop_x * (cardWidth + spacing.x) * direction_x,
