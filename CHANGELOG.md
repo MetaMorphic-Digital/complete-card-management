@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.1
+- Added "Draw" button to the docked hand sheet header controls
+- Removed nonfunctional "Gallery View" from the docked hand sheet header controls
+
 ## 2.1.0
 - Increased system minimum to v13.346
 - Added a header button to the cards sheets switches the sheet to a gallery-style display of card images
