@@ -39,8 +39,13 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       contentClasses: ["standard-form"],
       icon: "fa-solid fa-cards",
       controls: [{
-        icon: "fa-solid fa-rectangle-vertical-history",
+        icon: "fa-solid fa-fw fa-rectangle-vertical-history",
         label: "CCM.CardSheet.GalleryView.ButtonLabel",
+        visible: function () {
+          // arrow function has `this` as the CardsSheet class rather than instance of class
+          // Gallery view is only applicable to the `cards` part we use
+          return this.constructor.PARTS.cards;
+        },
         action: "toggleGallery"
       }]
     }
@@ -599,7 +604,14 @@ export class DockedHandSheet extends HandSheet {
   /** @inheritdoc */
   static DEFAULT_OPTIONS = {
     classes: ["docked", "faded-ui"],
-    window: {positioned: false}
+    window: {
+      controls: [{
+        label: "CARDS.ACTIONS.Draw",
+        icon: "fa-solid fa-fw fa-plus",
+        action: "drawCards"
+      }],
+      positioned: false
+    }
   };
 
   /* -------------------------------------------------- */
