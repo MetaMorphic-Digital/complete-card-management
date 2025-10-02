@@ -54,9 +54,11 @@ export async function grid(config, options = {}) {
     throw new Error("Placing a card requires permission to update the scene.");
   }
 
+  const {defaultWidth = 2, defaultHeight = 3} = options;
+
   const {sceneHeight, sceneWidth, sceneX, sceneY} = scene.dimensions;
-  const cardWidth = scene.grid.sizeX * (options.defaultWidth ?? 2);
-  const cardHeight = scene.grid.sizeY * (options.defaultHeight ?? 3);
+  const cardWidth = scene.grid.sizeX * defaultWidth;
+  const cardHeight = scene.grid.sizeY * defaultHeight;
   const spacing = {
     x: options.horizontalSpacing ?? scene.grid.sizeX,
     y: options.verticalSpacing ?? scene.grid.sizeY
@@ -85,6 +87,8 @@ export async function grid(config, options = {}) {
     for (let j = 0; j < config.columns; j++) {
       const card = cards[j * config.rows + i];
       const cardUpdate = {
+        width: defaultWidth,
+        height: defaultHeight,
         _id: card._id,
         [`flags.${MODULE_ID}.${scene.id}`]: {
           x: offsetX + j * (cardWidth + spacing.x),
@@ -274,9 +278,11 @@ export async function triangle(config, options = {}) {
     throw new Error("Placing a card requires permission to update the scene.");
   }
 
+  const {defaultWidth = 2, defaultHeight = 3} = options;
+
   const {sceneHeight, sceneWidth, sceneX, sceneY} = scene.dimensions;
-  const cardWidth = scene.grid.sizeX * (options.defaultWidth ?? 2);
-  const cardHeight = scene.grid.sizeY * (options.defaultHeight ?? 3);
+  const cardWidth = scene.grid.sizeX * defaultWidth;
+  const cardHeight = scene.grid.sizeY * defaultHeight;
   const spacing = {
     x: options.horizontalSpacing ?? scene.grid.sizeX,
     y: options.verticalSpacing ?? scene.grid.sizeY
@@ -327,6 +333,8 @@ export async function triangle(config, options = {}) {
       const loop_y = isVertical ? i : j;
       const card = cards[index];
       const cardUpdate = {
+        width: defaultWidth,
+        height: defaultHeight,
         _id: card._id,
         [`flags.${MODULE_ID}.${scene.id}`]: {
           x: offsetX + loop_x * (cardWidth + spacing.x) * direction_x,
