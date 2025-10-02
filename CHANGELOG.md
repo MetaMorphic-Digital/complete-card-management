@@ -3,6 +3,7 @@
 ## 2.1.1
 - Added "Draw" button to the docked hand sheet header controls
 - Removed nonfunctional "Gallery View" from the docked hand sheet header controls
+- Improved handling of defaultWidth and defaultHeight layout API parameters.
 
 ## 2.1.0
 - Increased system minimum to v13.346
