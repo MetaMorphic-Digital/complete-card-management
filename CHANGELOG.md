@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.1.2
+- Fixed an issue where a canvas card could end up with a height and width of zero. The new minimums are CONST.GRID_SIZE, which is currently 20px.
+
 ## 2.1.1
 - Added "Draw" button to the docked hand sheet header controls
 - Removed nonfunctional "Gallery View" from the docked hand sheet header controls

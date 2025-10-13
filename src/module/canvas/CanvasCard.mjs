@@ -107,15 +107,15 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       flipped: new BooleanField(),
       width: new NumberField({
         required: true,
-        min: 0,
+        min: CONST.GRID_MIN_SIZE,
         nullable: false,
-        step: 0.1
+        integer: true
       }),
       height: new NumberField({
         required: true,
-        min: 0,
+        min: CONST.GRID_MIN_SIZE,
         nullable: false,
-        step: 0.1
+        integer: true
       }),
       texture: new foundry.data.TextureData(
         {},
