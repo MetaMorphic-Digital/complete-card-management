@@ -13,7 +13,7 @@ import {MODULE_ID} from "../helpers.mjs";
  * @param {number} [data.rotation] Rotation on the canvas (default: The card's rotation)
  * @param {number} [data.sort]     Sort value on the canvas (default: The card's sort)
  * @param {string} [data.sceneId]  ID of the scene to place (default: the current scene)
- * @returns {Card | Card}          The updated document
+ * @returns {Promise<Card | Card>}          The updated document
  */
 export async function placeCard(card, data = {}) {
   const scene = game.scenes.get(data.sceneId) ?? canvas.scene;

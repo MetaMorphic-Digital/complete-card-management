@@ -105,7 +105,7 @@ async function handleCardDrop(canvas, data) {
     return;
   }
 
-  api.placeCard(card, data);
+  await api.placeCard(card, data);
 }
 
 /* -------------------------------------------------- */
@@ -247,7 +247,7 @@ export async function updateCard(card, changed, options, userId) {
  */
 export async function deleteCard(card, options, userId) {
   if (card.canvasCard) {
-    card.canvasCard.object._onDelete(options, userId);
+    card.canvasCard.object?._onDelete(options, userId);
   }
 
   checkHandDisplayUpdate(card, "delete");
