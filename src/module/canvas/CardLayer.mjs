@@ -21,7 +21,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
       name: "cards",
       controllableObjects: true,
       rotatableObjects: true,
-      zIndex: 100
+      zIndex: -100
     });
   }
 
@@ -118,7 +118,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     itf.cardMeshes.sortableChildren = true;
     itf.cardMeshes.eventMode = "none";
     itf.cardMeshes.interactiveChildren = false;
-    itf.cardMeshes.zIndex = 100;
+    itf.cardMeshes.zIndex = this.getZIndex();
 
     // Layer functionality
     // Inherited from InteractionLayer
