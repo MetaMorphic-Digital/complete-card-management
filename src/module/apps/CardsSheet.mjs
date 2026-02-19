@@ -48,7 +48,8 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
         },
         action: "toggleGallery"
       }]
-    }
+    },
+    dragDrop: [{dragSelector: "[data-application-part=cards] .cards .card", dropSelector: "[data-application-part=cards] .cards"}]
   };
 
   /* -------------------------------------------------- */
@@ -198,7 +199,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /** @inheritdoc */
   async _onRender(context, options) {
     await super._onRender(context, options);
-    this.#setupDragDrop();
+    this.dragDrop.forEach((d) => d.bind(this.element));
     this.#setupSearch();
   }
 
@@ -265,28 +266,34 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   }
 
   /* -------------------------------------------------- */
-  /*   Drag and drop handlers                           */
+  /*   Drag and Drop                           */
   /* -------------------------------------------------- */
 
+  #dragDrop = this.#createDragDropHandlers();
+
   /**
-   * Set up drag and drop.
+   * An array of DragDrop instances
    */
-  #setupDragDrop() {
-    const sheet = this;
-    const cardsSection = "[data-application-part=cards] .cards";
-    const dd = new foundry.applications.ux.DragDrop({
-      dragSelector: cardsSection + (this.document.type === "deck") ? " .card" : " .card .name",
-      dropSelector: cardsSection,
-      permissions: {
-        dragstart: () => sheet.isEditable,
-        drop: () => sheet.isEditable
-      },
-      callbacks: {
+  get dragDrop() {
+    return this.#dragDrop;
+  }
+
+  /**
+   * Setup drag and drop.
+   * @returns {foundry.applications.ux.DragDrop[]}
+   */
+  #createDragDropHandlers() {
+    return this.options.dragDrop.map((d) => {
+      d.permissions = {
+        dragstart: () => this.isEditable,
+        drop: () => this.isEditable
+      };
+      d.callbacks = {
         dragstart: this._onDragStart.bind(this),
-        drop: this._onDrop.bind(sheet)
-      }
+        drop: this._onDrop.bind(this)
+      };
+      return new foundry.applications.ux.DragDrop.implementation(d);
     });
-    dd.bind(this.element);
   }
 
   /* -------------------------------------------------- */
@@ -611,7 +618,8 @@ export class DockedHandSheet extends HandSheet {
         action: "drawCards"
       }],
       positioned: false
-    }
+    },
+    dragDrop: [{dragSelector: "[data-application-part=cardList] .cards .card", dropSelector: "[data-application-part=cardList] .cards"}]
   };
 
   /* -------------------------------------------------- */
