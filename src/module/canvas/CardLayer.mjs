@@ -21,7 +21,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
       name: "cards",
       controllableObjects: true,
       rotatableObjects: true,
-      zIndex: 100
+      zIndex: -100
     });
   }
 

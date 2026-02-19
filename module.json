@@ -26,7 +26,7 @@
   ],
   "version": "AUTOMATIC",
   "compatibility": {
-    "minimum": "13.347",
+    "minimum": "13.351",
     "verified": "13"
   },
   "esmodules": ["./ccm.mjs"],
