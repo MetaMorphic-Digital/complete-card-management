@@ -1,13 +1,15 @@
 import {MODULE_ID} from "../helpers.mjs";
 
 /**
+ * @import { ContextMenuEntry } from "@client/applications/ux/context-menu.mjs";
  * @import Card from "@client/documents/card.mjs";
- * @import { ApplicationTabsConfiguration } from "@client/applications/_types.mjs";
  */
 
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
-/** AppV2 cards sheet (Deck, Hand, Pile) */
+/**
+ * AppV2 based sheet for a card stack.
+ */
 export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /** @inheritdoc */
   static DEFAULT_OPTIONS = {
@@ -530,6 +532,11 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   }
 }
 
+/* -------------------------------------------------- */
+
+/**
+ * A sheet for a card deck.
+ */
 export class DeckSheet extends CardsSheet {
   /** @inheritdoc */
   static DEFAULT_OPTIONS = {
@@ -590,6 +597,11 @@ export class DeckSheet extends CardsSheet {
   }
 }
 
+/* -------------------------------------------------- */
+
+/**
+ * A sheet for a card hand.
+ */
 export class HandSheet extends CardsSheet {
   /** @inheritdoc */
   static DEFAULT_OPTIONS = {
@@ -607,6 +619,11 @@ export class HandSheet extends CardsSheet {
   }
 }
 
+/* -------------------------------------------------- */
+
+/**
+ * A sheet that's fixed to the bottom of the UI, just above the hotbar.
+ */
 export class DockedHandSheet extends HandSheet {
   /** @inheritdoc */
   static DEFAULT_OPTIONS = {
@@ -642,8 +659,67 @@ export class DockedHandSheet extends HandSheet {
     const preview = foundry.applications.ux.DragDrop.createDragImage(img, w, h);
     event.dataTransfer.setDragImage(preview, w / 2, h / 2);
   }
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
+  async _onFirstRender(context, options) {
+    await super._onFirstRender(context, options);
+
+    this._createContextMenu(this._getCardContextOptions, "[data-application-part=cardList] .cards .card", {
+      hookName: "getCardContextOptions",
+      parentClassHooks: false,
+      fixed: true
+    });
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   *
+   * @returns {ContextMenuEntry}
+   */
+  _getCardContextOptions() {
+    if (!this.isEditable) return [];
+
+    /** @returns {Card} */
+    const getCard = li => this.document.cards.get(li.dataset.cardId);
+
+    return [
+      {
+        name: "CCM.CardSheet.Flip",
+        icon: "<i class=\"fa-solid fa-fw fa-arrows-up-down\"></i>",
+        callback: li => getCard(li).flip()
+      }, {
+        name: "CARDS.ACTIONS.NextFace",
+        icon: "<i class=\"fa-solid fa-fw fa-arrow-right\"></i>",
+        condition: li => {
+          const card = getCard(li);
+          return (card.face !== null) && (card.face < card.faces.length - 1);
+        },
+        callback: li => {
+          const card = getCard(li);
+          card.update({face: (card.face === null) ? 0 : card.face + 1});
+        }
+
+      }, {
+        name: "CARDS.ACTIONS.PreviousFace",
+        icon: "<i class=\"fa-solid fa-fw fa-arrow-left\"></i>",
+        condition: li => getCard(li).face > 0,
+        callback: li => {
+          const card = getCard(li);
+          card.update({face: card.face - 1});
+        }
+      }
+    ];
+  }
 }
 
+/* -------------------------------------------------- */
+
+/**
+ * A sheet for a card pile.
+ */
 export class PileSheet extends CardsSheet {
   /** @inheritdoc */
   static DEFAULT_OPTIONS = {

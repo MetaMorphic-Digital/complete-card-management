@@ -456,6 +456,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         ui.notifications.info(game.i18n.format("CCM.MoveCardBehavior.AddCard",
           {name: this.card.name, stack: d.name})
         );
+        this.delete();
         return this.card.pass(d);
       }
     }
@@ -465,6 +466,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     const canvasPile = game.cards.get(canvasPileId);
     const parent = this.card.parent;
     if (!canvasPile || (parent === canvasPile)) return;
+    this.delete();
     return this.card.pass(canvasPile);
   }
 

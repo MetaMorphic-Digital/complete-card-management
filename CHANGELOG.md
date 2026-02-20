@@ -1,9 +1,11 @@
 # Changelog
 
 ## 2.1.2
+- Resolved ghost card issue from dropping a card on the canvas while it's set to function as a pile.
 - Fixed an issue where a canvas card could end up with a height and width of zero. The new minimums are CONST.GRID_SIZE, which is currently 20px.
 - Adjusted the z index of the Cards layer so it is below the layer created by the Sequencer module.
 - Fixed an issue with dragging and dropping to and from the Docked sheet.
+- Added context menu to change visible face of cards in the Docked sheet.
 
 ## 2.1.1
 - Added "Draw" button to the docked hand sheet header controls
