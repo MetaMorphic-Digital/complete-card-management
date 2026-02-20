@@ -8,7 +8,7 @@
 const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
 
 /**
- * AppV2 card sheet
+ * AppV2 based sheet for a single card.
  */
 export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   /** @inheritdoc */
@@ -32,20 +32,26 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     }
   };
 
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   tabGroups = {
     primary: "details"
   };
 
+  /* -------------------------------------------------- */
+
   /**
    * Tabs that are present on this sheet.
-   * @enum {TabConfiguration}
+   * @type {Record<string, TabConfiguration>}
    */
   static TABS = {
     details: {id: "details", group: "primary", label: "CCM.CardSheet.TabDetails", icon: "fa-solid fa-pen-fancy"},
     faces: {id: "faces", group: "primary", label: "CCM.CardSheet.TabFaces", icon: "fa-solid fa-masks-theater"},
     back: {id: "back", group: "primary", label: "CCM.CardSheet.TabBack", icon: "fa-solid fa-mask"}
   };
+
+  /* -------------------------------------------------- */
 
   /** @inheritdoc */
   static PARTS = {
@@ -57,6 +63,8 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     footer: {template: "modules/complete-card-management/templates/card/footer.hbs"}
   };
 
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   get title() {
     const stack = this.document.parent;
@@ -67,6 +75,8 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     });
   }
 
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   _onRender(...T) {
     super._onRender(...T);
@@ -76,6 +86,8 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     });
     this.element.querySelector("[name='back.name']").addEventListener("change", this._onChangeFaceName.bind(this));
   }
+
+  /* -------------------------------------------------- */
 
   /** @inheritdoc */
   async _prepareContext(_options) {
@@ -175,6 +187,8 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     return this.document;
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * Reference to the 'face' select.
    * @type {HTMLElement}
@@ -195,6 +209,8 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     formData.faces = Object.values(formData.faces ?? {}).concat([{name: "", img: "", text: ""}]);
     this.document.update(formData);
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * Handle deleting a face.
@@ -220,6 +236,8 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     if (formData.face >= formData.faces.length) formData.face = 0;
     this.document.update(formData);
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * Change the displayed label in the 'face' dropdown when changing

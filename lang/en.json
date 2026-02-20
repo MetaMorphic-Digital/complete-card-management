@@ -58,6 +58,7 @@
       "TabBack": "Card Back",
       "BacksideUp": "Backside Up",
       "Unnamed": "Unnamed ({idx})",
+      "Flip": "Flip",
 
       "GalleryView": {
         "ButtonLabel": "Toggle Gallery View"
