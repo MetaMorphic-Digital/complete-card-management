@@ -25,12 +25,16 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     });
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * The collection of card objects which are rendered in the interface.
    *
    * @type {Map<string, CardObject>}
    */
   graphics = new foundry.utils.Collection();
+
+  /* -------------------------------------------------- */
 
   /**
    * The name used by hooks to construct their hook string.
@@ -41,10 +45,14 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     return CardLayer.name;
   }
 
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   get hud() {
     return canvas.hud.cards;
   }
+
+  /* -------------------------------------------------- */
 
   // TODO: investigate if there's caching performance improvements
   /** @inheritdoc */
@@ -59,6 +67,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     }, new foundry.utils.Collection());
   }
 
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   getMaxSort() {
     let sort = -Infinity;
@@ -66,6 +76,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     for (const document of collection) sort = Math.max(sort, document.canvasCard.sort);
     return sort;
   }
+
+  /* -------------------------------------------------- */
 
   /** @inheritdoc */
   async _sendToBackOrBringToFront(front) {
@@ -100,11 +112,15 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     return true;
   }
 
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   getSnappedPoint(point) {
     if (canvas.forceSnapVertices) return canvas.grid.getSnappedPoint(point, {mode: CONST.GRID_SNAPPING_MODES.VERTEX});
     return super.getSnappedPoint(point);
   }
+
+  /* -------------------------------------------------- */
 
   /** @inheritdoc */
   async _draw(options) {
@@ -164,6 +180,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     this.objects.visible = true;
   }
 
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   static prepareSceneControls() {
     return {
@@ -222,6 +240,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     };
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * The method to sort the objects elevation and sort before sorting by the z-index.
    * @type {Function}
@@ -237,6 +257,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     );
     this.sortDirty = false;
   };
+
+  /* -------------------------------------------------- */
 
   static #sortMeshesByElevationAndSort = function() {
     for (let i = 0; i < this.children.length; i++) {
@@ -254,6 +276,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     });
     this.sortDirty = false;
   };
+
+  /* -------------------------------------------------- */
 
   /** @inheritdoc */
   async rotateMany({angle, delta, snap, ids, includeLocked = false} = {}) {
@@ -284,6 +308,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     await processUpdates(updates);
     return objects;
   }
+
+  /* -------------------------------------------------- */
 
   /** @inheritdoc */
   async deleteAll() {
@@ -317,11 +343,15 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     }
   }
 
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   _getCopyableObjects(options) {
     ui.notifications.warn("CCM.Warning.NoCopyCutPaste", {localize: true});
     return [];
   }
+
+  /* -------------------------------------------------- */
 
   /** @inheritdoc */
   async _onDeleteKey(event) {

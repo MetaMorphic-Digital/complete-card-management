@@ -3,15 +3,20 @@ import {MODULE_ID} from "../helpers.mjs";
 const fields = foundry.data.fields;
 
 export default class MoveCardBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
-
+  /** @inheritdoc */
   static LOCALIZATION_PREFIXES = ["CCM.MoveCardBehavior"];
 
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
   static defineSchema() {
     return {
       targetStack: new fields.ForeignDocumentField(getDocumentClass("Cards")),
       keepCanvasCard: new fields.BooleanField()
     };
   }
+
+  /* -------------------------------------------------- */
 
   /** @inheritdoc */
   static _createEventsField({events, initial} = {}) {
@@ -29,11 +34,15 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
     }), setFieldOptions);
   }
 
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   static events = {
     [CCM_CONFIG.REGION_EVENTS.CARD_MOVE_IN]: this.#onCardMoveIn,
     [CCM_CONFIG.REGION_EVENTS.CARD_MOVE_OUT]: this.#onCardMoveOut
   };
+
+  /* -------------------------------------------------- */
 
   /**
    *
@@ -64,6 +73,8 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
       card.pass(this.targetStack);
     }
   }
+
+  /* -------------------------------------------------- */
 
   /**
    *

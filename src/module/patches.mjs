@@ -16,6 +16,8 @@ export function addCard(card) {
   return mesh;
 }
 
+/* -------------------------------------------------- */
+
 /**
  * Remove a CardObject from the layer
  *

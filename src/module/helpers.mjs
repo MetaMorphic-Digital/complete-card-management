@@ -32,6 +32,8 @@ export function generateUpdates(valuePath, valueMod, {object, targetPath = "", i
   return updates;
 }
 
+/* -------------------------------------------------- */
+
 /**
  * Loops through an array of updates matching the ID of cards to an update array for their embedded collection
  * @param {Record<string, Array<{ _id: string } & Record<string, unknown>>>} processedUpdates
@@ -42,6 +44,8 @@ export async function processUpdates(processedUpdates) {
     else await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
   }
 }
+
+/* -------------------------------------------------- */
 
 /**
  * Loop through player hands to see if the PlayerList needs to be re-rendered

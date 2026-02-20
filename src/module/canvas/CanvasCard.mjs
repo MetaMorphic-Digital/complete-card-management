@@ -1,9 +1,13 @@
 
 import {MODULE_ID} from "../helpers.mjs";
 
-/** @import CardLayer from "./CardLayer.mjs"; */
-/** @import DocumentSheetV2 from "@client/applications/api/document-sheet.mjs"; */
-/** @import {Card, Cards} from "@client/documents/_module.mjs" */
+/**
+ * @import Color from "@common/utils/color.mjs"
+ * @import DocumentSheetV2 from "@client/applications/api/document-sheet.mjs";
+ * @import {Card, Cards} from "@client/documents/_module.mjs"
+ * @import CardLayer from "./CardLayer.mjs";
+ * @import CardObject from "./CardObject.mjs";
+ */
 
 /**
  * A data model that captures the necessary characteristics for a CardObject on the canvas
@@ -53,6 +57,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     this.card = card;
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * Synthetic parent
    * @type {Scene}
@@ -60,7 +66,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   // Using this.parent so that way it sticks after constructor.
   parent = this.parent ?? null;
 
-  /** @import CardObject from "./CardObject.mjs" */
+  /* -------------------------------------------------- */
 
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
@@ -79,7 +85,11 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   // Using this._object so that way it sticks after constructor.
   _object = this._object ?? null;
 
+  /* -------------------------------------------------- */
+
   static LOCALIZATION_PREFIXES = ["CCM", "CardObjectModel"];
+
+  /* -------------------------------------------------- */
 
   static defineSchema() {
     const {NumberField, AngleField, IntegerSortField, BooleanField} = foundry.data.fields;
@@ -132,11 +142,15 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     };
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * Properties fetched from the appropriate flag
    * @type {string[]}
    */
   static flagProps = ["x", "y", "elevation", "sort", "rotation", "hidden", "locked", "flipped"];
+
+  /* -------------------------------------------------- */
 
   static registerSettings() {
     game.settings.register(MODULE_ID, "showOwner", {
@@ -184,6 +198,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     });
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * The linked card's ID
    * @type {string}
@@ -191,6 +207,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   get id() {
     return this.card.id;
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * The linked card's UUID
@@ -200,6 +218,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return this.card.uuid;
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * The linked card's document name
    * @type {"Card" | "Cards"}
@@ -208,6 +228,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return this.card.documentName;
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * The canvas card layer
    * @type {CardLayer}
@@ -215,6 +237,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   get layer() {
     return canvas.cards;
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * The linked document sheet for the Card
@@ -225,12 +249,16 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return this.card.sheet;
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * The font size used to display text within this card
    */
   get fontSize() {
     return game.settings.get(MODULE_ID, "ownerFontSize");
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * The font family used to display text within this card
@@ -240,7 +268,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return CONFIG.defaultFontFamily || "Signika";
   }
 
-  /** @import Color from "@common/utils/color.mjs" */
+  /* -------------------------------------------------- */
 
   /**
    * The color of the text displayed within this card
@@ -249,6 +277,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   get textColor() {
     return game.settings.get(MODULE_ID, "ownerTextColor");
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * The name of the user who owns this card
@@ -265,6 +295,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return owner?.name ?? "";
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * The opacity of text displayed on this card
    * @returns {number}
@@ -273,11 +305,15 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return 1;
   }
 
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   clone(data = {}, context = {}) {
     // TODO: Possible refactor actually using the data and context object?
     return new this.constructor(this.card);
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * Translate update operations on the original card to this synthetic document
@@ -338,6 +374,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     this.object?._onUpdate(updates, options, userId);
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * Refreshes the canvas card's face
    */
@@ -359,6 +397,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     this.updateSource(updates);
     this.object?._onUpdate(updates, {}, "");
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * Trigger leave and enter region behaviors for the custom region type & event triggers
@@ -430,6 +470,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     return this.card.pass(canvasPile);
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * Handles the deletion process for this synthetic document
    * @param {*} options
@@ -441,6 +483,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     this.card.canvasCard = undefined;
   }
 
+  /* -------------------------------------------------- */
+
   /**
    * Synthetic passthrough
    * @returns {boolean}
@@ -448,6 +492,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   get isOwner() {
     return this.card.isOwner;
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * Synthetic pass through
@@ -457,6 +503,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   canUserModify(...args) {
     return this.card.canUserModify(...args);
   }
+
+  /* -------------------------------------------------- */
 
   /**
    * Synthetic pass through

@@ -19,14 +19,19 @@ export function init() {
     group: "interface",
     layerClass: ccm_canvas.CardLayer
   };
-  CONFIG.Card.objectClass = ccm_canvas.CardObject;
-  CONFIG.Card.layerClass = ccm_canvas.CardLayer;
-  CONFIG.Card.hudClass = apps.CardHud;
+  CONFIG.Canvas.layers.controls.layerClass = ccm_canvas.CCMControlsLayer;
+  Object.assign(CONFIG.Card, {
+    objectClass: ccm_canvas.CardObject,
+    layerClass: ccm_canvas.CardLayer,
+    hudClass: apps.CardHud
+  });
   CONFIG.RegionBehavior.dataModels[MoveCardType] = ccm_canvas.MoveCardBehavior;
   CONFIG.RegionBehavior.typeIcons[MoveCardType] = "fa-solid fa-cards";
-  CONFIG.controlIcons.flip = "modules/complete-card-management/assets/icons/vertical-flip.svg";
-  CONFIG.controlIcons.rotate = "modules/complete-card-management/assets/icons/clockwise-rotation.svg";
-  CONFIG.controlIcons.shuffle = "modules/complete-card-management/assets/icons/shuffle.svg";
+  Object.assign(CONFIG.controlIcons, {
+    flip: "modules/complete-card-management/assets/icons/vertical-flip.svg",
+    rotate: "modules/complete-card-management/assets/icons/clockwise-rotation.svg",
+    shuffle: "modules/complete-card-management/assets/icons/shuffle.svg"
+  });
 
   ccm_canvas.CanvasCard.registerSettings();
 
