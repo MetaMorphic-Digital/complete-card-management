@@ -8,6 +8,9 @@ import CardLayer from "./CardLayer.mjs";
  * CardObjects are drawn inside of the {@link CardLayer} container
  */
 export default class CardObject extends foundry.canvas.placeables.PlaceableObject {
+  /**
+   * @param {CanvasCard} canvasCard
+   */
   constructor(canvasCard) {
     if (!(canvasCard instanceof CanvasCard)) {
       throw new Error("You must provide a CanvasCard to construct a CardObject");
@@ -35,8 +38,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
 
   /* -------------------------------------------------- */
 
-  /* -------------------------------------------------- */
-
+  /** @inheritdoc */
   static embeddedName = "Card";
 
   /* -------------------------------------------------- */
