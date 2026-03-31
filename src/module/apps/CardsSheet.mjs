@@ -155,10 +155,10 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
         relativeTo: this.document
       })
     });
-    context.width = makeField("width", {placeholder: game.i18n.localize("Width")});
-    context.height = makeField("height", {placeholder: game.i18n.localize("Height")});
+    context.width = makeField("width", {placeholder: _loc("Width")});
+    context.height = makeField("height", {placeholder: _loc("Height")});
     context.rotation = makeField("rotation", {
-      placeholder: game.i18n.localize("Rotation"),
+      placeholder: _loc("Rotation"),
       value: this.document.rotation || ""
     });
     context.primaryOwner = {
@@ -177,7 +177,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       const show = (this.document.type === "deck") || !!card.currentFace;
       return {
         card: card,
-        type: show ? game.i18n.localize(CONFIG.Card.typeLabels[card.type]) : null,
+        type: show ? _loc(CONFIG.Card.typeLabels[card.type]) : null,
         suit: show ? card.suit : null,
         value: show ? card.value : null
       };

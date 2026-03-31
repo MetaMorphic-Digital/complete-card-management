@@ -323,7 +323,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
         icon: "fa-solid fa-cards"
       },
       classes: ["ccm"],
-      content: game.i18n.format("CONTROLS.ClearAllHint", {type}),
+      content: _loc("CONTROLS.ClearAllHint", {type}),
       rejectClose: false,
       modal: true
     });
@@ -338,7 +338,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
         if (!card) continue;
         await card.unsetFlag(MODULE_ID, canvas.scene.id);
       }
-      ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects", {count: cardCollection.length, type}));
+      ui.notifications.info(_loc("CONTROLS.DeletedObjects", {count: cardCollection.length, type}));
       return canvas.scene.unsetFlag(MODULE_ID, "cardCollection");
     }
   }
@@ -376,7 +376,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
       if (this.options.confirmDeleteKey) {
         const confirmed = await foundry.applications.api.DialogV2.confirm({
           window: {
-            title: game.i18n.format("DOCUMENT.Delete", {type: this.constructor.documentName}),
+            title: _loc("DOCUMENT.Delete", {type: this.constructor.documentName}),
             icon: "fa-solid fa-cards"
           },
           position: {
@@ -384,7 +384,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
             height: "auto"
           },
           classes: ["ccm"],
-          content: `<p>${game.i18n.localize("AreYouSure")}</p>`,
+          content: `<p>${_loc("AreYouSure")}</p>`,
           rejectClose: false,
           modal: true
         });
@@ -399,7 +399,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
       await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection.difference(deletedCards)));
 
       if (uuids.length !== 1) {
-        ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects", {
+        ui.notifications.info(_loc("CONTROLS.DeletedObjects", {
           count: uuids.length, type: this.constructor.documentName
         }));
       }

@@ -69,7 +69,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   get title() {
     const stack = this.document.parent;
     if (!stack) return super.title;
-    return game.i18n.format("CCM.CardSheet.CardParentTitle", {
+    return _loc("CCM.CardSheet.CardParentTitle", {
       cardName: this.document.name,
       stackName: stack.name
     });
@@ -107,7 +107,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
 
     // Header
     context.currentFace = this.document.currentFace?.img || this.document.constructor.DEFAULT_ICON;
-    context.name = makeField("name", {value: src.name, placeholder: game.i18n.localize("Name")});
+    context.name = makeField("name", {value: src.name, placeholder: _loc("Name")});
 
     // Navigation
     context.tabs = Object.values(this.constructor.TABS).reduce((acc, v) => {
@@ -125,11 +125,11 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     context.type = makeField("type", {choices: CONFIG.Card.typeLabels});
     context.suit = makeField("suit");
     context.value = makeField("value");
-    context.width = makeField("width", {placeholder: game.i18n.localize("Width")});
-    context.height = makeField("height", {placeholder: game.i18n.localize("Height")});
+    context.width = makeField("width", {placeholder: _loc("Width")});
+    context.height = makeField("height", {placeholder: _loc("Height")});
     context.rotation = makeField("rotation", {
       value: this.document.rotation || "",
-      placeholder: game.i18n.localize("Rotation")
+      placeholder: _loc("Rotation")
     });
     context.description = makeField("description", {
       enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.document.description, {relativeTo: this.document})
@@ -141,7 +141,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
       blank: this.document.back.name || "CCM.CardSheet.BacksideUp"
     });
     context.faces = [];
-    const fph = game.i18n.localize("DOCUMENT.FIELDS.name.label");
+    const fph = _loc("DOCUMENT.FIELDS.name.label");
     const schema = this.document.schema.getField("faces.element");
     for (const face of this.document.faces) {
       const idx = context.faces.length;
@@ -157,7 +157,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
           })
         })
       };
-      context.face.choices[idx] = f.name.value || game.i18n.format("CCM.CardSheet.Unnamed", {idx: idx});
+      context.face.choices[idx] = f.name.value || _loc("CCM.CardSheet.Unnamed", {idx: idx});
       context.faces.push(f);
     }
 
@@ -220,7 +220,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   static async _onDeleteFace(event, target) {
     const confirm = await foundry.applications.api.DialogV2.confirm({
       rejectClose: false,
-      content: game.i18n.localize("CARD.ACTIONS.DeleteFace.Warning"),
+      content: _loc("CARD.ACTIONS.DeleteFace.Warning"),
       modal: true,
       classes: ["ccm"],
       window: {
@@ -247,14 +247,14 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   _onChangeFaceName(event) {
     // Changing the backside's name.
     if (event.currentTarget.name === "back.name") {
-      const value = event.currentTarget.value || game.i18n.localize("CCM.CardSheet.BacksideUp");
+      const value = event.currentTarget.value || _loc("CCM.CardSheet.BacksideUp");
       this.#faces.children[0].textContent = value;
     }
 
     // Changing a face's name.
     else {
       const idx = parseInt(event.currentTarget.closest("[data-idx]").dataset.idx);
-      const value = event.currentTarget.value || game.i18n.format("CCM.CardSheet.Unnamed", {idx: idx});
+      const value = event.currentTarget.value || _loc("CCM.CardSheet.Unnamed", {idx: idx});
       this.#faces.querySelector(`option[value="${idx}"]`).textContent = value;
     }
   }

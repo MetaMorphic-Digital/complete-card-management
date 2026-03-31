@@ -532,7 +532,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
       return false;
     }
     if (this.document.locked && (this.document.documentName === "Card")) {
-      ui.notifications.warn(game.i18n.format("CONTROLS.ObjectIsLocked", {type: this.document.documentName}));
+      ui.notifications.warn(_loc("CONTROLS.ObjectIsLocked", {type: this.document.documentName}));
       return false;
     }
     return true;
@@ -572,7 +572,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
           ui.notifications.error("CCM.Warning.FailDraw", {localize: true});
           continue;
         }
-        ui.notifications.info(game.i18n.format("CCM.CardLayer.DragCardFromDeck", {name: o.document.card.name}));
+        ui.notifications.info(_loc("CCM.CardLayer.DragCardFromDeck", {name: o.document.card.name}));
       }
       // Clone the object
       const c = o.clone();

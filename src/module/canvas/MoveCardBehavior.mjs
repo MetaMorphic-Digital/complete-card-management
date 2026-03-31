@@ -62,7 +62,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
     }
     const {card} = event.data;
     if ((this.targetStack !== card.parent) && isResponsible) {
-      ui.notifications.info(game.i18n.format("CCM.MoveCardBehavior.AddCard",
+      ui.notifications.info(_loc("CCM.MoveCardBehavior.AddCard",
         {name: card.name, stack: this.targetStack.name})
       );
 
@@ -84,7 +84,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
   static async #onCardMoveOut(event) {
     const {card} = event.data;
     if (this.targetStack && (this.targetStack !== card.parent) && event.user.isSelf) {
-      console.debug(game.i18n.format("CCM.MoveCardBehavior.RemoveCard",
+      console.debug(_loc("CCM.MoveCardBehavior.RemoveCard",
         {name: card.name, stack: this.targetStack.name})
       );
     }

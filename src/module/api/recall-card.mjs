@@ -20,7 +20,7 @@ export default async function recallCard(deck, cardId) {
   }
   const clone = findClone(card);
   ChatMessage.implementation.create({
-    content: game.i18n.format("CCM.CardSheet.RecalledCard", {
+    content: _loc("CCM.CardSheet.RecalledCard", {
       card: card.link,
       deck: deck.link
     })

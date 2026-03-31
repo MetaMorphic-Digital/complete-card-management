@@ -106,7 +106,7 @@ export async function grid(config, options = {}) {
     new Set(cards.map((card) => card.uuid))
   );
   await scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
-  if (options.sceneId) ui.notifications.info(game.i18n.format("CCM.API.LayoutScene", {name: scene.name}));
+  if (options.sceneId) ui.notifications.info(_loc("CCM.API.LayoutScene", {name: scene.name}));
   return cards;
 }
 
@@ -120,9 +120,9 @@ export async function grid(config, options = {}) {
  */
 export async function gridDialog(dialogOptions = {}, updateData = {}) {
   const typeMap = {
-    deck: game.i18n.localize("TYPES.Cards.deck"),
-    hand: game.i18n.localize("TYPES.Cards.hand"),
-    pile: game.i18n.localize("TYPES.Cards.pile")
+    deck: _loc("TYPES.Cards.deck"),
+    hand: _loc("TYPES.Cards.hand"),
+    pile: _loc("TYPES.Cards.pile")
   };
 
   const stackOptions = game.cards.filter(c => c.isOwner)
@@ -352,7 +352,7 @@ export async function triangle(config, options = {}) {
     new Set(cards.map((card) => card.uuid))
   );
   await scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
-  if (options.sceneId) ui.notifications.info(game.i18n.format("CCM.API.LayoutScene", {name: scene.name}));
+  if (options.sceneId) ui.notifications.info(_loc("CCM.API.LayoutScene", {name: scene.name}));
   return cards;
 }
 
@@ -366,9 +366,9 @@ export async function triangle(config, options = {}) {
  */
 export async function triangleDialog(dialogOptions = {}, updateData = {}) {
   const typeMap = {
-    deck: game.i18n.localize("CARDS.CardsDeck"),
-    hand: game.i18n.localize("CARDS.CardsHand"),
-    pile: game.i18n.localize("CARDS.CardsPile")
+    deck: _loc("CARDS.CardsDeck"),
+    hand: _loc("CARDS.CardsHand"),
+    pile: _loc("CARDS.CardsPile")
   };
 
   const stackOptions = game.cards.filter(c => c.isOwner)

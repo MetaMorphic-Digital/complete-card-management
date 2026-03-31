@@ -12,7 +12,7 @@ export async function scry(deck, {amount = 1, how = CONST.CARD_DRAW_MODES.FIRST}
   const cards = deck._drawCards(amount, how);
   const application = ScryDialog.create(cards, {how});
   ChatMessage.implementation.create({
-    content: game.i18n.format("CCM.CardSheet.ScryingMessage", {
+    content: _loc("CCM.CardSheet.ScryingMessage", {
       name: game.user.name,
       number: cards.length,
       deck: deck.name
@@ -145,7 +145,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /** @inheritdoc */
   get title() {
-    return game.i18n.format("CCM.CardSheet.ScryingTitle", {name: this.#deck.name});
+    return _loc("CCM.CardSheet.ScryingTitle", {name: this.#deck.name});
   }
 
   /* -------------------------------------------------- */
@@ -252,7 +252,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     }
     ChatMessage.implementation.create({
-      content: game.i18n.format("CCM.CardSheet.ScryingMessageReorder", {
+      content: _loc("CCM.CardSheet.ScryingMessageReorder", {
         name: game.user.name,
         number: this.#cards.length,
         deck: this.#deck.name

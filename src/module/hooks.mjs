@@ -364,7 +364,7 @@ export function renderPlayers(app, html, context, options) {
     cardCount.classList = "card-count";
     const count = hand.cards.size;
     cardCount.innerText = count;
-    cardCount.dataset.tooltip = game.i18n.format("CCM.UserConfig.CardCount", {count, stack: hand.name});
+    cardCount.dataset.tooltip = _loc("CCM.UserConfig.CardCount", {count, stack: hand.name});
     cardCount.dataset.tooltipDirection = "UP";
     li.append(cardCount);
   }
@@ -377,7 +377,7 @@ export function renderPlayers(app, html, context, options) {
  */
 export function getUserContextOptions(html, contextOptions) {
   contextOptions.push({
-    name: game.i18n.localize("CCM.UserConfig.OpenHand"),
+    name: _loc("CCM.UserConfig.OpenHand"),
     icon: "<i class=\"fa-solid fa-fw fa-cards\"></i>",
     condition: (li) => {
       const user = game.users.get(li.dataset.userId);
@@ -511,8 +511,8 @@ export function addCardsDirectoryOptions(app, options) {
 async function promptAmount(cards) {
   const max = (cards.type === "deck") ? cards.availableCards.length : cards.cards.size;
   if (!max) {
-    ui.notifications.warn(game.i18n.format("CCM.Warning.NoCardsAvailable", {
-      type: game.i18n.localize(CONFIG.Cards.typeLabels[cards.type])
+    ui.notifications.warn(_loc("CCM.Warning.NoCardsAvailable", {
+      type: _loc(CONFIG.Cards.typeLabels[cards.type])
     }));
     return;
   }
@@ -534,7 +534,7 @@ async function promptAmount(cards) {
     value: CONST.CARD_DRAW_MODES.TOP, blank: false, name: "mode", localize: true
   }).outerHTML;
 
-  const title = game.i18n.format("CCM.CardSheet.ScryingTitle", {name: cards.name});
+  const title = _loc("CCM.CardSheet.ScryingTitle", {name: cards.name});
 
   const data = await foundry.applications.api.DialogV2.input({
     modal: true,

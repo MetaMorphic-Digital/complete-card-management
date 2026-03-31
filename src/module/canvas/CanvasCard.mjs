@@ -450,10 +450,10 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       const {x, y, width, height} = d.canvasCard;
       if (destination.x.between(x, x + width, false) && destination.y.between(y, y + height, false)) {
         if (this.card.parent === d) {
-          ui.notifications.warn(game.i18n.format("CCM.Warning.AlreadyInside", {card: this.card.name, stack: d.name}));
+          ui.notifications.warn(_loc("CCM.Warning.AlreadyInside", {card: this.card.name, stack: d.name}));
           continue;
         }
-        ui.notifications.info(game.i18n.format("CCM.MoveCardBehavior.AddCard",
+        ui.notifications.info(_loc("CCM.MoveCardBehavior.AddCard",
           {name: this.card.name, stack: d.name})
         );
         this.delete();

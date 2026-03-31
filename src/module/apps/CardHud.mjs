@@ -56,7 +56,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
       lockedClass: this.document.locked ? "active" : "",
       visibilityClass: this.document.hidden ? "active" : "",
       flippedClass: this.document.flipped ? "active" : "",
-      flipTooltip: game.i18n.format("CCM.CardLayer.HUD.Flip", {type: game.i18n.localize(typeName)})
+      flipTooltip: _loc("CCM.CardLayer.HUD.Flip", {type: _loc(typeName)})
     });
     return context;
   }
