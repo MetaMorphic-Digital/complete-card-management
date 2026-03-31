@@ -122,6 +122,18 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
 
   /* -------------------------------------------------- */
 
+  /**
+   * @inheritdoc
+   * Cards do not support levels
+   */
+  * viewedDocuments() {
+    for (const doc of this.documentCollection) {
+      yield doc;
+    }
+  }
+
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   async _draw(options) {
 
@@ -159,21 +171,20 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
 
     this.preview = this.addChild(new PIXI.Container());
 
-    /** @type {Array<Card | Cards>} */
-    const documents = this.getDocuments();
-    const promises = documents.map((doc) => {
+    const promises = [];
+    for (const doc of this.viewedDocuments()) {
       // Preemptively filtering out drawings that would fail
       const data = doc.getFlag(MODULE_ID, canvas.scene.id);
       if (!data || (data.x === undefined) || (data.y === undefined)) {
         console.warn("No canvas data found for", doc.name);
-        return;
+        continue;
       }
       const syntheticDoc = new CanvasCard(doc);
       doc.canvasCard = syntheticDoc;
       const obj = (syntheticDoc._object = this.createObject(syntheticDoc));
       this.objects.addChild(obj);
-      return obj.draw();
-    });
+      promises.push(obj.draw());
+    }
 
     // Wait for all objects to draw
     await Promise.all(promises);
