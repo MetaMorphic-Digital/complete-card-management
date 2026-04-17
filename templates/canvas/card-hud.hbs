@@ -1,9 +1,10 @@
-
+{{!-- <!-- eslint-disable @html-eslint/require-img-alt --> --}}
 <div class="col left">
   <div class="attribute elevation" data-tooltip="HUD.Elevation">
     <i class="fas fa-angle-up"></i>
     <input type="text" name="elevation" value="{{elevation}}" {{disabled (or locked (and isGamePaused (not isGM)))}}>
   </div>
+  {{!-- TODO:  --}}
   <button type="button" class="control-icon" data-action="sort-up" data-tooltip="HUD.ToFront">
     <img src="{{icons.up}}" width="36" height="36">
   </button>
@@ -26,11 +27,11 @@
     <img src="{{icons.lock}}" width="36" height="36">
   </button>
   {{#if isCardStack}}
-    {{#if (ne card.type "hand")}}
-    <button type="button" class="control-icon" data-action="shuffle" data-tooltip="CARDS.ACTIONS.Shuffle">
-      <img src="{{icons.shuffle}}" width="36" height="36">
-    </button>
-    {{/if}}
+  {{#if (ne card.type "hand")}}
+  <button type="button" class="control-icon" data-action="shuffle" data-tooltip="CARDS.ACTIONS.Shuffle">
+    <img src="{{icons.shuffle}}" width="36" height="36">
+  </button>
+  {{/if}}
   {{/if}}
   <button type="button" class="control-icon {{flippedClass}}" data-action="flip" data-tooltip="{{flipTooltip}}">
     <img src="{{icons.flip}}" width="36" height="36">

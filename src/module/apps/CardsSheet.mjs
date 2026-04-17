@@ -1,11 +1,11 @@
-import {MODULE_ID} from "../helpers.mjs";
+import { MODULE_ID } from "../helpers.mjs";
 
 /**
  * @import { ContextMenuEntry } from "@client/applications/ux/context-menu.mjs";
  * @import Card from "@client/documents/card.mjs";
  */
 
-const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
+const { HandlebarsApplicationMixin, DocumentSheetV2 } = foundry.applications.api;
 
 /**
  * AppV2 based sheet for a card stack.
@@ -16,7 +16,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     classes: ["ccm", "cards"],
     position: {
       width: 620,
-      height: "auto"
+      height: "auto",
     },
     actions: {
       toggleGallery: CardsSheet.#onToggleGallery,
@@ -31,11 +31,11 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       nextFace: CardsSheet.#onNextFace,
       drawCards: CardsSheet.#onDrawCards,
       passCards: CardsSheet.#onPassCards,
-      playCard: CardsSheet.#onPlayCard
+      playCard: CardsSheet.#onPlayCard,
     },
     form: {
       submitOnChange: true,
-      closeOnSubmit: false
+      closeOnSubmit: false,
     },
     window: {
       contentClasses: ["standard-form"],
@@ -48,17 +48,17 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
           // Gallery view is only applicable to the `cards` part we use
           return this.constructor.PARTS.cards;
         },
-        action: "toggleGallery"
-      }]
+        action: "toggleGallery",
+      }],
     },
-    dragDrop: [{dragSelector: "[data-application-part=cards] .cards .card", dropSelector: "[data-application-part=cards] .cards"}]
+    dragDrop: [{ dragSelector: "[data-application-part=cards] .cards .card", dropSelector: "[data-application-part=cards] .cards" }],
   };
 
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
   tabGroups = {
-    primary: "cards"
+    primary: "cards",
   };
 
   /* -------------------------------------------------- */
@@ -69,27 +69,27 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       tabs: [
         {
           id: "configuration",
-          icon: "fa-solid fa-cogs"
+          icon: "fa-solid fa-cogs",
         },
         {
           id: "cards",
-          icon: "fa-solid fa-id-badge"
-        }
+          icon: "fa-solid fa-id-badge",
+        },
       ],
       initial: "cards",
-      labelPrefix: "CCM.CardSheet.Tabs"
-    }
+      labelPrefix: "CCM.CardSheet.Tabs",
+    },
   };
 
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
   static PARTS = {
-    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
-    navigation: {template: "modules/complete-card-management/templates/card/nav.hbs"},
-    configuration: {template: "modules/complete-card-management/templates/card/configuration.hbs"},
-    cards: {template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [".cards"]},
-    footer: {template: "modules/complete-card-management/templates/card/cards-footer.hbs"}
+    header: { template: "modules/complete-card-management/templates/card/header.hbs" },
+    navigation: { template: "modules/complete-card-management/templates/card/nav.hbs" },
+    configuration: { template: "modules/complete-card-management/templates/card/configuration.hbs" },
+    cards: { template: "modules/complete-card-management/templates/card/cards.hbs", scrollable: [".cards"] },
+    footer: { template: "modules/complete-card-management/templates/card/cards-footer.hbs" },
   };
 
   /* -------------------------------------------------- */
@@ -100,7 +100,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    */
   static SORT_TYPES = {
     STANDARD: "standard",
-    SHUFFLED: "shuffled"
+    SHUFFLED: "shuffled",
   };
 
   /* -------------------------------------------------- */
@@ -137,7 +137,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       return {
         field: schema.getField(name),
         value: foundry.utils.getProperty(document, name),
-        ...options
+        ...options,
       };
     };
 
@@ -148,38 +148,38 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     // Configuration
     context.img = makeField("img", {
       placeholder: "icons/svg/card-hand.svg",
-      value: src.img || ""
+      value: src.img || "",
     });
     context.description = makeField("description", {
       enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.document.description, {
-        relativeTo: this.document
-      })
+        relativeTo: this.document,
+      }),
     });
-    context.width = makeField("width", {placeholder: game.i18n.localize("Width")});
-    context.height = makeField("height", {placeholder: game.i18n.localize("Height")});
+    context.width = makeField("width", { placeholder: _loc("Width") });
+    context.height = makeField("height", { placeholder: _loc("Height") });
     context.rotation = makeField("rotation", {
-      placeholder: game.i18n.localize("Rotation"),
-      value: this.document.rotation || ""
+      placeholder: _loc("Rotation"),
+      value: this.document.rotation || "",
     });
     context.primaryOwner = {
-      field: new foundry.data.fields.ForeignDocumentField(User, {
-        label: "CCM.CardSheet.PrimaryOwner"
-      }, {name: `flags.${MODULE_ID}.primaryOwner`}),
-      value: (options.document ?? this.document).getFlag(MODULE_ID, "primaryOwner")
+      field: new foundry.data.fields.ForeignDocumentField(foundry.documents.User, {
+        label: "CCM.CardSheet.PrimaryOwner",
+      }, { name: `flags.${MODULE_ID}.primaryOwner` }),
+      value: (options.document ?? this.document).getFlag(MODULE_ID, "primaryOwner"),
     };
 
     // Cards
     const sortFn = {
       standard: this.document.sortStandard,
-      shuffled: this.document.sortShuffled
+      shuffled: this.document.sortShuffled,
     }[this.sort || "standard"];
     const cards = this.document.cards.contents.sort((a, b) => sortFn.call(this.document, a, b)).map(card => {
       const show = (this.document.type === "deck") || !!card.currentFace;
       return {
         card: card,
-        type: show ? game.i18n.localize(CONFIG.Card.typeLabels[card.type]) : null,
+        type: show ? _loc(CONFIG.Card.typeLabels[card.type]) : null,
         suit: show ? card.suit : null,
-        value: show ? card.value : null
+        value: show ? card.value : null,
       };
     });
     context.cards = cards;
@@ -190,7 +190,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
       reset: false,
       shuffle: false,
       deal: false,
-      draw: false
+      draw: false,
     };
 
     return context;
@@ -224,6 +224,8 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @type {string}
    */
   #sort = "shuffled";
+
+  /** @type {string} */
   get sort() {
     return this.#sort;
   }
@@ -261,7 +263,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
           card.classList.toggle("hidden", hidden);
         }
         this.#search = value;
-      }
+      },
     });
 
     search.bind(this.element);
@@ -274,7 +276,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   #dragDrop = this.#createDragDropHandlers();
 
   /**
-   * An array of DragDrop instances
+   * An array of DragDrop instances.
    */
   get dragDrop() {
     return this.#dragDrop;
@@ -288,11 +290,11 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     return this.options.dragDrop.map((d) => {
       d.permissions = {
         dragstart: () => this.isEditable,
-        drop: () => this.isEditable
+        drop: () => this.isEditable,
       };
       d.callbacks = {
         dragstart: this._onDragStart.bind(this),
-        drop: this._onDrop.bind(this)
+        drop: this._onDrop.bind(this),
       };
       return new foundry.applications.ux.DragDrop.implementation(d);
     });
@@ -312,7 +314,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
   }
 
   /**
-   * The "dragdrop" event handler for individual cards
+   * The "dragdrop" event handler for individual cards.
    * @param {DragEvent} event
    * @protected
    */
@@ -325,16 +327,16 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     try {
       return await card.pass(stack);
     } catch (err) {
-      Hooks.onError("CardsConfig##onDrop", err, {log: "error", notify: "error"});
+      Hooks.onError("CardsConfig##onDrop", err, { log: "error", notify: "error" });
     }
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Handle sorting a Card relative to other siblings within this document
-   * @param {Event} event     The drag drop event
-   * @param {Card} card       The card being dragged
+   * Handle sorting a Card relative to other siblings within this document.
+   * @param {Event} event     The drag drop event.
+   * @param {Card} card       The card being dragged.
    */
   async #onSortCard(event, card) {
     const stack = this.document;
@@ -342,8 +344,8 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     const target = stack.cards.get(li?.dataset.cardId);
     if (!target || (card === target)) return;
     const siblings = stack.cards.filter(c => c.id !== card.id);
-    const updateData = foundry.utils.performIntegerSort(card, {target, siblings})
-      .map(u => ({_id: u.target.id, sort: u.update.sort}));
+    const updateData = foundry.utils.performIntegerSort(card, { target, siblings })
+      .map(u => ({ _id: u.target.id, sort: u.update.sort }));
     await stack.updateEmbeddedDocuments("Card", updateData);
   }
 
@@ -358,7 +360,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    * @param {HTMLElement} target      The element that defined a [data-action].
    */
   static async #onToggleGallery(event, target) {
-    this.render({galleryView: !this.#galleryView, tab: {primary: "cards"}});
+    this.render({ galleryView: !this.#galleryView, tab: { primary: "cards" } });
   }
 
   /**
@@ -371,10 +373,10 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     if (!this.isEditable) return;
     getDocumentClass("Card").createDialog({
       faces: [{}],
-      face: 0
+      face: 0,
     }, {
       parent: this.document,
-      pack: this.document.pack
+      pack: this.document.pack,
     });
   }
 
@@ -388,7 +390,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    */
   static #onEditCard(event, target) {
     const id = target.closest("[data-card-id]").dataset.cardId;
-    this.document.cards.get(id).sheet.render({force: true});
+    this.document.cards.get(id).sheet.render({ force: true });
   }
 
   /* -------------------------------------------------- */
@@ -455,7 +457,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
    */
   static #onToggleSort(event, target) {
     if (!this.isEditable) return;
-    const {SHUFFLED, STANDARD} = this.constructor.SORT_TYPES;
+    const { SHUFFLED, STANDARD } = this.constructor.SORT_TYPES;
     this.sort = (this.sort === SHUFFLED) ? STANDARD : SHUFFLED;
     this.render();
   }
@@ -472,7 +474,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     if (!this.isEditable) return;
     const id = target.closest("[data-card-id]").dataset.cardId;
     const card = this.document.cards.get(id);
-    card.update({face: (card.face === 0) ? null : card.face - 1});
+    card.update({ face: (card.face === 0) ? null : card.face - 1 });
   }
 
   /* -------------------------------------------------- */
@@ -487,7 +489,7 @@ export class CardsSheet extends HandlebarsApplicationMixin(DocumentSheetV2) {
     if (!this.isEditable) return;
     const id = target.closest("[data-card-id]").dataset.cardId;
     const card = this.document.cards.get(id);
-    card.update({face: (card.face === null) ? 0 : card.face + 1});
+    card.update({ face: (card.face === null) ? 0 : card.face + 1 });
   }
 
   /* -------------------------------------------------- */
@@ -543,15 +545,15 @@ export class DeckSheet extends CardsSheet {
     classes: ["deck"],
     actions: {
       recallCard: this.#recallCard,
-      viewCard: this.#viewCard
-    }
+      viewCard: this.#viewCard,
+    },
   };
 
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
   tabGroups = {
-    primary: "configuration"
+    primary: "configuration",
   };
 
   /* -------------------------------------------------- */
@@ -592,8 +594,8 @@ export class DeckSheet extends CardsSheet {
     new foundry.applications.apps.ImagePopout({
       src: card.currentFace?.img ?? card.back.img,
       uuid: card.uuid,
-      window: {title: card.name}
-    }).render({force: true});
+      window: { title: card.name },
+    }).render({ force: true });
   }
 }
 
@@ -605,7 +607,7 @@ export class DeckSheet extends CardsSheet {
 export class HandSheet extends CardsSheet {
   /** @inheritdoc */
   static DEFAULT_OPTIONS = {
-    classes: ["hand"]
+    classes: ["hand"],
   };
 
   /* -------------------------------------------------- */
@@ -632,11 +634,11 @@ export class DockedHandSheet extends HandSheet {
       controls: [{
         label: "CARDS.ACTIONS.Draw",
         icon: "fa-solid fa-fw fa-plus",
-        action: "drawCards"
+        action: "drawCards",
       }],
-      positioned: false
+      positioned: false,
     },
-    dragDrop: [{dragSelector: "[data-application-part=cardList] .cards .card", dropSelector: "[data-application-part=cardList] .cards"}]
+    dragDrop: [{ dragSelector: "[data-application-part=cardList] .cards .card", dropSelector: "[data-application-part=cardList] .cards" }],
   };
 
   /* -------------------------------------------------- */
@@ -644,8 +646,8 @@ export class DockedHandSheet extends HandSheet {
   /** @inheritdoc */
   static PARTS = {
     cardList: {
-      template: "modules/complete-card-management/templates/card/docked.hbs"
-    }
+      template: "modules/complete-card-management/templates/card/docked.hbs",
+    },
   };
 
   /* -------------------------------------------------- */
@@ -669,7 +671,7 @@ export class DockedHandSheet extends HandSheet {
     this._createContextMenu(this._getCardContextOptions, "[data-application-part=cardList] .cards .card", {
       hookName: "getCardContextOptions",
       parentClassHooks: false,
-      fixed: true
+      fixed: true,
     });
   }
 
@@ -689,7 +691,7 @@ export class DockedHandSheet extends HandSheet {
       {
         name: "CCM.CardSheet.Flip",
         icon: "<i class=\"fa-solid fa-fw fa-arrows-up-down\"></i>",
-        callback: li => getCard(li).flip()
+        callback: li => getCard(li).flip(),
       }, {
         name: "CARDS.ACTIONS.NextFace",
         icon: "<i class=\"fa-solid fa-fw fa-arrow-right\"></i>",
@@ -699,8 +701,8 @@ export class DockedHandSheet extends HandSheet {
         },
         callback: li => {
           const card = getCard(li);
-          card.update({face: (card.face === null) ? 0 : card.face + 1});
-        }
+          card.update({ face: (card.face === null) ? 0 : card.face + 1 });
+        },
 
       }, {
         name: "CARDS.ACTIONS.PreviousFace",
@@ -708,9 +710,9 @@ export class DockedHandSheet extends HandSheet {
         condition: li => getCard(li).face > 0,
         callback: li => {
           const card = getCard(li);
-          card.update({face: card.face - 1});
-        }
-      }
+          card.update({ face: card.face - 1 });
+        },
+      },
     ];
   }
 }
@@ -723,7 +725,7 @@ export class DockedHandSheet extends HandSheet {
 export class PileSheet extends CardsSheet {
   /** @inheritdoc */
   static DEFAULT_OPTIONS = {
-    classes: ["pile"]
+    classes: ["pile"],
   };
 
   /* -------------------------------------------------- */

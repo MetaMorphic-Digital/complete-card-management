@@ -1,4 +1,6 @@
-const {HandlebarsApplicationMixin, ApplicationV2} = foundry.applications.api;
+/** @import { Card, ChatMessage } from "@client/documents/_module.mjs" */
+
+const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 
 /**
  * Scry on a number of cards in a deck, hand, or pile.
@@ -8,15 +10,15 @@ const {HandlebarsApplicationMixin, ApplicationV2} = foundry.applications.api;
  * @param {number} [options.how=CONST.CARD_DRAW_MODES.FIRST]      From where in the deck to draw the cards to scry on.
  * @returns {Promise<ScryDialog>}
  */
-export async function scry(deck, {amount = 1, how = CONST.CARD_DRAW_MODES.FIRST} = {}) {
+export async function scry(deck, { amount = 1, how = CONST.CARD_DRAW_MODES.FIRST } = {}) {
   const cards = deck._drawCards(amount, how);
-  const application = ScryDialog.create(cards, {how});
+  const application = ScryDialog.create(cards, { how });
   ChatMessage.implementation.create({
-    content: game.i18n.format("CCM.CardSheet.ScryingMessage", {
+    content: _loc("CCM.CardSheet.ScryingMessage", {
       name: game.user.name,
       number: cards.length,
-      deck: deck.name
-    })
+      deck: deck.name,
+    }),
   });
   return application;
 }
@@ -31,7 +33,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {Card[]} [options.cards]                                The revealed cards.
    * @param {number} [options.how=CONST.CARD_DRAW_MODES.FIRST]      From where in the deck to draw the cards to scry on.
    */
-  constructor({cards, how, ...options} = {}) {
+  constructor({ cards, how, ...options } = {}) {
     super(options);
     this.#cards = cards ?? [];
     this.#deck = cards[0]?.parent ?? null;
@@ -47,9 +49,9 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {number} [options.how=CONST.CARD_DRAW_MODES.FIRST]      From where in the deck to draw the cards to scry on.
    * @returns {Promise<ScryDialog>}                                 A promise resolving to the created application instance.
    */
-  static create(cards, {how = CONST.CARD_DRAW_MODES.FIRST, ...options} = {}) {
-    const application = new this({cards, how, ...options});
-    application.render({force: true});
+  static create(cards, { how = CONST.CARD_DRAW_MODES.FIRST, ...options } = {}) {
+    const application = new this({ cards, how, ...options });
+    application.render({ force: true });
     return application;
   }
 
@@ -61,18 +63,18 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     position: {
       width: 600,
       top: 100,
-      height: "auto"
+      height: "auto",
     },
     window: {
       icon: "fa-solid fa-eye",
-      contentClasses: ["standard-form"]
+      contentClasses: ["standard-form"],
     },
     actions: {
       shuffleReplace: this.#shuffleCards,
       confirm: this.#confirm,
       playCard: this.#playCard,
-      moveCard: this.#moveCard
-    }
+      moveCard: this.#moveCard,
+    },
   };
 
   /* -------------------------------------------------- */
@@ -81,9 +83,9 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static PARTS = {
     cards: {
       template: "modules/complete-card-management/templates/card/scrying.hbs",
-      scrollable: [""]
+      scrollable: [""],
     },
-    footer: {template: "modules/complete-card-management/templates/card/scrying-footer.hbs"}
+    footer: { template: "modules/complete-card-management/templates/card/scrying-footer.hbs" },
   };
 
   /* -------------------------------------------------- */
@@ -134,7 +136,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   #deck = null;
 
   /**
-   * A getter to align functionality with proper deck sheets
+   * A getter to align functionality with proper deck sheets.
    * @returns {Cards}
    */
   get document() {
@@ -145,7 +147,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /** @inheritdoc */
   get title() {
-    return game.i18n.format("CCM.CardSheet.ScryingTitle", {name: this.#deck.name});
+    return _loc("CCM.CardSheet.ScryingTitle", { name: this.#deck.name });
   }
 
   /* -------------------------------------------------- */
@@ -161,8 +163,8 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       dropSelector: "fieldset.cards",
       callbacks: {
         dragstart: this._onDragStart.bind(this),
-        drop: this._onDrop.bind(this)
-      }
+        drop: this._onDrop.bind(this),
+      },
     });
     dd.bind(this.element);
   }
@@ -182,7 +184,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------------- */
 
   /**
-   * Drag and drop the
+   * Drag and drop the.
    * @param {DragEvent} event     The triggering drag event.
    */
   async _onDrop(event) {
@@ -190,7 +192,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     if (data.type !== "Card") return;
     const card = await Card.implementation.fromDropData(data);
     if (card.parent.id !== this.document.id) {
-      ui.notifications.error("CCM.Warning.NoScryDrop", {localize: true});
+      ui.notifications.error("CCM.Warning.NoScryDrop", { localize: true });
       return;
     }
     const currentIndex = this.#cards.findIndex(c => c.id === card.id);
@@ -221,20 +223,20 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     if (this.#how === CONST.CARD_DRAW_MODES.RANDOM) return;
 
     this.close();
-    const {min, max} = this.#cards.reduce((acc, card) => {
+    const { min, max } = this.#cards.reduce((acc, card) => {
       const sort = card.sort;
       acc.min = Math.min(acc.min, sort);
       acc.max = Math.max(acc.max, sort);
       return acc;
-    }, {min: Infinity, max: -Infinity});
+    }, { min: Infinity, max: -Infinity });
 
     const order = Array.fromRange(max - min + 1, min)
-      .map(n => ({value: n, sort: Math.random()}))
+      .map(n => ({ value: n, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(o => o.value);
 
     const updates = this.#cards.map((card, i) => {
-      return {_id: card.id, sort: order[i]};
+      return { _id: card.id, sort: order[i] };
     });
 
     const canPerform = this.#deck.isOwner;
@@ -242,28 +244,28 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     else {
       const userId = game.users.getDesignatedUser(u => u.active && this.#deck.testUserPermission(u, "OWNER"))?.id;
       if (!userId) {
-        ui.notifications.warn("CCM.Warning.DeckOwnerNotFound", {localize: true});
+        ui.notifications.warn("CCM.Warning.DeckOwnerNotFound", { localize: true });
         return;
       }
       ccm.socket.emit("updateEmbeddedCards", {
         userId: userId,
         updates: updates,
-        uuid: this.#deck.uuid
+        uuid: this.#deck.uuid,
       });
     }
     ChatMessage.implementation.create({
-      content: game.i18n.format("CCM.CardSheet.ScryingMessageReorder", {
+      content: _loc("CCM.CardSheet.ScryingMessageReorder", {
         name: game.user.name,
         number: this.#cards.length,
-        deck: this.#deck.name
-      })
+        deck: this.#deck.name,
+      }),
     });
   }
 
   /* -------------------------------------------------- */
 
   /**
-   * Move a card to the top or bottom
+   * Move a card to the top or bottom.
    * @this {ScryDialog}
    * @param {Event} event             Initiating click event.
    * @param {HTMLElement} target      The data-action element.
@@ -281,13 +283,13 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     const updates = this.#deck.cards.filter(comparison).map(c => {
       return {
         _id: c._id,
-        sort: c.sort + adjustment
+        sort: c.sort + adjustment,
       };
     });
 
     updates.push({
       _id: cardId,
-      sort: this.#how === CONST.CARD_DRAW_MODES.FIRST ? this.#deck.cards.size - 1 : 0
+      sort: this.#how === CONST.CARD_DRAW_MODES.FIRST ? this.#deck.cards.size - 1 : 0,
     });
 
     await this.#deck.updateEmbeddedDocuments("Card", updates);
@@ -299,7 +301,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------------- */
 
   /**
-   * Play a card from the dialog
+   * Play a card from the dialog.
    * @this {ScryDialog}
    * @param {Event} event             Initiating click event.
    * @param {HTMLElement} target      The data-action element.
@@ -328,7 +330,7 @@ class ScryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       const startIndex = this.#how === CONST.CARD_DRAW_MODES.FIRST ? 0 : this.#deck.cards.size - this.#cards.length;
       const updates = this.#cards.map((c, index) => ({
         _id: c._id,
-        sort: index + startIndex
+        sort: index + startIndex,
       }));
       await this.#deck.updateEmbeddedDocuments("Card", updates);
     }

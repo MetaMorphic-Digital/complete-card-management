@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.0 Foundry v14
+
+- Increased minimum version to Foundry v13
+- Many internal changes to achieve compatibility
+
 ## 2.1.2
 - Resolved ghost card issue from dropping a card on the canvas while it's set to function as a pile.
 - Fixed an issue where a canvas card could end up with a height and width of zero. The new minimums are CONST.GRID_SIZE, which is currently 20px.

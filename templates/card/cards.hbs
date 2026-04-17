@@ -91,7 +91,8 @@
         </a>
         {{/if}}
       </div>
-      <img class="thumbnail" src="{{card.img}}">
+      {{!-- <!-- eslint-disable-next-line @html-eslint/require-img-alt --> --}}
+      <img class="thumbnail" src="{{card.img}}" aria-label="{{card.name}}" data-tooltip>
       <figcaption class="name">{{card.name}}</figcaption>
     </figure>
     {{/each}}

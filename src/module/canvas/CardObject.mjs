@@ -1,11 +1,11 @@
-import {placeCard} from "../api/singles.mjs";
-import {MODULE_ID} from "../helpers.mjs";
 import CanvasCard from "./CanvasCard.mjs";
 import CardLayer from "./CardLayer.mjs";
+import { MODULE_ID } from "../helpers.mjs";
+import { placeCard } from "../api/singles.mjs";
 
 /**
  * A CardObject is an implementation of PlaceableObject which represents a single Card document within the Scene.
- * CardObjects are drawn inside of the {@link CardLayer} container
+ * CardObjects are drawn inside of the {@link CardLayer} container.
  */
 export default class CardObject extends foundry.canvas.placeables.PlaceableObject {
   /**
@@ -23,7 +23,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
         get(target, prop, receiver) {
           if (prop === "isEmbedded") return true;
           return Reflect.get(...arguments);
-        }
+        },
       };
       document = new Proxy(document, handler);
     }
@@ -68,7 +68,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   /* -------------------------------------------------- */
 
   /**
-   * A Card background which is displayed if no valid image texture is present
+   * A Card background which is displayed if no valid image texture is present.
    * @type {PIXI.Graphics}
    */
   bg;
@@ -76,20 +76,20 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   /* -------------------------------------------------- */
 
   static RENDER_FLAGS = {
-    redraw: {propagate: ["refresh"]},
+    redraw: { propagate: ["refresh"] },
     refresh: {
       propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshText", "refreshElevation"],
-      alias: true
+      alias: true,
     },
     refreshState: {},
-    refreshTransform: {propagate: ["refreshRotation", "refreshSize"], alias: true},
-    refreshRotation: {propagate: ["refreshFrame"]},
-    refreshSize: {propagate: ["refreshPosition", "refreshFrame", "refreshText"]},
+    refreshTransform: { propagate: ["refreshRotation", "refreshSize"], alias: true },
+    refreshRotation: { propagate: ["refreshFrame"] },
+    refreshSize: { propagate: ["refreshPosition", "refreshFrame", "refreshText"] },
     refreshPosition: {},
     refreshMesh: {},
     refreshText: {},
     refreshFrame: {},
-    refreshElevation: {}
+    refreshElevation: {},
   };
 
   /* -------------------------------------------------- */
@@ -106,7 +106,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
 
   /** @inheritdoc */
   get bounds() {
-    let {x, y, width, height, texture, rotation} = this.document;
+    let { x, y, width, height, texture, rotation } = this.document;
 
     // Adjust top left coordinate and dimensions according to scale
     if (texture.scaleX !== 1) {
@@ -173,7 +173,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     if (this._original) texture = this._original.texture?.clone();
     else if (this.document.texture.src) {
       texture = await foundry.canvas.loadTexture(this.document.texture.src, {
-        fallback: "cards/backs/light-soft.webp"
+        fallback: "cards/backs/light-soft.webp",
       });
     }
 
@@ -205,7 +205,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   /* -------------------------------------------------- */
 
   /**
-   * Create elements for the Card border and handles
+   * Create elements for the Card border and handles.
    * @returns {PIXI.Container}
    */
   #drawFrame() {
@@ -250,7 +250,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
    * @protected
    */
   _getTextStyle() {
-    const {fontSize, fontFamily, textColor, width} = this.document;
+    const { fontSize, fontFamily, textColor, width } = this.document;
     const stroke = Math.max(Math.round(fontSize / 32), 2);
     return foundry.canvas.containers.PreciseText.getTextStyle({
       fontFamily: fontFamily,
@@ -261,7 +261,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
       align: "center",
       wordWrap: true,
       wordWrapWidth: width,
-      padding: stroke * 4
+      padding: stroke * 4,
     });
   }
 
@@ -269,7 +269,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
 
   /**
    * Apply render flags before a render occurs.
-   * @param {Record<string, boolean>} flags      The render flags which must be applied
+   * @param {Record<string, boolean>} flags      The render flags which must be applied.
    * @protected
    */
   _applyRenderFlags(flags) {
@@ -293,7 +293,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
    * @protected
    */
   _refreshState() {
-    const {hidden, locked, sort} = this.document;
+    const { hidden, locked, sort } = this.document;
     this.visible = this.isVisible;
     this.alpha = this._getTargetAlpha();
     if (this.bg) this.bg.visible = this.layer.active;
@@ -328,9 +328,9 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
    * @protected
    */
   _refreshSize() {
-    const {width, height, texture: {fit, scaleX, scaleY}} = this.document;
+    const { width, height, texture: { fit, scaleX, scaleY } } = this.document;
     if (!this.mesh) return this.bg.clear().beginFill(0xFFFFFF, 0.5).drawRect(0, 0, width, height).endFill();
-    this._resizeMesh(width, height, {fit, scaleX, scaleY});
+    this._resizeMesh(width, height, { fit, scaleX, scaleY });
   }
 
   /* -------------------------------------------------- */
@@ -340,7 +340,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
    * @protected
    */
   _refreshPosition() {
-    const {x, y, width, height} = this.document;
+    const { x, y, width, height } = this.document;
     if ((this.position.x !== x) || (this.position.y !== y)) foundry.canvas.interaction.MouseInteractionManager.emulateMoveEvent();
     this.position.set(x, y);
     if (!this.mesh) {
@@ -359,10 +359,10 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
    */
   _refreshMesh() {
     if (!this.mesh) return;
-    const {width, height, texture} = this.document;
-    const {anchorX, anchorY, fit, scaleX, scaleY, tint, alphaThreshold} = texture;
+    const { width, height, texture } = this.document;
+    const { anchorX, anchorY, fit, scaleX, scaleY, tint, alphaThreshold } = texture;
     this.mesh.anchor.set(anchorX, anchorY);
-    this._resizeMesh(width, height, {fit, scaleX, scaleY});
+    this._resizeMesh(width, height, { fit, scaleX, scaleY });
 
     this.mesh.tint = tint;
     this.mesh.textureAlphaThreshold = alphaThreshold;
@@ -371,7 +371,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   /* -------------------------------------------------- */
 
   /**
-   * Refresh the elevation
+   * Refresh the elevation.
    * @protected
    */
   _refreshElevation() {
@@ -388,7 +388,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   _refreshText() {
     const pixiText = this.mesh?.text;
     if (!pixiText) return;
-    const {text, textAlpha} = this.document;
+    const { text, textAlpha } = this.document;
     pixiText.text = text ?? "";
     pixiText.alpha = textAlpha;
     pixiText.style = this._getTextStyle();
@@ -402,7 +402,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
    */
   _refreshFrame() {
     // Update the frame bounds
-    const {width, height, rotation} = this.document;
+    const { width, height, rotation } = this.document;
     const bounds = this.frame.bounds;
     const offsetX = (width - this.mesh.width) / 2;
     const offsetY = (height - this.mesh.height) / 2;
@@ -417,9 +417,9 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     const thickness = CONFIG.Canvas.objectBorderThickness;
     const border = this.frame.border;
     border.clear();
-    border.lineStyle({width: thickness, color: 0x000000, join: PIXI.LINE_JOIN.ROUND, alignment: 0.75})
+    border.lineStyle({ width: thickness, color: 0x000000, join: PIXI.LINE_JOIN.ROUND, alignment: 0.75 })
       .drawShape(bounds);
-    border.lineStyle({width: thickness / 2, color: 0xFFFFFF, join: PIXI.LINE_JOIN.ROUND, alignment: 1})
+    border.lineStyle({ width: thickness / 2, color: 0xFFFFFF, join: PIXI.LINE_JOIN.ROUND, alignment: 1 })
       .drawShape(bounds);
   }
 
@@ -430,16 +430,16 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
    * according to desired dimensions and options.
    * @param {number} baseWidth  The base width used for computations.
    * @param {number} baseHeight The base height used for computations.
-   * @param {*} [options]       options
+   * @param {*} [options]       Options.
    * @param {"fill"|"cover"|"contain"|"width"|"height"} [options.fit="fill"]  The fit type.
    * @param {number} [options.scaleX=1]    The scale on X axis.
    * @param {number} [options.scaleY=1]    The scale on Y axis.
    */
-  _resizeMesh(baseWidth, baseHeight, {fit = "fill", scaleX = 1, scaleY = 1} = {}) {
+  _resizeMesh(baseWidth, baseHeight, { fit = "fill", scaleX = 1, scaleY = 1 } = {}) {
     if (!(baseWidth >= 0) || !(baseHeight >= 0)) {
       throw new Error(`Invalid baseWidth/baseHeight passed to ${this.constructor.name}#_resizeMesh.`);
     }
-    const {width: textureWidth, height: textureHeight} = this.mesh._texture;
+    const { width: textureWidth, height: textureHeight } = this.mesh._texture;
     let sx;
     let sy;
     switch (fit) {
@@ -499,7 +499,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
       refreshMesh: ("texture" in changed),
       refreshText: (options.cardText),
       refreshElevation: "elevation" in changed,
-      refreshPerception: ("occlusion" in changed) && ("mode" in changed.occlusion)
+      refreshPerception: ("occlusion" in changed) && ("mode" in changed.occlusion),
     });
   }
 
@@ -514,9 +514,9 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
       const ip = new foundry.applications.apps.ImagePopout({
         src: filePath,
         window: {
-          title: this.document.card.name
+          title: this.document.card.name,
         },
-        uuid: this.document.card.uuid
+        uuid: this.document.card.uuid,
       });
       ip.render(true);
     }
@@ -528,11 +528,11 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   /** @inheritdoc */
   _canDragLeftStart(user, event) {
     if (game.paused && !game.user.isGM) {
-      ui.notifications.warn("GAME.PausedWarning", {localize: true});
+      ui.notifications.warn("GAME.Paused", { localize: true });
       return false;
     }
     if (this.document.locked && (this.document.documentName === "Card")) {
-      ui.notifications.warn(game.i18n.format("CONTROLS.ObjectIsLocked", {type: this.document.documentName}));
+      ui.notifications.warn(_loc("CONTROLS.ObjectIsLocked", { type: this.document.documentName }));
       return false;
     }
     return true;
@@ -541,7 +541,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   /* -------------------------------------------------- */
 
   /**
-   * Card draw mode to use for this CardObject
+   * Card draw mode to use for this CardObject.
    */
   get cardDrawMode() {
     if (this.document.flipped) return CONST.CARD_DRAW_MODES.LAST;
@@ -559,20 +559,24 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     for (const o of objects) {
       if (!o._canDrag(game.user, event)) continue;
       else if (o.document.locked) {
+        console.log("Alpha")
         if ((this.document.documentName === "Card")) continue;
         else if ((objects.length > 1) || !game.users.activeGM) continue;
+        console.log("Bravo")
         try {
           const [card] = o.document.card._drawCards(1, this.cardDrawMode);
+          console.log("Charlie", card)
           if (card.canvasCard?.object) {
-            ui.notifications.error("CCM.Warning.FailCanvasDeck", {localize: true});
+            ui.notifications.error("CCM.Warning.FailCanvasDeck", { localize: true });
             continue;
           }
         }
         catch {
-          ui.notifications.error("CCM.Warning.FailDraw", {localize: true});
+          ui.notifications.error("CCM.Warning.FailDraw", { localize: true });
           continue;
         }
-        ui.notifications.info(game.i18n.format("CCM.CardLayer.DragCardFromDeck", {name: o.document.card.name}));
+        console.log("Delta")
+        ui.notifications.info(_loc("CCM.CardLayer.DragCardFromDeck", { name: o.document.card.name }));
       }
       // Clone the object
       const c = o.clone();
@@ -592,7 +596,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   /** @inheritdoc */
   _onDragLeftDrop(event) {
     // Ensure that we landed in bounds
-    const {clones, destination} = event.interactionData;
+    const { clones, destination } = event.interactionData;
     if (!clones || !canvas.dimensions.rect.contains(destination.x, destination.y)) return false;
     event.interactionData.clearPreviewContainer = false;
 
@@ -605,15 +609,15 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
 
   /**
    * @typedef DragUpdate
-   * @prop {number} x - The new x coordinate
-   * @prop {number} y - The new y coordinate
-   * @prop {number} rotation - The new rotation
-   * @prop {string} _id - The canvas card's UUID
+   * @prop {number} x - The new x coordinate.
+   * @prop {number} y - The new y coordinate.
+   * @prop {number} rotation - The new rotation.
+   * @prop {string} _id - The canvas card's UUID.
    */
 
   /**
    * Perform database updates using the result of a drag-left-drop operation.
-   * @param {DragUpdate[]} updates      The database updates
+   * @param {DragUpdate[]} updates      The database updates.
    * @returns {Promise<void>}
    */
   async #commitDragLeftDropUpdates(updates) {
@@ -627,11 +631,11 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
             [this.scene.id]: {
               x: u.x,
               y: u.y,
-              rotation: u.rotation
-            }
-          }
+              rotation: u.rotation,
+            },
+          },
         },
-        _id: d.id
+        _id: d.id,
       };
       if (d instanceof Cards) {
         const trueLocked = this.document.card.getFlag(MODULE_ID, canvas.scene.id).locked;
@@ -640,7 +644,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
           // Pulls the next card.
           const [card] = d._drawCards(1, this.cardDrawMode);
           if (!card) {
-            ui.notifications.error("CCM.Warning.FailDraw", {localize: true});
+            ui.notifications.error("CCM.Warning.FailDraw", { localize: true });
             return cards;
           }
           const data = updateData.flags[MODULE_ID][this.scene.id];

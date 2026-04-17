@@ -5,7 +5,7 @@
  * @property {string} label     The displayed label for this tab.
  */
 
-const {HandlebarsApplicationMixin, DocumentSheetV2} = foundry.applications.api;
+const { HandlebarsApplicationMixin, DocumentSheetV2 } = foundry.applications.api;
 
 /**
  * AppV2 based sheet for a single card.
@@ -16,27 +16,27 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
     classes: ["ccm", "card"],
     position: {
       width: 500,
-      height: "auto"
+      height: "auto",
     },
     actions: {
       addFace: this._onAddFace,
-      deleteFace: this._onDeleteFace
+      deleteFace: this._onDeleteFace,
     },
     form: {
-      closeOnSubmit: true
+      closeOnSubmit: true,
     },
     window: {
       contentClasses: ["standard-form"],
       icon: "fa-solid fa-card-spade",
-      contentTag: "div"
-    }
+      contentTag: "div",
+    },
   };
 
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
   tabGroups = {
-    primary: "details"
+    primary: "details",
   };
 
   /* -------------------------------------------------- */
@@ -46,21 +46,21 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
    * @type {Record<string, TabConfiguration>}
    */
   static TABS = {
-    details: {id: "details", group: "primary", label: "CCM.CardSheet.TabDetails", icon: "fa-solid fa-pen-fancy"},
-    faces: {id: "faces", group: "primary", label: "CCM.CardSheet.TabFaces", icon: "fa-solid fa-masks-theater"},
-    back: {id: "back", group: "primary", label: "CCM.CardSheet.TabBack", icon: "fa-solid fa-mask"}
+    details: { id: "details", group: "primary", label: "CCM.CardSheet.TabDetails", icon: "fa-solid fa-pen-fancy" },
+    faces: { id: "faces", group: "primary", label: "CCM.CardSheet.TabFaces", icon: "fa-solid fa-masks-theater" },
+    back: { id: "back", group: "primary", label: "CCM.CardSheet.TabBack", icon: "fa-solid fa-mask" },
   };
 
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
   static PARTS = {
-    header: {template: "modules/complete-card-management/templates/card/header.hbs"},
-    nav: {template: "modules/complete-card-management/templates/card/nav.hbs"},
-    details: {template: "modules/complete-card-management/templates/card/details.hbs"},
-    faces: {template: "modules/complete-card-management/templates/card/faces.hbs", scrollable: [""]},
-    back: {template: "modules/complete-card-management/templates/card/back.hbs"},
-    footer: {template: "modules/complete-card-management/templates/card/footer.hbs"}
+    header: { template: "modules/complete-card-management/templates/card/header.hbs" },
+    nav: { template: "modules/complete-card-management/templates/card/nav.hbs" },
+    details: { template: "modules/complete-card-management/templates/card/details.hbs" },
+    faces: { template: "modules/complete-card-management/templates/card/faces.hbs", scrollable: [""] },
+    back: { template: "modules/complete-card-management/templates/card/back.hbs" },
+    footer: { template: "modules/complete-card-management/templates/card/footer.hbs" },
   };
 
   /* -------------------------------------------------- */
@@ -69,9 +69,9 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   get title() {
     const stack = this.document.parent;
     if (!stack) return super.title;
-    return game.i18n.format("CCM.CardSheet.CardParentTitle", {
+    return _loc("CCM.CardSheet.CardParentTitle", {
       cardName: this.document.name,
-      stackName: stack.name
+      stackName: stack.name,
     });
   }
 
@@ -101,13 +101,13 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
       return {
         field: schema.getField(name),
         value: foundry.utils.getProperty(document, name),
-        ...options
+        ...options,
       };
     };
 
     // Header
     context.currentFace = this.document.currentFace?.img || this.document.constructor.DEFAULT_ICON;
-    context.name = makeField("name", {value: src.name, placeholder: game.i18n.localize("Name")});
+    context.name = makeField("name", { value: src.name, placeholder: _loc("Name") });
 
     // Navigation
     context.tabs = Object.values(this.constructor.TABS).reduce((acc, v) => {
@@ -116,60 +116,60 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
         ...v,
         active: isActive,
         cssClass: isActive ? "item active" : "item",
-        tabCssClass: isActive ? "tab scrollable active" : "tab scrollable"
+        tabCssClass: isActive ? "tab scrollable active" : "tab scrollable",
       };
       return acc;
     }, {});
 
     // Details
-    context.type = makeField("type", {choices: CONFIG.Card.typeLabels});
+    context.type = makeField("type", { choices: CONFIG.Card.typeLabels });
     context.suit = makeField("suit");
     context.value = makeField("value");
-    context.width = makeField("width", {placeholder: game.i18n.localize("Width")});
-    context.height = makeField("height", {placeholder: game.i18n.localize("Height")});
+    context.width = makeField("width", { placeholder: _loc("Width") });
+    context.height = makeField("height", { placeholder: _loc("Height") });
     context.rotation = makeField("rotation", {
       value: this.document.rotation || "",
-      placeholder: game.i18n.localize("Rotation")
+      placeholder: _loc("Rotation"),
     });
     context.description = makeField("description", {
-      enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.document.description, {relativeTo: this.document})
+      enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.document.description, { relativeTo: this.document }),
     });
 
     // Faces
     context.face = makeField("face", {
       choices: {},
-      blank: this.document.back.name || "CCM.CardSheet.BacksideUp"
+      blank: this.document.back.name || "CCM.CardSheet.BacksideUp",
     });
     context.faces = [];
-    const fph = game.i18n.localize("DOCUMENT.FIELDS.name.label");
+    const fph = _loc("DOCUMENT.FIELDS.name.label");
     const schema = this.document.schema.getField("faces.element");
     for (const face of this.document.faces) {
       const idx = context.faces.length;
       const f = {
-        name: makeField("name", {schema: schema, document: face, name: `faces.${idx}.name`, placeholder: fph}),
-        img: makeField("img", {schema: schema, document: face, name: `faces.${idx}.img`}),
+        name: makeField("name", { schema: schema, document: face, name: `faces.${idx}.name`, placeholder: fph }),
+        img: makeField("img", { schema: schema, document: face, name: `faces.${idx}.img` }),
         text: makeField("text", {
           schema: schema,
           document: face,
           name: `faces.${idx}.text`,
           enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(face.text, {
-            relativeTo: this.document
-          })
-        })
+            relativeTo: this.document,
+          }),
+        }),
       };
-      context.face.choices[idx] = f.name.value || game.i18n.format("CCM.CardSheet.Unnamed", {idx: idx});
+      context.face.choices[idx] = f.name.value || _loc("CCM.CardSheet.Unnamed", { idx: idx });
       context.faces.push(f);
     }
 
     // Back
     const back = this.document.schema.getField("back");
     const backDoc = this.document.back;
-    context.backName = makeField("name", {schema: back, document: backDoc});
-    context.backImg = makeField("img", {schema: back, document: backDoc, value: src.back.img});
+    context.backName = makeField("name", { schema: back, document: backDoc });
+    context.backImg = makeField("img", { schema: back, document: backDoc, value: src.back.img });
     context.backText = makeField("text", {
       schema: back,
       document: backDoc,
-      enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(backDoc.text, {relativeTo: this.document})
+      enriched: await foundry.applications.ux.TextEditor.implementation.enrichHTML(backDoc.text, { relativeTo: this.document }),
     });
 
     return context;
@@ -180,7 +180,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   /* ----------------------------- */
 
   /**
-   * Convenient access to the contained Cards document
+   * Convenient access to the contained Cards document.
    * @type {Card} The card document this sheet represents
    */
   get card() {
@@ -206,7 +206,7 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
    */
   static _onAddFace(event, target) {
     const formData = foundry.utils.expandObject(new foundry.applications.ux.FormDataExtended(this.element).object);
-    formData.faces = Object.values(formData.faces ?? {}).concat([{name: "", img: "", text: ""}]);
+    formData.faces = Object.values(formData.faces ?? {}).concat([{ name: "", img: "", text: "" }]);
     this.document.update(formData);
   }
 
@@ -220,13 +220,13 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   static async _onDeleteFace(event, target) {
     const confirm = await foundry.applications.api.DialogV2.confirm({
       rejectClose: false,
-      content: game.i18n.localize("CARD.ACTIONS.DeleteFace.Warning"),
+      content: _loc("CARD.ACTIONS.DeleteFace.Warning"),
       modal: true,
       classes: ["ccm"],
       window: {
         icon: "fa-solid fa-cards",
-        title: "CARD.ACTIONS.DeleteFace.Title"
-      }
+        title: "CARD.ACTIONS.DeleteFace.Title",
+      },
     });
     if (!confirm) return;
 
@@ -247,14 +247,14 @@ export default class CardSheet extends HandlebarsApplicationMixin(DocumentSheetV
   _onChangeFaceName(event) {
     // Changing the backside's name.
     if (event.currentTarget.name === "back.name") {
-      const value = event.currentTarget.value || game.i18n.localize("CCM.CardSheet.BacksideUp");
+      const value = event.currentTarget.value || _loc("CCM.CardSheet.BacksideUp");
       this.#faces.children[0].textContent = value;
     }
 
     // Changing a face's name.
     else {
       const idx = parseInt(event.currentTarget.closest("[data-idx]").dataset.idx);
-      const value = event.currentTarget.value || game.i18n.format("CCM.CardSheet.Unnamed", {idx: idx});
+      const value = event.currentTarget.value || _loc("CCM.CardSheet.Unnamed", { idx: idx });
       this.#faces.querySelector(`option[value="${idx}"]`).textContent = value;
     }
   }

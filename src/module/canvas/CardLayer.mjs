@@ -1,19 +1,19 @@
-import CardObject from "./CardObject.mjs";
-import {MODULE_ID, generateUpdates, processUpdates} from "../helpers.mjs";
+import { MODULE_ID, generateUpdates, processUpdates } from "../helpers.mjs";
+import { gridDialog, triangleDialog } from "../api/layout.mjs";
 import CanvasCard from "./CanvasCard.mjs";
-import {gridDialog, triangleDialog} from "../api/layout.mjs";
+import CardObject from "./CardObject.mjs";
 
 /** @import {PlaceablesLayerOptions} from "@client/canvas/layers/_types.mjs" */
 
 /**
- * The main Card layer
+ * The main Card layer.
  */
 export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
   // "Card" is not a valid document name within the scene document
   static documentName = "Card";
 
   /**
-   * Configuration options for the CardLayer
+   * Configuration options for the CardLayer.
    * @returns {PlaceablesLayerOptions}
    */
   static get layerOptions() {
@@ -21,7 +21,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
       name: "cards",
       controllableObjects: true,
       rotatableObjects: true,
-      zIndex: -100
+      zIndex: -100,
     });
   }
 
@@ -39,7 +39,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
   /**
    * The name used by hooks to construct their hook string.
    *
-   * @returns {string} The name
+   * @returns {string} The name.
    */
   get hookName() {
     return CardLayer.name;
@@ -100,7 +100,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     // Update the to-be-updated objects
     const updates = toUpdate.reduce((cards, card, i) => {
       const parentSlot = cards[card.id];
-      const updateData = {_id: card.id};
+      const updateData = { _id: card.id };
       foundry.utils.setProperty(updateData, `flags.${MODULE_ID}.${canvas.scene.id}.sort`, target + i);
       if (parentSlot) parentSlot.push(updateData);
       else cards[card.parent.id] = [updateData];
@@ -116,8 +116,20 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
 
   /** @inheritdoc */
   getSnappedPoint(point) {
-    if (canvas.forceSnapVertices) return canvas.grid.getSnappedPoint(point, {mode: CONST.GRID_SNAPPING_MODES.VERTEX});
+    if (canvas.forceSnapVertices) return canvas.grid.getSnappedPoint(point, { mode: CONST.GRID_SNAPPING_MODES.VERTEX });
     return super.getSnappedPoint(point);
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * @inheritdoc
+   * Cards do not support levels
+   */
+  * viewedDocuments() {
+    for (const doc of this.documentCollection) {
+      yield doc;
+    }
   }
 
   /* -------------------------------------------------- */
@@ -159,21 +171,20 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
 
     this.preview = this.addChild(new PIXI.Container());
 
-    /** @type {Array<Card | Cards>} */
-    const documents = this.getDocuments();
-    const promises = documents.map((doc) => {
+    const promises = [];
+    for (const doc of this.viewedDocuments()) {
       // Preemptively filtering out drawings that would fail
       const data = doc.getFlag(MODULE_ID, canvas.scene.id);
       if (!data || (data.x === undefined) || (data.y === undefined)) {
         console.warn("No canvas data found for", doc.name);
-        return;
+        continue;
       }
       const syntheticDoc = new CanvasCard(doc);
       doc.canvasCard = syntheticDoc;
       const obj = (syntheticDoc._object = this.createObject(syntheticDoc));
       this.objects.addChild(obj);
-      return obj.draw();
-    });
+      promises.push(obj.draw());
+    }
 
     // Wait for all objects to draw
     await Promise.all(promises);
@@ -193,13 +204,15 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
       onChange: (event, active) => {
         if (active) canvas.cards.activate();
       },
-      onToolChange: () => canvas.cards.setAllRenderFlags({refreshState: true}),
+      onToolChange: () => canvas.cards.setAllRenderFlags({ refreshState: true }),
       tools: {
         select: {
           name: "select",
           order: 1,
           title: "CCM.CardLayer.Tools.SelectTitle",
-          icon: "fa-solid fa-expand"
+          icon: "fa-solid fa-expand",
+          interaction: true,
+          control: true,
         },
         snap: {
           name: "snap",
@@ -208,7 +221,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
           icon: "fa-solid fa-plus",
           toggle: true,
           active: canvas.forceSnapVertices,
-          onChange: (event, toggled) => canvas.forceSnapVertices = toggled
+          onChange: (event, toggled) => canvas.forceSnapVertices = toggled,
         },
         createGrid: {
           name: "createGrid",
@@ -216,7 +229,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
           title: "CCM.CardLayer.Tools.CreateGrid",
           icon: "fa-solid fa-square",
           button: true,
-          onChange: (event) => gridDialog()
+          onChange: (event) => gridDialog(),
         },
         createTriangle: {
           name: "createTriangle",
@@ -224,7 +237,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
           title: "CCM.CardLayer.Tools.CreateTriangle",
           icon: "fa-solid fa-triangle",
           button: true,
-          onChange: (event) => triangleDialog()
+          onChange: (event) => triangleDialog(),
         },
         delete: {
           name: "delete",
@@ -233,10 +246,10 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
           icon: "fa-solid fa-trash",
           visible: game.user.isGM,
           button: true,
-          onChange: (event, toggled) => canvas.cards.deleteAll()
-        }
+          onChange: (event, toggled) => canvas.cards.deleteAll(),
+        },
       },
-      activeTool: "select"
+      activeTool: "select",
     };
   }
 
@@ -253,7 +266,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     this.children.sort((a, b) => (a.document.elevation - b.document.elevation)
       || (a.document.sort - b.document.sort)
       || (a.zIndex - b.zIndex)
-      || (a._lastSortedIndex - b._lastSortedIndex)
+      || (a._lastSortedIndex - b._lastSortedIndex),
     );
     this.sortDirty = false;
   };
@@ -280,7 +293,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
-  async rotateMany({angle, delta, snap, ids, includeLocked = false} = {}) {
+  async rotateMany({ angle, delta, snap, ids, includeLocked = false } = {}) {
 
     if ((angle ?? delta ?? null) === null) {
       throw new Error("Either a target angle or relative delta must be provided.");
@@ -289,7 +302,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     // Rotation is not permitted
     if (!this.options.rotatableObjects) return [];
     if (game.paused && !game.user.isGM) {
-      ui.notifications.warn("GAME.PausedWarning", {localize: true});
+      ui.notifications.warn("GAME.PausedWarning", { localize: true });
       return [];
     }
 
@@ -302,8 +315,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
 
     const updates = generateUpdates(
       `flags.${MODULE_ID}.${canvas.scene.id}.rotation`,
-      (o) => o._updateRotation({angle, delta, snap}),
-      {targetPath: "rotation"}
+      (o) => o._updateRotation({ angle, delta, snap }),
+      { targetPath: "rotation" },
     );
     await processUpdates(updates);
     return objects;
@@ -320,17 +333,17 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     const proceed = await foundry.applications.api.DialogV2.confirm({
       window: {
         title: "CONTROLS.ClearAll",
-        icon: "fa-solid fa-cards"
+        icon: "fa-solid fa-cards",
       },
       classes: ["ccm"],
-      content: game.i18n.format("CONTROLS.ClearAllHint", {type}),
+      content: _loc("CONTROLS.ClearAllHint", { type }),
       rejectClose: false,
-      modal: true
+      modal: true,
     });
     if (proceed) {
       const cardCollection = canvas.scene.getFlag(MODULE_ID, "cardCollection");
       if (!cardCollection) {
-        ui.notifications.warn("CARDS.NoCards", {localize: true});
+        ui.notifications.warn("CARDS.NoCards", { localize: true });
         return null;
       }
       for (const uuid of cardCollection) {
@@ -338,7 +351,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
         if (!card) continue;
         await card.unsetFlag(MODULE_ID, canvas.scene.id);
       }
-      ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects", {count: cardCollection.length, type}));
+      ui.notifications.info(_loc("CONTROLS.DeletedObjects", { count: cardCollection.length, type }));
       return canvas.scene.unsetFlag(MODULE_ID, "cardCollection");
     }
   }
@@ -347,7 +360,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
 
   /** @inheritdoc */
   _getCopyableObjects(options) {
-    ui.notifications.warn("CCM.Warning.NoCopyCutPaste", {localize: true});
+    ui.notifications.warn("CCM.Warning.NoCopyCutPaste", { localize: true });
     return [];
   }
 
@@ -356,7 +369,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
   /** @inheritdoc */
   async _onDeleteKey(event) {
     if (game.paused && !game.user.isGM) {
-      ui.notifications.warn("GAME.PausedWarning", {localize: true});
+      ui.notifications.warn("GAME.PausedWarning", { localize: true });
       return;
     }
 
@@ -376,17 +389,17 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
       if (this.options.confirmDeleteKey) {
         const confirmed = await foundry.applications.api.DialogV2.confirm({
           window: {
-            title: game.i18n.format("DOCUMENT.Delete", {type: this.constructor.documentName}),
-            icon: "fa-solid fa-cards"
+            title: _loc("DOCUMENT.Delete", { type: this.constructor.documentName }),
+            icon: "fa-solid fa-cards",
           },
           position: {
             width: 400,
-            height: "auto"
+            height: "auto",
           },
           classes: ["ccm"],
-          content: `<p>${game.i18n.localize("AreYouSure")}</p>`,
+          content: `<p>${_loc("AreYouSure")}</p>`,
           rejectClose: false,
-          modal: true
+          modal: true,
         });
         if (!confirmed) return;
       }
@@ -399,8 +412,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
       await canvas.scene.setFlag(MODULE_ID, "cardCollection", Array.from(cardCollection.difference(deletedCards)));
 
       if (uuids.length !== 1) {
-        ui.notifications.info(game.i18n.format("CONTROLS.DeletedObjects", {
-          count: uuids.length, type: this.constructor.documentName
+        ui.notifications.info(_loc("CONTROLS.DeletedObjects", {
+          count: uuids.length, type: this.constructor.documentName,
         }));
       }
     }
