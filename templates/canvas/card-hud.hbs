@@ -1,9 +1,10 @@
-{{!-- <!-- @eslint-ignore @html-eslint/require-img-alt --> --}}
+{{!-- <!-- eslint-disable @html-eslint/require-img-alt --> --}}
 <div class="col left">
   <div class="attribute elevation" data-tooltip="HUD.Elevation">
     <i class="fas fa-angle-up"></i>
     <input type="text" name="elevation" value="{{elevation}}" {{disabled (or locked (and isGamePaused (not isGM)))}}>
   </div>
+  {{!-- TODO:  --}}
   <button type="button" class="control-icon" data-action="sort-up" data-tooltip="HUD.ToFront">
     <img src="{{icons.up}}" width="36" height="36">
   </button>
