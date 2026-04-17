@@ -211,6 +211,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
           order: 1,
           title: "CCM.CardLayer.Tools.SelectTitle",
           icon: "fa-solid fa-expand",
+          interaction: true,
+          control: true,
         },
         snap: {
           name: "snap",
