@@ -528,7 +528,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   /** @inheritdoc */
   _canDragLeftStart(user, event) {
     if (game.paused && !game.user.isGM) {
-      ui.notifications.warn("GAME.PausedWarning", { localize: true });
+      ui.notifications.warn("GAME.Paused", { localize: true });
       return false;
     }
     if (this.document.locked && (this.document.documentName === "Card")) {
@@ -559,10 +559,13 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     for (const o of objects) {
       if (!o._canDrag(game.user, event)) continue;
       else if (o.document.locked) {
+        console.log("Alpha")
         if ((this.document.documentName === "Card")) continue;
         else if ((objects.length > 1) || !game.users.activeGM) continue;
+        console.log("Bravo")
         try {
           const [card] = o.document.card._drawCards(1, this.cardDrawMode);
+          console.log("Charlie", card)
           if (card.canvasCard?.object) {
             ui.notifications.error("CCM.Warning.FailCanvasDeck", { localize: true });
             continue;
@@ -572,6 +575,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
           ui.notifications.error("CCM.Warning.FailDraw", { localize: true });
           continue;
         }
+        console.log("Delta")
         ui.notifications.info(_loc("CCM.CardLayer.DragCardFromDeck", { name: o.document.card.name }));
       }
       // Clone the object
