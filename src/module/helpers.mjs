@@ -2,14 +2,19 @@ export const MODULE_ID = "complete-card-management";
 export const MoveCardType = `${MODULE_ID}.moveCard`;
 
 /**
- * @param {string} valuePath    - Path on the Card document
- * @param {(original?: any) => any} valueMod - Callback to transform the fetched value
- * @param {object} [object] - Object to fetch values from, otherwise it uses each individual card
- * @param {string} [targetPath] - Path of value to fetch
- * @param {boolean} [ignoreLock=false] - Whether to allow updating a locked card
- * @returns
+ * @import {DatabaseWriteOperation} from "@common/abstract/_types.mjs"
+ * @import Cards from "@client/documents/cards.mjs"
  */
-export function generateUpdates(valuePath, valueMod, {object, targetPath = "", ignoreLock = false} = {}) {
+
+/**
+ * Helper function to produce updates.
+ * @param {string} valuePath    - Path on the Card document.
+ * @param {(original?: any) => any} valueMod - Callback to transform the fetched value.
+ * @param {object} [object] - Object to fetch values from, otherwise it uses each individual card.
+ * @param {string} [targetPath] - Path of value to fetch.
+ * @param {boolean} [ignoreLock=false] - Whether to allow updating a locked card.
+ */
+export function generateUpdates(valuePath, valueMod, { object, targetPath = "", ignoreLock = false } = {}) {
   let fetchedValue;
   if (object) fetchedValue = foundry.utils.getProperty(object, targetPath);
   const updates = canvas.cards.controlled.reduce((cards, o) => {
@@ -17,7 +22,7 @@ export function generateUpdates(valuePath, valueMod, {object, targetPath = "", i
     const d = fromUuidSync(o.id);
     const updateData = {
       _id: d.id,
-      [valuePath]: valueMod(fetchedValue === undefined ? o : fetchedValue)
+      [valuePath]: valueMod(fetchedValue === undefined ? o : fetchedValue),
     };
     if (d instanceof Cards) {
       cards.cardStackUpdates.push(updateData);
@@ -27,7 +32,7 @@ export function generateUpdates(valuePath, valueMod, {object, targetPath = "", i
       else cards[d.parent.id] = [updateData];
     }
     return cards;
-  }, {cardStackUpdates: []});
+  }, { cardStackUpdates: [] });
 
   return updates;
 }
@@ -35,7 +40,7 @@ export function generateUpdates(valuePath, valueMod, {object, targetPath = "", i
 /* -------------------------------------------------- */
 
 /**
- * Loops through an array of updates matching the ID of cards to an update array for their embedded collection
+ * Loops through an array of updates matching the ID of cards to an update array for their embedded collection.
  * @param {Record<string, Array<{ _id: string } & Record<string, unknown>>>} processedUpdates
  */
 export async function processUpdates(processedUpdates) {
@@ -48,8 +53,8 @@ export async function processUpdates(processedUpdates) {
 /* -------------------------------------------------- */
 
 /**
- * Loop through player hands to see if the PlayerList needs to be re-rendered
- * @param {Card} card - The card being created or deleted
+ * Loop through player hands to see if the PlayerList needs to be re-rendered.
+ * @param {Card} card - The card being created or deleted.
  * @param {"create" | "delete"} action
  */
 export function checkHandDisplayUpdate(card, action) {

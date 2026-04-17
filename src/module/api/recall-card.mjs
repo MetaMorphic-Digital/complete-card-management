@@ -1,4 +1,8 @@
 /**
+ * @import { Cards, Card, ChatMessage } from "@client/documents/_module.mjs"
+ */
+
+/**
  * Recall a drawn card from a deck.
  * @param {Cards} deck          The deck to recall a drawn card to.
  * @param {string} cardId       The id of the card to recall.
@@ -22,8 +26,8 @@ export default async function recallCard(deck, cardId) {
   ChatMessage.implementation.create({
     content: _loc("CCM.CardSheet.RecalledCard", {
       card: card.link,
-      deck: deck.link
-    })
+      deck: deck.link,
+    }),
   });
   return clone ? clone.recall() : card.recall();
 }

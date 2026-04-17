@@ -41,6 +41,9 @@ export default defineConfig([
         PIXI: "readonly",
         ProseMirror: "readonly",
         Roll: "readonly",
+        Card: "readonly",
+        Cards: "readonly",
+        ChatMessage: "readonly",
         // global namespaces
         canvas: "readonly",
         ccm: "readonly",

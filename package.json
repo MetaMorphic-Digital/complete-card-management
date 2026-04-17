@@ -6,7 +6,9 @@
   "scripts": {
     "build": "rollup -c",
     "createSymlinks": "node ./tools/create-symlinks.mjs",
-    "postinstall": "npm run createSymlinks"
+    "postinstall": "npm run createSymlinks",
+    "lint": "eslint ccm.mjs src/module/**/* templates/**/*",
+    "lint:fix": "eslint --fix ccm.mjs src/module/**/* templates/**/*"
   },
   "repository": {
     "type": "git",

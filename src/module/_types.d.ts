@@ -3,7 +3,7 @@ declare module "./canvas/CanvasCard.mjs" {
   /** A SchemaField subclass used to represent texture data. */
   type TextureData = {
     /** The URL of the texture source. */
-    src: string|null;
+    src: string | null;
 
     /** The X coordinate of the texture anchor. */
     anchorX: number;
@@ -31,34 +31,34 @@ declare module "./canvas/CanvasCard.mjs" {
 
     /**
      * Only pixels with an alpha value at or above this value are consider solid
-     * w.r.t. to occlusion testing and light/weather blocking.
+     * w.r.t. To occlusion testing and light/weather blocking.
      */
     alphaThreshold: number;
-  }
+  };
 
   export default interface CanvasCard {
-    /** The x-coordinate position of the top-left corner of the card. (Flags) */
+    /** (Flags) The x-coordinate position of the top-left corner of the card. */
     x?: number;
 
-    /** The y-coordinate position of the top-left corner of the card. (Flags) */
+    /** (Flags) The y-coordinate position of the top-left corner of the card. */
     y?: number;
 
-    /** The elevation of the card. (Flags) */
+    /** (Flags) The elevation of the card. */
     elevation?: number;
 
-    /** The z-index ordering of this card relative to its siblings. (CardData) */
+    /** (CardData) The z-index ordering of this card relative to its siblings. */
     sort?: number;
 
-    /** The angle of rotation for the card between 0 and 360. (Flags) */
+    /** (Flags) The angle of rotation for the card between 0 and 360. */
     rotation?: number;
 
-    /** Is the card currently hidden? (Flags) */
+    /** (Flags) Is the card currently hidden? */
     hidden?: boolean;
 
-    /** Is the card currently locked? (Flags) */
+    /** (Flags) Is the card currently locked? */
     locked?: boolean;
 
-    /** Is the card flipped to show the bottom? (Only used with Cards) */
+    /** (Only used with Cards) Is the card flipped to show the bottom? */
     flipped: boolean;
 
     /** The pixel width of the card. Derived from the Card's width. */
@@ -73,15 +73,15 @@ declare module "./canvas/CanvasCard.mjs" {
 }
 
 export interface CanvasDropData {
-  /** The type of canvas drop */
+  /** The type of canvas drop. */
   type: string;
 
-  /** The UUID of a document added */
+  /** The UUID of a document added. */
   uuid?: string;
 
-  /** The X coordinate */
+  /** The X coordinate. */
   x: number;
 
-  /** The Y coordinate */
+  /** The Y coordinate. */
   y: number;
 }

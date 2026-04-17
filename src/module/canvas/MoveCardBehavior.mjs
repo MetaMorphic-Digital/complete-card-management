@@ -1,5 +1,5 @@
 import CCM_CONFIG from "../config.mjs";
-import {MODULE_ID} from "../helpers.mjs";
+import { MODULE_ID } from "../helpers.mjs";
 const fields = foundry.data.fields;
 
 export default class MoveCardBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
@@ -12,25 +12,25 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
   static defineSchema() {
     return {
       targetStack: new fields.ForeignDocumentField(getDocumentClass("Cards")),
-      keepCanvasCard: new fields.BooleanField()
+      keepCanvasCard: new fields.BooleanField(),
     };
   }
 
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
-  static _createEventsField({events, initial} = {}) {
+  static _createEventsField({ events, initial } = {}) {
     const setFieldOptions = {
       label: "BEHAVIOR.TYPES.base.FIELDS.events.label",
-      hint: "BEHAVIOR.TYPES.base.FIELDS.events.hint"
+      hint: "BEHAVIOR.TYPES.base.FIELDS.events.hint",
     };
     if (initial) setFieldOptions.initial = initial;
     return new fields.SetField(new fields.StringField({
       required: true,
       choices: {
         [CCM_CONFIG.REGION_EVENTS.CARD_MOVE_OUT]: "CCM.REGION_EVENTS.CardMoveOut.label",
-        [CCM_CONFIG.REGION_EVENTS.CARD_MOVE_IN]: "CCM.REGION_EVENTS.CardMoveIn.label"
-      }
+        [CCM_CONFIG.REGION_EVENTS.CARD_MOVE_IN]: "CCM.REGION_EVENTS.CardMoveIn.label",
+      },
     }), setFieldOptions);
   }
 
@@ -39,7 +39,7 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
   /** @inheritdoc */
   static events = {
     [CCM_CONFIG.REGION_EVENTS.CARD_MOVE_IN]: this.#onCardMoveIn,
-    [CCM_CONFIG.REGION_EVENTS.CARD_MOVE_OUT]: this.#onCardMoveOut
+    [CCM_CONFIG.REGION_EVENTS.CARD_MOVE_OUT]: this.#onCardMoveOut,
   };
 
   /* -------------------------------------------------- */
@@ -53,17 +53,17 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
     const userCanUpdate = canvas.scene.testUserPermission(event.user, "update");
     const isResponsible = (userCanUpdate && event.user.isSelf) || (!userCanUpdate && game.user.isActiveGM);
     if (!userCanUpdate && !game.users.activeGM) {
-      ui.notifications.error("CCM.MoveCardBehavior.NoGM", {localize: true});
+      ui.notifications.error("CCM.MoveCardBehavior.NoGM", { localize: true });
       return;
     }
     if (!this.targetStack) {
-      ui.notifications.error("CCM.MoveCardBehavior.NoStack", {localize: true});
+      ui.notifications.error("CCM.MoveCardBehavior.NoStack", { localize: true });
       return;
     }
-    const {card} = event.data;
+    const { card } = event.data;
     if ((this.targetStack !== card.parent) && isResponsible) {
       ui.notifications.info(_loc("CCM.MoveCardBehavior.AddCard",
-        {name: card.name, stack: this.targetStack.name})
+        { name: card.name, stack: this.targetStack.name }),
       );
 
       if (!this.keepCanvasCard) {
@@ -82,10 +82,10 @@ export default class MoveCardBehavior extends foundry.data.regionBehaviors.Regio
    * @param {RegionEvent} event
    */
   static async #onCardMoveOut(event) {
-    const {card} = event.data;
+    const { card } = event.data;
     if (this.targetStack && (this.targetStack !== card.parent) && event.user.isSelf) {
       console.debug(_loc("CCM.MoveCardBehavior.RemoveCard",
-        {name: card.name, stack: this.targetStack.name})
+        { name: card.name, stack: this.targetStack.name }),
       );
     }
   }

@@ -1,12 +1,16 @@
 import * as api from "./api/_module.mjs";
 import * as apps from "./apps/_module.mjs";
 import * as ccm_canvas from "./canvas/_module.mjs";
+import { MODULE_ID, MoveCardType, checkHandDisplayUpdate } from "./helpers.mjs";
+import { addCard, removeCard } from "./patches.mjs";
 import CCM_CONFIG from "./config.mjs";
-import {checkHandDisplayUpdate, MODULE_ID, MoveCardType} from "./helpers.mjs";
-import {addCard, removeCard} from "./patches.mjs";
 
 /**
- * Run on Foundry init
+ * @import {Card, Cards, Scene} from "@client/documents/_module.mjs";
+ */
+
+/**
+ * Run on Foundry init.
  */
 export function init() {
   console.log("Complete Card Management | Initializing");
@@ -17,40 +21,40 @@ export function init() {
   // Avoiding risks related to dot notation by preferring manual assignment over mergeObject
   CONFIG.Canvas.layers.cards = {
     group: "interface",
-    layerClass: ccm_canvas.CardLayer
+    layerClass: ccm_canvas.CardLayer,
   };
   CONFIG.Canvas.layers.controls.layerClass = ccm_canvas.CCMControlsLayer;
   Object.assign(CONFIG.Card, {
     objectClass: ccm_canvas.CardObject,
     layerClass: ccm_canvas.CardLayer,
-    hudClass: apps.CardHud
+    hudClass: apps.CardHud,
   });
   CONFIG.RegionBehavior.dataModels[MoveCardType] = ccm_canvas.MoveCardBehavior;
   CONFIG.RegionBehavior.typeIcons[MoveCardType] = "fa-solid fa-cards";
   Object.assign(CONFIG.controlIcons, {
     flip: "modules/complete-card-management/assets/icons/vertical-flip.svg",
     rotate: "modules/complete-card-management/assets/icons/clockwise-rotation.svg",
-    shuffle: "modules/complete-card-management/assets/icons/shuffle.svg"
+    shuffle: "modules/complete-card-management/assets/icons/shuffle.svg",
   });
 
   ccm_canvas.CanvasCard.registerSettings();
 
-  const {DocumentSheetConfig} = foundry.applications.apps;
+  const { DocumentSheetConfig } = foundry.applications.apps;
 
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DeckSheet, {
-    label: "CCM.Sheets.Deck", types: ["deck"]
+    label: "CCM.Sheets.Deck", types: ["deck"],
   });
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.HandSheet, {
-    label: "CCM.Sheets.Hand", types: ["hand"]
+    label: "CCM.Sheets.Hand", types: ["hand"],
   });
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.DockedHandSheet, {
-    label: "CCM.Sheets.DockedHand", types: ["hand"]
+    label: "CCM.Sheets.DockedHand", types: ["hand"],
   });
   DocumentSheetConfig.registerSheet(Cards, MODULE_ID, apps.CardsSheets.PileSheet, {
-    label: "CCM.Sheets.Pile", types: ["pile"]
+    label: "CCM.Sheets.Pile", types: ["pile"],
   });
   DocumentSheetConfig.registerSheet(Card, MODULE_ID, apps.CardSheet, {
-    label: "CCM.Sheets.Card"
+    label: "CCM.Sheets.Card",
   });
 
   const interfaceCls = CONFIG.Canvas.groups.interface.groupClass;
@@ -63,7 +67,7 @@ export function init() {
 /* -------------------------------------------------- */
 
 /**
- * Run on Foundry ready
+ * Run on Foundry ready.
  */
 export function ready() {
   console.log("Complete Card Management | Ready");
@@ -76,10 +80,10 @@ export function ready() {
 /** @import {CanvasDropData} from "./_types.d.ts" */
 
 /**
- * Handles drop data
+ * Handles drop data.
  *
- * @param {Canvas} canvas                              - The Canvas
- * @param {CanvasDropData} data - Drop data
+ * @param {foundry.canvas.Canvas} canvas                              - The Canvas.
+ * @param {CanvasDropData} data - Drop data.
  */
 export function dropCanvasData(canvas, data) {
   switch (data.type) {
@@ -95,9 +99,9 @@ export function dropCanvasData(canvas, data) {
 /* -------------------------------------------------- */
 
 /**
- *
- * @param {Canvas} canvas - The Game Canvas
- * @param {CanvasDropData} data - Drop data
+ * Card drop on the canvas.
+ * @param {foundry.canvas.Canvas} canvas - The Game Canvas.
+ * @param {CanvasDropData} data - Drop data.
  */
 async function handleCardDrop(canvas, data) {
   /** @type {Card} */
@@ -116,9 +120,9 @@ async function handleCardDrop(canvas, data) {
 /* -------------------------------------------------- */
 
 /**
- *
- * @param {Canvas} canvas - The Game Canvas
- * @param {CanvasDropData} data - Drop data
+ * Cards drop on the canvas.
+ * @param {foundry.canvas.Canvas} canvas - The Game Canvas.
+ * @param {CanvasDropData} data - Drop data.
  */
 async function handleCardStackDrop(canvas, data) {
   let cards = await fromUuidSync(data.uuid);
@@ -137,14 +141,14 @@ async function handleCardStackDrop(canvas, data) {
  * A hook event that fires when Cards are passed from one stack to another.
  * @event passCards
  * @category Cards
- * @param {Cards} origin                The origin Cards document
- * @param {Cards} destination           The destination Cards document
- * @param {object} context              Additional context which describes the operation
- * @param {string} context.action       The action name being performed, i.e. "pass", "play", "discard", "draw"
- * @param {object[]} context.toCreate     Card creation operations to be performed in the destination Cards document
- * @param {object[]} context.toUpdate     Card update operations to be performed in the destination Cards document
- * @param {object[]} context.fromUpdate   Card update operations to be performed in the origin Cards document
- * @param {object[]} context.fromDelete   Card deletion operations to be performed in the origin Cards document
+ * @param {Cards} origin                The origin Cards document.
+ * @param {Cards} destination           The destination Cards document.
+ * @param {object} context              Additional context which describes the operation.
+ * @param {string} context.action       The action name being performed, i.e. "pass", "play", "discard", "draw".
+ * @param {object[]} context.toCreate     Card creation operations to be performed in the destination Cards document.
+ * @param {object[]} context.toUpdate     Card update operations to be performed in the destination Cards document.
+ * @param {object[]} context.fromUpdate   Card update operations to be performed in the origin Cards document.
+ * @param {object[]} context.fromDelete   Card deletion operations to be performed in the origin Cards document.
  */
 export function passCards(origin, destination, context) {
   const cardCollectionRemovals = new Set(context.fromDelete.map(id => origin.cards.get(id).uuid));
@@ -171,7 +175,7 @@ export function passCards(origin, destination, context) {
     }
   }
   else ccm.socket.emit("passCardHandler",
-    {cardCollectionRemovals: Array.from(cardCollectionRemovals), originId: origin.id, destinationId: destination.id}
+    { cardCollectionRemovals: Array.from(cardCollectionRemovals), originId: origin.id, destinationId: destination.id },
   );
 }
 
@@ -184,9 +188,9 @@ export function passCards(origin, destination, context) {
  *
  * @event createDocument
  * @category Document
- * @param {Card | Cards} card                       The new Document instance which has been created
- * @param {Partial<DatabaseCreateOperation>} options Additional options which modified the creation request
- * @param {string} userId                           The ID of the User who triggered the creation workflow
+ * @param {Card | Cards} card                       The new Document instance which has been created.
+ * @param {Partial<DatabaseCreateOperation>} options Additional options which modified the creation request.
+ * @param {string} userId                           The ID of the User who triggered the creation workflow.
  */
 export async function createCard(card, options, userId) {
   if (!canvas.scene) return;
@@ -206,10 +210,10 @@ export async function createCard(card, options, userId) {
  * A hook event that fires for every Document type after conclusion of an update workflow.
  * Substitute the Document name in the hook event to target a specific Document type, for example "updateActor".
  * This hook fires for all connected clients after the update has been processed.
- * @param {(Card | Cards) & { canvasCard?: ccm_canvas.CanvasCard}} card  The existing Document which was updated
- * @param {object} changed                                     Differential data that was used to update the document
- * @param {Partial<DatabaseUpdateOperation>} options           Additional options which modified the update request
- * @param {string} userId                                      The ID of the User who triggered the update workflow
+ * @param {(Card | Cards) & { canvasCard?: ccm_canvas.CanvasCard}} card  The existing Document which was updated.
+ * @param {object} changed                                     Differential data that was used to update the document.
+ * @param {Partial<DatabaseUpdateOperation>} options           Additional options which modified the update request.
+ * @param {string} userId                                      The ID of the User who triggered the update workflow.
  */
 export async function updateCard(card, changed, options, userId) {
   const moduleFlags = foundry.utils.getProperty(changed, `flags.${MODULE_ID}`) ?? {};
@@ -223,7 +227,7 @@ export async function updateCard(card, changed, options, userId) {
   }
   else if (canvas.scene?.id in moduleFlags) { // New cards
     if (card.drawn && card.isHome) {
-      ui.notifications.error("CCM.Warning.CardDrawn", {localize: true});
+      ui.notifications.error("CCM.Warning.CardDrawn", { localize: true });
       return;
     }
     const synthetic = new ccm_canvas.CanvasCard(card);
@@ -246,9 +250,9 @@ export async function updateCard(card, changed, options, userId) {
  *
  * @event deleteDocument
  * @category Document
- * @param {Card | Cards} card                       The existing Document which was deleted
- * @param {Partial<DatabaseDeleteOperation>} options Additional options which modified the deletion request
- * @param {string} userId                           The ID of the User who triggered the deletion workflow
+ * @param {Card | Cards} card                       The existing Document which was deleted.
+ * @param {Partial<DatabaseDeleteOperation>} options Additional options which modified the deletion request.
+ * @param {string} userId                           The ID of the User who triggered the deletion workflow.
  */
 export async function deleteCard(card, options, userId) {
   if (card.canvasCard) {
@@ -262,10 +266,10 @@ export async function deleteCard(card, options, userId) {
  * A hook event that fires for every Document type after conclusion of an update workflow.
  * Substitute the Document name in the hook event to target a specific Document type, for example "updateActor".
  * This hook fires for all connected clients after the update has been processed.
- * @param {User} user  The existing Document which was updated
- * @param {object} changed                                     Differential data that was used to update the document
- * @param {Partial<DatabaseUpdateOperation>} options           Additional options which modified the update request
- * @param {string} userId                                      The ID of the User who triggered the update workflow
+ * @param {User} user  The existing Document which was updated.
+ * @param {object} changed                                     Differential data that was used to update the document.
+ * @param {Partial<DatabaseUpdateOperation>} options           Additional options which modified the update request.
+ * @param {string} userId                                      The ID of the User who triggered the update workflow.
  */
 export async function updateUser(user, changed, options, userId) {
   const handId = foundry.utils.getProperty(changed, `flags.${MODULE_ID}.playerHand`);
@@ -276,10 +280,10 @@ export async function updateUser(user, changed, options, userId) {
 /* -------------------------------------------------- */
 
 /**
- * A hook called when the canvas HUD is rendered during `Canvas#initialize`
- * @param {HeadsUpDisplayContainer} app  - The HeadsUpDisplayContainer application
- * @param {HTMLElement[]} jquery       - A JQuery object of the HUD
- * @param {object} context      - Context passed from HeadsUpDisplayContainer#getData
+ * A hook called when the canvas HUD is rendered during `Canvas#initialize`.
+ * @param {HeadsUpDisplayContainer} app  - The HeadsUpDisplayContainer application.
+ * @param {HTMLElement[]} jquery       - A JQuery object of the HUD.
+ * @param {object} context      - Context passed from HeadsUpDisplayContainer#getData.
  */
 export function renderHeadsUpDisplayContainer(app, html, context, options) {
   if (!app.cards) app.cards = new CONFIG.Card.hudClass;
@@ -292,9 +296,9 @@ export function renderHeadsUpDisplayContainer(app, html, context, options) {
 /** @import UserConfig from "@client/applications/sheets/user-config.mjs" */
 
 /**
- * A hook called when the UserConfig application opens
- * @param {UserConfig} app - The UserConfig application
- * @param {HTMLElement} html - The app's rendered HTML
+ * A hook called when the UserConfig application opens.
+ * @param {UserConfig} app - The UserConfig application.
+ * @param {HTMLElement} html - The app's rendered HTML.
  */
 export function renderUserConfig(app, html) {
   const PCDisplay = html.querySelector("fieldset:nth-child(2)");
@@ -309,7 +313,7 @@ export function renderUserConfig(app, html) {
   const handId = user.getFlag(MODULE_ID, "playerHand");
   const options = game.cards.reduce((arr, doc) => {
     if (!doc.visible || (doc.type !== "hand") || !doc.canUserModify(game.user, "update")) return arr;
-    arr.push({value: doc.id, label: doc.name});
+    arr.push({ value: doc.id, label: doc.name });
     return arr;
   }, []);
 
@@ -317,26 +321,26 @@ export function renderUserConfig(app, html) {
     name: `flags.${MODULE_ID}.playerHand`,
     value: handId,
     options,
-    blank: ""
+    blank: "",
   });
 
   const handSelectGroup = foundry.applications.fields.createFormGroup({
     label: "CCM.UserConfig.PlayerHand",
     localize: true,
-    input: handSelect
+    input: handSelect,
   });
 
   cardSelect.append(handSelectGroup);
 
   const showCardCount = foundry.applications.fields.createCheckboxInput({
     name: `flags.${MODULE_ID}.showCardCount`,
-    value: user.getFlag(MODULE_ID, "showCardCount")
+    value: user.getFlag(MODULE_ID, "showCardCount"),
   });
 
   const showCardCountGroup = foundry.applications.fields.createFormGroup({
     label: "CCM.UserConfig.ShowCardCount",
     localize: true,
-    input: showCardCount
+    input: showCardCount,
   });
 
   cardSelect.append(showCardCountGroup);
@@ -345,7 +349,7 @@ export function renderUserConfig(app, html) {
 /** @import Players from "@client/applications/ui/players.mjs" */
 
 /**
- * Add card displays to the player list
+ * Add card displays to the player list.
  * @param {Players} app
  * @param {HTMLElement} html
  * @param {object} context
@@ -364,14 +368,14 @@ export function renderPlayers(app, html, context, options) {
     cardCount.classList = "card-count";
     const count = hand.cards.size;
     cardCount.innerText = count;
-    cardCount.dataset.tooltip = _loc("CCM.UserConfig.CardCount", {count, stack: hand.name});
+    cardCount.dataset.tooltip = _loc("CCM.UserConfig.CardCount", { count, stack: hand.name });
     cardCount.dataset.tooltipDirection = "UP";
     li.append(cardCount);
   }
 }
 
 /**
- *
+ * Context options for the Players application.
  * @param {HTMLElement} html
  * @param {ContextMenuEntry[]} contextOptions
  */
@@ -388,14 +392,14 @@ export function getUserContextOptions(html, contextOptions) {
       const user = game.users.get(li.dataset.userId);
       const handId = user.getFlag(MODULE_ID, "playerHand");
       game.cards.get(handId)?.sheet.render(true);
-    }
+    },
   });
 }
 
 /** @typedef {import("@client/applications/sheets/scene-config.mjs").default} SceneConfig */
 
 /**
- * Add Scene pile selection
+ * Add Scene pile selection.
  * @param {SceneConfig} app
  * @param {HTMLElement} html
  * @param {Record<string, unknown>} context
@@ -407,7 +411,7 @@ export function renderSceneConfig(app, html, context, options) {
 
   const selectOptions = game.cards.reduce((arr, doc) => {
     if (!doc.visible || (doc.type !== "pile") || !doc.canUserModify(game.user, "update")) return arr;
-    arr.push({value: doc.id, label: doc.name});
+    arr.push({ value: doc.id, label: doc.name });
     return arr;
   }, []);
 
@@ -415,14 +419,14 @@ export function renderSceneConfig(app, html, context, options) {
     name: `flags.${MODULE_ID}.canvasPile`,
     value: scene.getFlag(MODULE_ID, "canvasPile"),
     options: selectOptions,
-    blank: ""
+    blank: "",
   });
 
   const group = foundry.applications.fields.createFormGroup({
     input,
     label: "CCM.SceneConfig.CanvasPileLabel",
     hint: "CCM.SceneConfig.CanvasPileHint",
-    localize: true
+    localize: true,
   });
 
   const basicOptions = html.querySelector(".tab[data-group=\"ambience\"][data-tab=\"basic\"]");
@@ -441,15 +445,15 @@ export function renderSceneConfig(app, html, context, options) {
  *
  * @event createDocument
  * @category Document
- * @param {Scene} scene                       The new Document instance which has been created
- * @param {Partial<DatabaseCreateOperation>} options Additional options which modified the creation request
- * @param {string} userId                           The ID of the User who triggered the creation workflow
+ * @param {Scene} scene                       The new Document instance which has been created.
+ * @param {Partial<DatabaseCreateOperation>} options Additional options which modified the creation request.
+ * @param {string} userId                           The ID of the User who triggered the creation workflow.
  */
 export async function createScene(scene, options, userId) {
   if (userId !== game.userId) return; // guaranteed to be GM level user
   const cardCollection = scene.getFlag(MODULE_ID, "cardCollection");
   const sourceScene = fromUuidSync(scene._stats.duplicateSource);
-  if (!cardCollection || !sourceScene || !(sourceScene instanceof Scene) || sourceScene.pack) return;
+  if (!cardCollection || !sourceScene || !(sourceScene instanceof foundry.documents.Scene) || sourceScene.pack) return;
   const cardStackUpdates = [];
   const cardUpdates = cardCollection.reduce((cards, uuid) => {
     const d = fromUuidSync(uuid);
@@ -457,10 +461,10 @@ export async function createScene(scene, options, userId) {
     const updateData = {
       flags: {
         [MODULE_ID]: {
-          [scene.id]: d.getFlag(MODULE_ID, sourceScene.id)
-        }
+          [scene.id]: d.getFlag(MODULE_ID, sourceScene.id),
+        },
       },
-      _id: d.id
+      _id: d.id,
     };
     if (d instanceof Cards) cardStackUpdates.push(updateData);
     else {
@@ -496,8 +500,8 @@ export function addCardsDirectoryOptions(app, options) {
       const cards = game.cards.get(id);
       const data = await promptAmount(cards);
       if (!data) return;
-      ccm.api.scry(cards, {amount: data.amount, how: data.mode});
-    }
+      ccm.api.scry(cards, { amount: data.amount, how: data.mode });
+    },
   });
 }
 
@@ -512,37 +516,37 @@ async function promptAmount(cards) {
   const max = (cards.type === "deck") ? cards.availableCards.length : cards.cards.size;
   if (!max) {
     ui.notifications.warn(_loc("CCM.Warning.NoCardsAvailable", {
-      type: _loc(CONFIG.Cards.typeLabels[cards.type])
+      type: _loc(CONFIG.Cards.typeLabels[cards.type]),
     }));
     return;
   }
 
   const rangePicker = new foundry.data.fields.NumberField({
     label: "CCM.CardSheet.ScryPromptLabel",
-    hint: "CCM.CardSheet.ScryPromptHint"
-  }).toFormGroup({localize: true}, {
-    value: 1, step: 1, min: 1, max: max, name: "amount"
+    hint: "CCM.CardSheet.ScryPromptHint",
+  }).toFormGroup({ localize: true }, {
+    value: 1, step: 1, min: 1, max: max, name: "amount",
   }).outerHTML;
 
   const drawMode = new foundry.data.fields.NumberField({
     label: "CARDS.DrawMode",
     choices: {
       [CONST.CARD_DRAW_MODES.TOP]: "CARDS.DrawModeTop",
-      [CONST.CARD_DRAW_MODES.BOTTOM]: "CARDS.DrawModeBottom"
-    }
-  }).toFormGroup({localize: true}, {
-    value: CONST.CARD_DRAW_MODES.TOP, blank: false, name: "mode", localize: true
+      [CONST.CARD_DRAW_MODES.BOTTOM]: "CARDS.DrawModeBottom",
+    },
+  }).toFormGroup({ localize: true }, {
+    value: CONST.CARD_DRAW_MODES.TOP, blank: false, name: "mode", localize: true,
   }).outerHTML;
 
-  const title = _loc("CCM.CardSheet.ScryingTitle", {name: cards.name});
+  const title = _loc("CCM.CardSheet.ScryingTitle", { name: cards.name });
 
   const data = await foundry.applications.api.DialogV2.input({
     modal: true,
     rejectClose: false,
     classes: ["ccm"],
     content: `<fieldset>${rangePicker}${drawMode}</fieldset>`,
-    window: {title: title, icon: "fa-solid fa-eye"},
-    position: {width: 400}
+    window: { title: title, icon: "fa-solid fa-eye" },
+    position: { width: 400 },
   });
   return data;
 }

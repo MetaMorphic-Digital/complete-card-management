@@ -1,9 +1,13 @@
+import { MODULE_ID, generateUpdates, processUpdates } from "../helpers.mjs";
 import CanvasCard from "../canvas/CanvasCard.mjs";
 import CardLayer from "../canvas/CardLayer.mjs";
 import CardObject from "../canvas/CardObject.mjs";
-import {MODULE_ID, generateUpdates, processUpdates} from "../helpers.mjs";
 
-const {api, hud} = foundry.applications;
+/**
+ * @import { User } from "@client/documents/_module.mjs"
+ */
+
+const { api, hud } = foundry.applications;
 
 /**
  * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for {@link CardObject}.
@@ -17,29 +21,32 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
     id: "card-hud",
     actions: {
       flip: this.#onFlip,
-      rotate: {handler: this.#onRotate, buttons: [0, 2]},
+      rotate: { handler: this.#onRotate, buttons: [0, 2] },
       locked: this.#onToggleLocked,
       visibility: this.#onToggleVisibility,
-      shuffle: this.#onShuffle
-    }
+      shuffle: this.#onShuffle,
+    },
   };
 
   /** @inheritdoc */
   static PARTS = {
     hud: {
       root: true,
-      template: "modules/complete-card-management/templates/canvas/card-hud.hbs"
-    }
+      template: "modules/complete-card-management/templates/canvas/card-hud.hbs",
+    },
   };
 
   /**
-   * Getter for the source Card or Cards document
+   * Getter for the source Card or Cards document.
    * @type {Card | Cards}
    */
   get card() {
     return this.document.card;
   }
 
+  /**
+   * Easy getter for the place to grab the flag data for this card.
+   */
   get _flagPath() {
     return `flags.${MODULE_ID}.${this.object.scene.id}`;
   }
@@ -56,13 +63,13 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
       lockedClass: this.document.locked ? "active" : "",
       visibilityClass: this.document.hidden ? "active" : "",
       flippedClass: this.document.flipped ? "active" : "",
-      flipTooltip: _loc("CCM.CardLayer.HUD.Flip", {type: _loc(typeName)})
+      flipTooltip: _loc("CCM.CardLayer.HUD.Flip", { type: _loc(typeName) }),
     });
     return context;
   }
 
   /**
-   * Actions
+   * Actions.
    */
 
   /**
@@ -87,7 +94,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
     const updates = generateUpdates(
       this._flagPath + ".hidden",
       o => !o,
-      {object: this.document, targetPath: "hidden", ignoreLock: true}
+      { object: this.document, targetPath: "hidden", ignoreLock: true },
     );
     await processUpdates(updates);
   }
@@ -103,28 +110,28 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
     const updates = generateUpdates(
       this._flagPath + ".locked",
       o => !o,
-      {object: this.document, targetPath: "locked", ignoreLock: true}
+      { object: this.document, targetPath: "locked", ignoreLock: true },
     );
     await processUpdates(updates);
   }
 
   /**
-   * Flips the selected card and all other controlled cards to match
+   * Flips the selected card and all other controlled cards to match.
    * @this {CardHUD}
-   * @param {PointerEvent} event The originating click event
+   * @param {PointerEvent} event The originating click event.
    * @param {HTMLButtonElement} target
    */
   static async #onFlip(event, target) {
     let updates;
     if (this.card.documentName === "Card") {
       // TODO: Improve handling for multi-faced cards
-      updates = generateUpdates("face", (o) => o === null ? 0 : null, {object: this.card, targetPath: "face"});
+      updates = generateUpdates("face", (o) => o === null ? 0 : null, { object: this.card, targetPath: "face" });
     }
     else {
       updates = generateUpdates(
         this._flagPath + ".flipped",
         o => !o,
-        {object: this.document, targetPath: "flipped", ignoreLock: true}
+        { object: this.document, targetPath: "flipped", ignoreLock: true },
       );
     }
     await processUpdates(updates);
@@ -132,9 +139,9 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
 
   /**
    * Rotate the selected card 90 degrees and all other controlled cards to match
-   * Left click rotates clockwise, right click rotates counter-clockwise
+   * Left click rotates clockwise, right click rotates counter-clockwise.
    * @this {CardHUD}
-   * @param {PointerEvent} event The originating click event
+   * @param {PointerEvent} event The originating click event.
    * @param {HTMLButtonElement} target
    */
   static async #onRotate(event, target) {
@@ -142,7 +149,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
     const updates = generateUpdates(
       this._flagPath + ".rotation",
       (o) => (o ?? 0) + rotateValue,
-      {object: this.document, targetPath: "rotation"}
+      { object: this.document, targetPath: "rotation" },
     );
     await processUpdates(updates);
   }

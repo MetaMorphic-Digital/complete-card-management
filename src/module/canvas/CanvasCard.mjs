@@ -1,21 +1,21 @@
 
-import {MODULE_ID} from "../helpers.mjs";
+import { MODULE_ID } from "../helpers.mjs";
 
 /**
- * @import Color from "@common/utils/color.mjs"
+ * @import Color from "@common/utils/color.mjs";
  * @import DocumentSheetV2 from "@client/applications/api/document-sheet.mjs";
- * @import {Card, Cards} from "@client/documents/_module.mjs"
+ * @import { Card, Cards } from "@client/documents/_module.mjs";
  * @import CardLayer from "./CardLayer.mjs";
  * @import CardObject from "./CardObject.mjs";
  */
 
 /**
  * A data model that captures the necessary characteristics for a CardObject on the canvas
- * Contains many properties to enable functionality as a synthetic document
+ * Contains many properties to enable functionality as a synthetic document.
  */
 export default class CanvasCard extends foundry.abstract.DataModel {
   /**
-   * @param {Card | Cards} card The document represented by this data model
+   * @param {Card | Cards} card The document represented by this data model.
    */
   constructor(card) {
     if (!((card instanceof Card) || (card instanceof Cards))) {
@@ -42,13 +42,13 @@ export default class CanvasCard extends foundry.abstract.DataModel {
 
     Object.assign(data, {
       texture: {
-        src: img
+        src: img,
       },
       width: (card.width ?? 2) * canvas.grid.sizeX,
-      height: (card.height ?? 3) * canvas.grid.sizeY
+      height: (card.height ?? 3) * canvas.grid.sizeY,
     });
 
-    super(data, {parent: canvas.scene});
+    super(data, { parent: canvas.scene });
 
     /**
      * A reference to the card or cards document this takes data from.
@@ -60,7 +60,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * Synthetic parent
+   * Synthetic parent.
    * @type {Scene}
    */
   // Using this.parent so that way it sticks after constructor.
@@ -79,7 +79,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   }
 
   /**
-   * Attached object
+   * Attached object.
    * @type {CardObject}
    */
   // Using this._object so that way it sticks after constructor.
@@ -87,45 +87,47 @@ export default class CanvasCard extends foundry.abstract.DataModel {
 
   /* -------------------------------------------------- */
 
+  /** @inheritdoc */
   static LOCALIZATION_PREFIXES = ["CCM", "CardObjectModel"];
 
   /* -------------------------------------------------- */
 
+  /** @inheritdoc */
   static defineSchema() {
-    const {NumberField, AngleField, IntegerSortField, BooleanField} = foundry.data.fields;
+    const { NumberField, AngleField, IntegerSortField, BooleanField } = foundry.data.fields;
     return {
       x: new NumberField({
         required: true,
         integer: true,
-        nullable: false
+        nullable: false,
       }),
       y: new NumberField({
         required: true,
         integer: true,
-        nullable: false
+        nullable: false,
       }),
       elevation: new NumberField({
         required: true,
         nullable: false,
-        initial: 0
+        initial: 0,
       }),
       sort: new IntegerSortField(),
       rotation: new AngleField(),
       hidden: new BooleanField(),
       locked: new BooleanField(),
-      /** Only used with Cards documents */
+      /** Only used with Cards documents. */
       flipped: new BooleanField(),
       width: new NumberField({
         required: true,
         min: CONST.GRID_MIN_SIZE,
         nullable: false,
-        integer: true
+        integer: true,
       }),
       height: new NumberField({
         required: true,
         min: CONST.GRID_MIN_SIZE,
         nullable: false,
-        integer: true
+        integer: true,
       }),
       texture: new foundry.data.TextureData(
         {},
@@ -134,24 +136,27 @@ export default class CanvasCard extends foundry.abstract.DataModel {
             anchorX: 0.5,
             anchorY: 0.5,
             fit: "contain",
-            alphaThreshold: 0.75
+            alphaThreshold: 0.75,
           },
-          wildcard: true
-        }
-      )
+          wildcard: true,
+        },
+      ),
     };
   }
 
   /* -------------------------------------------------- */
 
   /**
-   * Properties fetched from the appropriate flag
+   * Properties fetched from the appropriate flag.
    * @type {string[]}
    */
   static flagProps = ["x", "y", "elevation", "sort", "rotation", "hidden", "locked", "flipped"];
 
   /* -------------------------------------------------- */
 
+  /**
+   * Helper function to register various settings to control the display of cards on the canvas.
+   */
   static registerSettings() {
     game.settings.register(MODULE_ID, "showOwner", {
       name: "CCM.Settings.ShowNames.Label",
@@ -160,7 +165,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       config: true,
       type: new foundry.data.fields.BooleanField(),
       initial: true,
-      onChange: value => canvas.cards.draw()
+      onChange: value => canvas.cards.draw(),
     });
 
     game.settings.register(MODULE_ID, "ownerFontSize", {
@@ -174,9 +179,9 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         min: 8,
         max: 512,
         initial: 160,
-        validationError: "must be an integer between 8 and 512"
+        validationError: "must be an integer between 8 and 512",
       }),
-      onChange: value => canvas.cards.draw()
+      onChange: value => canvas.cards.draw(),
     });
 
     game.settings.register(MODULE_ID, "ownerTextColor", {
@@ -184,8 +189,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       hint: "CCM.Settings.OwnerTextColor.Hint",
       scope: "client",
       config: true,
-      type: new foundry.data.fields.ColorField({nullable: false, initial: "#ffffff"}),
-      onChange: value => canvas.cards.draw()
+      type: new foundry.data.fields.ColorField({ nullable: false, initial: "#ffffff" }),
+      onChange: value => canvas.cards.draw(),
     });
 
     game.settings.register(MODULE_ID, "ownerTextAlpha", {
@@ -194,14 +199,14 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       scope: "client",
       config: true,
       type: new foundry.data.fields.AlphaField(),
-      onChange: value => canvas.cards.draw()
+      onChange: value => canvas.cards.draw(),
     });
   }
 
   /* -------------------------------------------------- */
 
   /**
-   * The linked card's ID
+   * The linked card's ID.
    * @type {string}
    */
   get id() {
@@ -211,7 +216,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * The linked card's UUID
+   * The linked card's UUID.
    * @type {string}
    */
   get uuid() {
@@ -221,7 +226,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * The linked card's document name
+   * The linked card's document name.
    * @type {"Card" | "Cards"}
    */
   get documentName() {
@@ -231,7 +236,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * The canvas card layer
+   * The canvas card layer.
    * @type {CardLayer}
    */
   get layer() {
@@ -241,7 +246,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * The linked document sheet for the Card
+   * The linked document sheet for the Card.
    * @type {DocumentSheetV2}
    */
   get sheet() {
@@ -252,7 +257,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * The font size used to display text within this card
+   * The font size used to display text within this card.
    */
   get fontSize() {
     return game.settings.get(MODULE_ID, "ownerFontSize");
@@ -261,8 +266,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * The font family used to display text within this card
-   * @returns {string} Defaults to `CONFIG.defaultFontFamily`
+   * The font family used to display text within this card.
+   * @returns {string} Defaults to `CONFIG.defaultFontFamily`.
    */
   get fontFamily() {
     return CONFIG.defaultFontFamily || "Signika";
@@ -271,7 +276,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * The color of the text displayed within this card
+   * The color of the text displayed within this card.
    * @returns {Color}
    */
   get textColor() {
@@ -281,7 +286,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * The name of the user who owns this card
+   * The name of the user who owns this card.
    * @returns {string}
    */
   get text() {
@@ -298,7 +303,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * The opacity of text displayed on this card
+   * The opacity of text displayed on this card.
    * @returns {number}
    */
   get textAlpha() {
@@ -316,9 +321,9 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * Translate update operations on the original card to this synthetic document
-   * @param {object} changed  Differential data that was used to update the document
-   * @param {Partial<DatabaseUpdateOperation>} options Additional options which modified the update request
+   * Translate update operations on the original card to this synthetic document.
+   * @param {object} changed  Differential data that was used to update the document.
+   * @param {Partial<DatabaseUpdateOperation>} options Additional options which modified the update request.
    */
   update(changed, options, userId) {
     const flatChanges = foundry.utils.flattenObject(changed);
@@ -342,11 +347,11 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         if ((p === "flipped") && (this.documentName === "Cards")) {
           try {
             const [bottomCard] = this.card._drawCards(1, CONST.CARD_DRAW_MODES.BOTTOM);
-            updates["texture"] = {src: updates[p] ? bottomCard.img : this.card.img};
+            updates["texture"] = { src: updates[p] ? bottomCard.img : this.card.img };
           }
           catch {
             console.error("Failed to flip deck", this.card.name);
-            updates["texture"] = {src: this.card.img};
+            updates["texture"] = { src: this.card.img };
           }
         }
       }
@@ -357,7 +362,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         (this.documentName === "Card")
         || (!this.flipped && !(("flipped" in updates) && updates["flipped"]))
       ) {
-        updates["texture"] = {src: this.card.img};
+        updates["texture"] = { src: this.card.img };
       }
     }
     // Primary Owner Card Text
@@ -365,7 +370,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
       options.cardText = true;
       if (this.card instanceof Cards) {
         for (const card of this.card.cards) {
-          card.canvasCard?.object?.renderFlags.set({refreshText: true});
+          card.canvasCard?.object?.renderFlags.set({ refreshText: true });
         }
       }
     }
@@ -377,7 +382,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * Refreshes the canvas card's face
+   * Refreshes the canvas card's face.
    */
   refreshFace() {
     if (this.card instanceof Card) return; // Not needed at the moment
@@ -393,7 +398,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     }
     else src = this.card.img;
 
-    const updates = {texture: {src}};
+    const updates = { texture: { src } };
     this.updateSource(updates);
     this.object?._onUpdate(updates, {}, "");
   }
@@ -402,25 +407,25 @@ export default class CanvasCard extends foundry.abstract.DataModel {
 
   /**
    * Trigger leave and enter region behaviors for the custom region type & event triggers
-   * Uses the incoming update data to compare to current document properties
+   * Uses the incoming update data to compare to current document properties.
    * @param {{x?: number, y?: number}} updates
-   * @param {string} userId                     The ID of the user performing the check
-   * @param {boolean} [newCard=false]           If this is a freshly dropped card
+   * @param {string} userId                     The ID of the user performing the check.
+   * @param {boolean} [newCard=false]           If this is a freshly dropped card.
    */
   _checkRegionTrigger(updates, userId, newCard = false) {
     if (game.user.id !== userId) return;
     const centerX = this.width / 2;
     const centerY = this.height / 2;
-    const origin = {x: this.x + centerX, y: this.y + centerY, elevation: this.elevation};
+    const origin = { x: this.x + centerX, y: this.y + centerY, elevation: this.elevation };
     const destination = {
       x: (updates.x ?? this.x) + centerX,
       y: (updates.y ?? this.y) + centerY,
-      elevation: updates.elevation ?? this.elevation
+      elevation: updates.elevation ?? this.elevation,
     };
     const eventData = {
       card: this.card,
       origin,
-      destination
+      destination,
     };
     let makingMove = false;
     for (const region of this.parent.regions) {
@@ -429,7 +434,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
         !b.disabled && (
           b.hasEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_OUT)
           || b.hasEvent(CONFIG.CCM.REGION_EVENTS.CARD_MOVE_IN)
-        )
+        ),
       );
       if (!triggeredBehaviors.length) continue;
       const originInside = region.testPoint(origin);
@@ -447,14 +452,14 @@ export default class CanvasCard extends foundry.abstract.DataModel {
     const decks = canvas.cards.documentCollection.filter(c => c.documentName === "Cards");
     for (const d of decks) {
       if (!d.canvasCard) continue;
-      const {x, y, width, height} = d.canvasCard;
+      const { x, y, width, height } = d.canvasCard;
       if (destination.x.between(x, x + width, false) && destination.y.between(y, y + height, false)) {
         if (this.card.parent === d) {
-          ui.notifications.warn(_loc("CCM.Warning.AlreadyInside", {card: this.card.name, stack: d.name}));
+          ui.notifications.warn(_loc("CCM.Warning.AlreadyInside", { card: this.card.name, stack: d.name }));
           continue;
         }
         ui.notifications.info(_loc("CCM.MoveCardBehavior.AddCard",
-          {name: this.card.name, stack: d.name})
+          { name: this.card.name, stack: d.name }),
         );
         this.delete();
         return this.card.pass(d);
@@ -473,7 +478,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * Handles the deletion process for this synthetic document
+   * Handles the deletion process for this synthetic document.
    * @param {*} options
    * @param {*} userId
    */
@@ -486,7 +491,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * Synthetic passthrough
+   * Synthetic passthrough.
    * @returns {boolean}
    */
   get isOwner() {
@@ -496,8 +501,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * Synthetic pass through
-   * @param  {...any} args Arguments to Document#canUserModify
+   * Synthetic pass through.
+   * @param  {...any} args Arguments to Document#canUserModify.
    * @returns {boolean}
    */
   canUserModify(...args) {
@@ -507,8 +512,8 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
-   * Synthetic pass through
-   * @param  {...any} args Arguments to Document#testUserPermission
+   * Synthetic pass through.
+   * @param  {...any} args Arguments to Document#testUserPermission.
    * @returns {boolean}
    */
   testUserPermission(...args) {

@@ -1,4 +1,4 @@
-import {MODULE_ID} from "../helpers.mjs";
+import { MODULE_ID } from "../helpers.mjs";
 
 /**
  * @import { ApplicationConfiguration } from "@client/applications/_types.mjs";
@@ -11,33 +11,33 @@ import {MODULE_ID} from "../helpers.mjs";
  */
 
 /**
- * For use in the gridDialog and triangleDialog methods
+ * For use in the gridDialog and triangleDialog methods.
  */
 const faceOptions = [
-  {value: "front", label: "CCM.API.Face.front"},
-  {value: "back", label: "CCM.API.Face.back"}
+  { value: "front", label: "CCM.API.Face.front" },
+  { value: "back", label: "CCM.API.Face.back" },
 ];
 
 /**
- * Creates a grid of placed cards
- * @param {object} config                       Mandatory configuration object
- * @param {Cards} config.from                   The Cards document to draw from
- * @param {Cards} config.to                     The Cards document to put the cards into
- * @param {number} config.rows                  Number of rows to layout
- * @param {number} config.columns               Number of columns to layout
- * @param {object} [options]                    Options modifying the layout
- * @param {number} [options.how=0]              How to draw, a value from CONST.CARD_DRAW_MODES
+ * Creates a grid of placed cards.
+ * @param {object} config                       Mandatory configuration object.
+ * @param {Cards} config.from                   The Cards document to draw from.
+ * @param {Cards} config.to                     The Cards document to put the cards into.
+ * @param {number} config.rows                  Number of rows to layout.
+ * @param {number} config.columns               Number of columns to layout.
+ * @param {object} [options]                    Options modifying the layout.
+ * @param {number} [options.how=0]              How to draw, a value from CONST.CARD_DRAW_MODES.
  * @param {object} [options.updateData={}]      Modifications to make to each Card as part of
- *                                              the draw operation, for example the displayed face
- * @param {number} [options.horizontalSpacing]  Spacing between cards horizontally
- *                                              Defaults to `canvas.grid.sizeX`
- * @param {number} [options.verticalSpacing]    Spacing between cards vertically
- *                                              Defaults to `canvas.grid.sizeY`
- * @param {number} [options.defaultWidth=2]     Default width of a card in grid squares
- * @param {number} [options.defaultHeight=3]    Default height of a card in grid squares
- * @param {number} [options.offsetX]            Adjust X offset from the top left of the scene
- * @param {number} [options.offsetY]            Adjust Y offset from the top left of the scene
- * @param {number} [options.sceneId]            Scene ID to play cards to. Defaults to canvas.scene
+ *                                              the draw operation, for example the displayed face.
+ * @param {number} [options.horizontalSpacing]  Spacing between cards horizontally.
+ *                                              Defaults to `canvas.grid.sizeX`.
+ * @param {number} [options.verticalSpacing]    Spacing between cards vertically.
+ *                                              Defaults to `canvas.grid.sizeY`.
+ * @param {number} [options.defaultWidth=2]     Default width of a card in grid squares.
+ * @param {number} [options.defaultHeight=3]    Default height of a card in grid squares.
+ * @param {number} [options.offsetX]            Adjust X offset from the top left of the scene.
+ * @param {number} [options.offsetY]            Adjust Y offset from the top left of the scene.
+ * @param {number} [options.sceneId]            Scene ID to play cards to. Defaults to canvas.scene.
  * @returns {Promise<Card[]>}                   A promise that resolves to the drawn cards.
  */
 export async function grid(config, options = {}) {
@@ -54,14 +54,14 @@ export async function grid(config, options = {}) {
     throw new Error("Placing a card requires permission to update the scene.");
   }
 
-  const {defaultWidth = 2, defaultHeight = 3} = options;
+  const { defaultWidth = 2, defaultHeight = 3 } = options;
 
-  const {sceneHeight, sceneWidth, sceneX, sceneY} = scene.dimensions;
+  const { sceneHeight, sceneWidth, sceneX, sceneY } = scene.dimensions;
   const cardWidth = scene.grid.sizeX * defaultWidth;
   const cardHeight = scene.grid.sizeY * defaultHeight;
   const spacing = {
     x: options.horizontalSpacing ?? scene.grid.sizeX,
-    y: options.verticalSpacing ?? scene.grid.sizeY
+    y: options.verticalSpacing ?? scene.grid.sizeY,
   };
 
   // Only need spacing between cards, not either end, so 1 less than # cards
@@ -75,7 +75,7 @@ export async function grid(config, options = {}) {
   const drawCount = config.rows * config.columns;
   const cards = await config.to.draw(config.from, drawCount, {
     how: options.how,
-    updateData: options.updateData ?? {}
+    updateData: options.updateData ?? {},
   });
 
   const offsetX = sceneX + (options.offsetX ?? 0);
@@ -94,8 +94,8 @@ export async function grid(config, options = {}) {
           x: offsetX + j * (cardWidth + spacing.x),
           y: offsetY + i * (cardHeight + spacing.y),
           rotation: card.rotation,
-          sort: card.sort
-        }
+          sort: card.sort,
+        },
       };
       updateData.push(cardUpdate);
     }
@@ -103,10 +103,10 @@ export async function grid(config, options = {}) {
 
   await config.to.updateEmbeddedDocuments("Card", updateData);
   const currentCards = new Set(scene.getFlag(MODULE_ID, "cardCollection")).union(
-    new Set(cards.map((card) => card.uuid))
+    new Set(cards.map((card) => card.uuid)),
   );
   await scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
-  if (options.sceneId) ui.notifications.info(_loc("CCM.API.LayoutScene", {name: scene.name}));
+  if (options.sceneId) ui.notifications.info(_loc("CCM.API.LayoutScene", { name: scene.name }));
   return cards;
 }
 
@@ -122,16 +122,16 @@ export async function gridDialog(dialogOptions = {}, updateData = {}) {
   const typeMap = {
     deck: _loc("TYPES.Cards.deck"),
     hand: _loc("TYPES.Cards.hand"),
-    pile: _loc("TYPES.Cards.pile")
+    pile: _loc("TYPES.Cards.pile"),
   };
 
   const stackOptions = game.cards.filter(c => c.isOwner)
-    .map(c => ({type: c.type, value: c.id, label: c.name, group: typeMap[c.type]}));
+    .map(c => ({ type: c.type, value: c.id, label: c.name, group: typeMap[c.type] }));
 
   const content = document.createElement("div");
 
-  const {createFormGroup, createSelectInput} = foundry.applications.fields;
-  const {HTMLRangePickerElement} = foundry.applications.elements;
+  const { createFormGroup, createSelectInput } = foundry.applications.fields;
+  const { HTMLRangePickerElement } = foundry.applications.elements;
 
   const fromInput = createFormGroup({
     label: "CCM.API.FromStack.label",
@@ -140,25 +140,25 @@ export async function gridDialog(dialogOptions = {}, updateData = {}) {
     input: createSelectInput({
       name: "from",
       options: stackOptions,
-      value: stackOptions.find(o => o.group === typeMap["deck"])?.value
-    })
+      value: stackOptions.find(o => o.group === typeMap["deck"])?.value,
+    }),
   });
 
   const toInput = createFormGroup({
     label: "CCM.API.ToStack.label",
     hint: "CCM.API.ToStack.hint",
     localize: true,
-    input: createSelectInput({name: "to", options: stackOptions, value: canvas.scene.getFlag(MODULE_ID, "canvasPile")})
+    input: createSelectInput({ name: "to", options: stackOptions, value: canvas.scene.getFlag(MODULE_ID, "canvasPile") }),
   });
 
   const faceInput = createFormGroup({
     label: "CCM.API.Face.label",
     hint: "CCM.API.Face.hint",
     localize: true,
-    input: createSelectInput({name: "face", options: faceOptions, localize: true, blank: "CCM.API.Face.blank"})
+    input: createSelectInput({ name: "face", options: faceOptions, localize: true, blank: "CCM.API.Face.blank" }),
   });
 
-  const {sceneHeight, sceneWidth} = canvas.scene.dimensions;
+  const { sceneHeight, sceneWidth } = canvas.scene.dimensions;
 
   const rowInput = createFormGroup({
     label: "CCM.API.GridDialog.Rows.label",
@@ -170,8 +170,8 @@ export async function gridDialog(dialogOptions = {}, updateData = {}) {
       value: 1,
       step: 1,
       // Using default of 3 spaces tall + 1 space gap
-      max: Math.floor((sceneHeight + canvas.scene.grid.sizeY) / (canvas.scene.grid.sizeY * 4))
-    })
+      max: Math.floor((sceneHeight + canvas.scene.grid.sizeY) / (canvas.scene.grid.sizeY * 4)),
+    }),
   });
 
   const columnInput = createFormGroup({
@@ -184,22 +184,22 @@ export async function gridDialog(dialogOptions = {}, updateData = {}) {
       value: 1,
       step: 1,
       // Using default of 2 spaces wide + 1 space gap
-      max: Math.floor((sceneWidth + canvas.scene.grid.sizeX) / (canvas.scene.grid.sizeX * 3))
-    })
+      max: Math.floor((sceneWidth + canvas.scene.grid.sizeX) / (canvas.scene.grid.sizeX * 3)),
+    }),
   });
 
   const offsetXInput = createFormGroup({
     label: "CCM.API.OffsetX.label",
     hint: "CCM.API.OffsetX.hint",
     localize: true,
-    input: HTMLRangePickerElement.create({name: "offsetX", min: 0, value: 0, step: 1, max: sceneWidth})
+    input: HTMLRangePickerElement.create({ name: "offsetX", min: 0, value: 0, step: 1, max: sceneWidth }),
   });
 
   const offsetYInput = createFormGroup({
     label: "CCM.API.OffsetY.label",
     hint: "CCM.API.OffsetY.hint",
     localize: true,
-    input: HTMLRangePickerElement.create({name: "offsetY", min: 0, value: 0, step: 1, max: sceneHeight})
+    input: HTMLRangePickerElement.create({ name: "offsetY", min: 0, value: 0, step: 1, max: sceneHeight }),
   });
 
   content.append(fromInput, toInput, faceInput, rowInput, columnInput, offsetXInput, offsetYInput);
@@ -208,8 +208,8 @@ export async function gridDialog(dialogOptions = {}, updateData = {}) {
     content,
     window: {
       title: "CCM.API.GridDialog.Title",
-      icon: CONFIG.Cards.sidebarIcon
-    }
+      icon: CONFIG.Cards.sidebarIcon,
+    },
   };
 
   const fd = await foundry.applications.api.Dialog.input(foundry.utils.mergeObject(dialogDefaults, dialogOptions));
@@ -220,7 +220,7 @@ export async function gridDialog(dialogOptions = {}, updateData = {}) {
     from: game.cards.get(fd.from),
     to: game.cards.get(fd.to),
     rows: fd.rows,
-    columns: fd.columns
+    columns: fd.columns,
   };
 
   switch (fd.face) {
@@ -234,7 +234,7 @@ export async function gridDialog(dialogOptions = {}, updateData = {}) {
   const options = {
     updateData,
     offsetX: fd.offsetX,
-    offsetY: fd.offsetY
+    offsetY: fd.offsetY,
   };
 
   return grid(config, options);
@@ -243,25 +243,25 @@ export async function gridDialog(dialogOptions = {}, updateData = {}) {
 /* -------------------------------------------------- */
 
 /**
- * Creates a pyramid of placed cards
- * @param {object} config                       Mandatory configuration object
- * @param {Cards} config.from                   The Cards document to draw from
- * @param {Cards} config.to                     The Cards document to put the cards into
- * @param {number} config.base                  Number of cards per side
- * @param {object} [options]                    Options modifying the layout
- * @param {number} [options.how=0]              How to draw, a value from CONST.CARD_DRAW_MODES
+ * Creates a pyramid of placed cards.
+ * @param {object} config                       Mandatory configuration object.
+ * @param {Cards} config.from                   The Cards document to draw from.
+ * @param {Cards} config.to                     The Cards document to put the cards into.
+ * @param {number} config.base                  Number of cards per side.
+ * @param {object} [options]                    Options modifying the layout.
+ * @param {number} [options.how=0]              How to draw, a value from CONST.CARD_DRAW_MODES.
  * @param {object} [options.updateData={}]      Modifications to make to each Card as part of
- *                                              the draw operation, for example the displayed face
+ *                                              the draw operation, for example the displayed face.
  * @param {number} [options.horizontalSpacing]  Spacing between cards horizontally
- *                                              Defaults to `canvas.grid.sizeX`
+ *                                              Defaults to `canvas.grid.sizeX`.
  * @param {number} [options.verticalSpacing]    Spacing between cards vertically
- *                                              Defaults to `canvas.grid.sizeY`
- * @param {number} [options.defaultWidth=2]     Default width of a card in grid squares
- * @param {number} [options.defaultHeight=3]    Default height of a card in grid squares
- * @param {number} [options.offsetX]            Adjust X offset from the top left of the scene
- * @param {number} [options.offsetY]            Adjust Y offset from the top left of the scene
- * @param {"UP" | "DOWN" | "LEFT" | "RIGHT"} [options.direction] Direction to orient the pyramid
- * @param {number} [options.sceneId]            Scene ID to play cards to. Defaults to canvas.scene
+ *                                              Defaults to `canvas.grid.sizeY`.
+ * @param {number} [options.defaultWidth=2]     Default width of a card in grid squares.
+ * @param {number} [options.defaultHeight=3]    Default height of a card in grid squares.
+ * @param {number} [options.offsetX]            Adjust X offset from the top left of the scene.
+ * @param {number} [options.offsetY]            Adjust Y offset from the top left of the scene.
+ * @param {"UP" | "DOWN" | "LEFT" | "RIGHT"} [options.direction] Direction to orient the pyramid.
+ * @param {number} [options.sceneId]            Scene ID to play cards to. Defaults to canvas.scene.
  * @returns {Promise<Card[]>}                   A promise that resolves to the drawn cards.
  */
 export async function triangle(config, options = {}) {
@@ -278,14 +278,14 @@ export async function triangle(config, options = {}) {
     throw new Error("Placing a card requires permission to update the scene.");
   }
 
-  const {defaultWidth = 2, defaultHeight = 3} = options;
+  const { defaultWidth = 2, defaultHeight = 3 } = options;
 
-  const {sceneHeight, sceneWidth, sceneX, sceneY} = scene.dimensions;
+  const { sceneHeight, sceneWidth, sceneX, sceneY } = scene.dimensions;
   const cardWidth = scene.grid.sizeX * defaultWidth;
   const cardHeight = scene.grid.sizeY * defaultHeight;
   const spacing = {
     x: options.horizontalSpacing ?? scene.grid.sizeX,
-    y: options.verticalSpacing ?? scene.grid.sizeY
+    y: options.verticalSpacing ?? scene.grid.sizeY,
   };
   const direction = options.direction ?? "UP";
   const direction_x = direction === "LEFT" ? -1 : 1;
@@ -303,7 +303,7 @@ export async function triangle(config, options = {}) {
   const drawCount = (config.base * (config.base + 1)) / 2;
   const cards = await config.to.draw(config.from, drawCount, {
     how: options.how,
-    updateData: options.updateData ?? {}
+    updateData: options.updateData ?? {},
   });
 
   const updateData = [];
@@ -340,8 +340,8 @@ export async function triangle(config, options = {}) {
           x: offsetX + loop_x * (cardWidth + spacing.x) * direction_x,
           y: offsetY + loop_y * (cardHeight + spacing.y) * direction_y,
           rotation: card.rotation,
-          sort: card.sort
-        }
+          sort: card.sort,
+        },
       };
       updateData.push(cardUpdate);
     }
@@ -349,10 +349,10 @@ export async function triangle(config, options = {}) {
 
   await config.to.updateEmbeddedDocuments("Card", updateData);
   const currentCards = new Set(scene.getFlag(MODULE_ID, "cardCollection")).union(
-    new Set(cards.map((card) => card.uuid))
+    new Set(cards.map((card) => card.uuid)),
   );
   await scene.setFlag(MODULE_ID, "cardCollection", Array.from(currentCards));
-  if (options.sceneId) ui.notifications.info(_loc("CCM.API.LayoutScene", {name: scene.name}));
+  if (options.sceneId) ui.notifications.info(_loc("CCM.API.LayoutScene", { name: scene.name }));
   return cards;
 }
 
@@ -368,17 +368,17 @@ export async function triangleDialog(dialogOptions = {}, updateData = {}) {
   const typeMap = {
     deck: _loc("CARDS.CardsDeck"),
     hand: _loc("CARDS.CardsHand"),
-    pile: _loc("CARDS.CardsPile")
+    pile: _loc("CARDS.CardsPile"),
   };
 
   const stackOptions = game.cards.filter(c => c.isOwner)
-    .map(c => ({type: c.type, value: c.id, label: c.name, group: typeMap[c.type]}));
+    .map(c => ({ type: c.type, value: c.id, label: c.name, group: typeMap[c.type] }));
 
   const content = document.createElement("div");
 
-  const {createFormGroup, createSelectInput} = foundry.applications.fields;
+  const { createFormGroup, createSelectInput } = foundry.applications.fields;
 
-  const {HTMLRangePickerElement} = foundry.applications.elements;
+  const { HTMLRangePickerElement } = foundry.applications.elements;
 
   const fromInput = createFormGroup({
     label: "CCM.API.FromStack.label",
@@ -387,25 +387,25 @@ export async function triangleDialog(dialogOptions = {}, updateData = {}) {
     input: createSelectInput({
       name: "from",
       options: stackOptions,
-      value: stackOptions.find(o => o.group === typeMap["deck"])?.value
-    })
+      value: stackOptions.find(o => o.group === typeMap["deck"])?.value,
+    }),
   });
 
   const toInput = createFormGroup({
     label: "CCM.API.ToStack.label",
     hint: "CCM.API.ToStack.hint",
     localize: true,
-    input: createSelectInput({name: "to", options: stackOptions, value: canvas.scene.getFlag(MODULE_ID, "canvasPile")})
+    input: createSelectInput({ name: "to", options: stackOptions, value: canvas.scene.getFlag(MODULE_ID, "canvasPile") }),
   });
 
   const faceInput = createFormGroup({
     label: "CCM.API.Face.label",
     hint: "CCM.API.Face.hint",
     localize: true,
-    input: createSelectInput({name: "face", options: faceOptions, localize: true, blank: "CCM.API.Face.blank"})
+    input: createSelectInput({ name: "face", options: faceOptions, localize: true, blank: "CCM.API.Face.blank" }),
   });
 
-  const {sceneHeight, sceneWidth} = canvas.scene.dimensions;
+  const { sceneHeight, sceneWidth } = canvas.scene.dimensions;
 
   const baseInput = createFormGroup({
     label: "CCM.API.TriangleDialog.Base.label",
@@ -421,9 +421,9 @@ export async function triangleDialog(dialogOptions = {}, updateData = {}) {
         // Using default of 2 spaces wide + 1 space gap
         Math.floor((sceneWidth + canvas.scene.grid.sizeX) / (canvas.scene.grid.sizeX * 3)),
         // Using default of 3 spaces tall + 1 space gap
-        Math.floor((sceneHeight + canvas.scene.grid.sizeY) / (canvas.scene.grid.sizeY * 4))
-      )
-    })
+        Math.floor((sceneHeight + canvas.scene.grid.sizeY) / (canvas.scene.grid.sizeY * 4)),
+      ),
+    }),
   });
 
   const directionInput = createFormGroup({
@@ -433,27 +433,27 @@ export async function triangleDialog(dialogOptions = {}, updateData = {}) {
     input: createSelectInput({
       name: "direction",
       options: [
-        {value: "UP", label: "CCM.API.TriangleDialog.Direction.Up"},
-        {value: "DOWN", label: "CCM.API.TriangleDialog.Direction.Down"},
-        {value: "LEFT", label: "CCM.API.TriangleDialog.Direction.Left"},
-        {value: "RIGHT", label: "CCM.API.TriangleDialog.Direction.Right"}
+        { value: "UP", label: "CCM.API.TriangleDialog.Direction.Up" },
+        { value: "DOWN", label: "CCM.API.TriangleDialog.Direction.Down" },
+        { value: "LEFT", label: "CCM.API.TriangleDialog.Direction.Left" },
+        { value: "RIGHT", label: "CCM.API.TriangleDialog.Direction.Right" },
       ],
-      localize: true
-    })
+      localize: true,
+    }),
   });
 
   const offsetXInput = createFormGroup({
     label: "CCM.API.OffsetX.label",
     hint: "CCM.API.OffsetX.hint",
     localize: true,
-    input: HTMLRangePickerElement.create({name: "offsetX", min: 0, value: 0, step: 1, max: sceneWidth})
+    input: HTMLRangePickerElement.create({ name: "offsetX", min: 0, value: 0, step: 1, max: sceneWidth }),
   });
 
   const offsetYInput = createFormGroup({
     label: "CCM.API.OffsetY.label",
     hint: "CCM.API.OffsetY.hint",
     localize: true,
-    input: HTMLRangePickerElement.create({name: "offsetY", min: 0, value: 0, step: 1, max: sceneHeight})
+    input: HTMLRangePickerElement.create({ name: "offsetY", min: 0, value: 0, step: 1, max: sceneHeight }),
   });
 
   content.append(fromInput, toInput, faceInput, baseInput, directionInput, offsetXInput, offsetYInput);
@@ -462,8 +462,8 @@ export async function triangleDialog(dialogOptions = {}, updateData = {}) {
     content,
     window: {
       title: "CCM.API.TriangleDialog.Title",
-      icon: CONFIG.Cards.sidebarIcon
-    }
+      icon: CONFIG.Cards.sidebarIcon,
+    },
   };
 
   const fd = await foundry.applications.api.Dialog.input(foundry.utils.mergeObject(dialogDefaults, dialogOptions));
@@ -473,7 +473,7 @@ export async function triangleDialog(dialogOptions = {}, updateData = {}) {
   const config = {
     from: game.cards.get(fd.from),
     to: game.cards.get(fd.to),
-    base: fd.base
+    base: fd.base,
   };
 
   switch (fd.face) {
@@ -488,7 +488,7 @@ export async function triangleDialog(dialogOptions = {}, updateData = {}) {
     updateData,
     offsetX: fd.offsetX,
     offsetY: fd.offsetY,
-    direction: fd.direction
+    direction: fd.direction,
   };
 
   return triangle(config, options);
