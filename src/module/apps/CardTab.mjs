@@ -14,6 +14,11 @@ export default class CardTab extends foundry.applications.sidebar.tabs.Placeable
 
   /* -------------------------------------------------- */
 
+  /** @override */
+  static DIRECTORY_PARTIAL = "modules/complete-card-management/templates/sidebar/tabs/placeable/cards.hbs";
+
+  /* -------------------------------------------------- */
+
   /** @inheritdoc */
   static FILTER_CLASS = CardFilter;
 
@@ -46,8 +51,35 @@ export default class CardTab extends foundry.applications.sidebar.tabs.Placeable
       const ctx = { css, id, label: this._getEntryLabel(entry) };
       promises.push(this._prepareEntry(entry, ctx));
     }
-    context.entries = await Promise.all(promises);
-    context.entries.sort((a, b) => a.label.localeCompare(b.label, game.i18n.lang));
+    const entries = await Promise.all(promises);
+    entries.sort((a, b) => a.label.localeCompare(b.label, game.i18n.lang));
+
+    context.groups = { cardStacks: {
+      label: _loc(foundry.documents.Cards.metadata.labelPlural),
+      entries: [],
+    } };
+
+    for (const entry of entries) {
+      if (entry.parent) {
+        const g = context.groups[entry.parent] ??= {
+          label: game.cards.get(entry.parent).name,
+          entries: [],
+        };
+
+        g.entries.push(entry);
+      }
+      else context.groups.cardStacks.entries.push(entry);
+    }
+
+    return context;
+  }
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
+  async _prepareEntry(entry, context) {
+    context = await super._prepareEntry(entry, context);
+    context.parent = entry.parent?.id;
     return context;
   }
 
