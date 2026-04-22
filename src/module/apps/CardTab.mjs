@@ -85,10 +85,21 @@ export default class CardTab extends foundry.applications.sidebar.tabs.Placeable
 
   /* -------------------------------------------------- */
 
+  /** @inheritdoc */
+  async _prepareSearchContext(context, options) {
+    context = await super._prepareSearchContext(context, options);
+
+    context.filters.findSplice(f => f.action === "filterByLevel");
+
+    return context;
+  }
+
+  /* -------------------------------------------------- */
+
   /**
-   * Retrieve the Document instance represented by the given entry's element.
+   * Retrieve the synthetic document instance represented by the given entry's element.
    * @param {HTMLElement} element
-   * @returns {Document}
+   * @returns {CanvasCard}
    * @protected
    */
   _getPlaceableFromElement(element) {

@@ -17,7 +17,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * Metadata about canvas cards, useful for label purposes.
    */
   static get metadata() {
-    return foundry.documents.Cards.metadata;
+    return foundry.documents.Card.metadata;
   }
 
   /* -------------------------------------------------- */
@@ -244,6 +244,16 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
+   * Visible name of the card.
+   * @type {string}
+   */
+  get name() {
+    return this.card.name;
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
    * The canvas card layer.
    * @type {CardLayer}
    */
@@ -333,7 +343,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * @param {object} changed  Differential data that was used to update the document.
    * @param {Partial<DatabaseUpdateOperation>} options Additional options which modified the update request.
    */
-  update(changed, options, userId) {
+  update(changed, options = {}, userId) {
     const flatChanges = foundry.utils.flattenObject(changed);
     if (flatChanges[`flags.${MODULE_ID}.-=${canvas.scene.id}`] === null) {
       return this.delete(options, userId);
