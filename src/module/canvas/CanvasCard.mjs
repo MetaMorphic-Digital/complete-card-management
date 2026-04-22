@@ -1,4 +1,3 @@
-
 import { MODULE_ID } from "../helpers.mjs";
 
 /**
@@ -14,6 +13,15 @@ import { MODULE_ID } from "../helpers.mjs";
  * Contains many properties to enable functionality as a synthetic document.
  */
 export default class CanvasCard extends foundry.abstract.DataModel {
+  /**
+   * Metadata about canvas cards, useful for label purposes.
+   */
+  static get metadata() {
+    return foundry.documents.Cards.metadata;
+  }
+
+  /* -------------------------------------------------- */
+
   /**
    * @param {Card | Cards} card The document represented by this data model.
    */

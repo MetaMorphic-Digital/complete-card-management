@@ -28,6 +28,10 @@ export function init() {
     objectClass: ccm_canvas.CardObject,
     layerClass: ccm_canvas.CardLayer,
     hudClass: apps.CardHud,
+    sidebar: {
+      applicationClass: apps.CardTab,
+      order: 150,
+    },
   });
   CONFIG.RegionBehavior.dataModels[MoveCardType] = ccm_canvas.MoveCardBehavior;
   CONFIG.RegionBehavior.typeIcons[MoveCardType] = "fa-solid fa-cards";
