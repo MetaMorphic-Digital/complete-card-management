@@ -7,12 +7,19 @@ export const MoveCardType = `${MODULE_ID}.moveCard`;
  */
 
 /**
- * Helper function to produce updates.
+ * A batch of updates for Complete Card Management. The key "cardStackUpdates" is reserved for Cards document updates,
+ * while all other keys are the IDs of parent cards documents.
+ * @typedef {Record<string, Array<{ _id: string } & Record<string, unknown>>>} CCMBatch
+ */
+
+/**
+ * Helper function to produce updates, potentially skipping over locked documents.
  * @param {string} valuePath    - Path on the Card document.
  * @param {(original?: any) => any} valueMod - Callback to transform the fetched value.
  * @param {object} [object] - Object to fetch values from, otherwise it uses each individual card.
  * @param {string} [targetPath] - Path of value to fetch.
  * @param {boolean} [ignoreLock=false] - Whether to allow updating a locked card.
+ * @return {CCMBatch} The updates categorized by parent document ID.
  */
 export function generateUpdates(valuePath, valueMod, { object, targetPath = "", ignoreLock = false } = {}) {
   let fetchedValue;
@@ -41,13 +48,17 @@ export function generateUpdates(valuePath, valueMod, { object, targetPath = "", 
 
 /**
  * Loops through an array of updates matching the ID of cards to an update array for their embedded collection.
- * @param {Record<string, Array<{ _id: string } & Record<string, unknown>>>} processedUpdates
+ * @param {CCMBatch} processedUpdates
+ * @returns {Promise<Document[][]>} The updated documents.
  */
 export async function processUpdates(processedUpdates) {
+  /** @type {DatabaseWriteOperation[]} */
+  const operation = [];
   for (const [id, updates] of Object.entries(processedUpdates)) {
-    if (id === "cardStackUpdates") await Cards.implementation.updateDocuments(updates);
-    else await game.cards.get(id).updateEmbeddedDocuments("Card", updates);
+    if (id === "cardStackUpdates") operation.push({ updates, action: "update", documentName: "Cards" });
+    else operation.push({ updates, action: "update", parent: game.cards.get(id), documentName: "Card" });
   }
+  return foundry.documents.modifyBatch(operation);
 }
 
 /* -------------------------------------------------- */
