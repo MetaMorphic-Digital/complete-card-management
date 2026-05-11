@@ -1,4 +1,3 @@
-
 import { MODULE_ID } from "../helpers.mjs";
 
 /**
@@ -14,6 +13,15 @@ import { MODULE_ID } from "../helpers.mjs";
  * Contains many properties to enable functionality as a synthetic document.
  */
 export default class CanvasCard extends foundry.abstract.DataModel {
+  /**
+   * Metadata about canvas cards, useful for label purposes.
+   */
+  static get metadata() {
+    return foundry.documents.Card.metadata;
+  }
+
+  /* -------------------------------------------------- */
+
   /**
    * @param {Card | Cards} card The document represented by this data model.
    */
@@ -55,6 +63,15 @@ export default class CanvasCard extends foundry.abstract.DataModel {
      * @type {Card | Cards}
      */
     this.card = card;
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Canvas cards cannot directly be created through normal document operations.
+   */
+  static canUserCreate(user) {
+    return false;
   }
 
   /* -------------------------------------------------- */
@@ -236,6 +253,40 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
+   * Visible name of the card.
+   * @type {string}
+   */
+  get name() {
+    return this.card.name;
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
+   * Canvas cards do not support levels.
+   * @type {null}
+   */
+  get level() {
+    return null;
+  }
+
+  /* -------------------------------------------------- */
+
+  /** Cached reference. */
+  #levels;
+
+  /**
+   * Canvas cards do not support levels.
+   * @type {Set<never>}
+   */
+  get levels() {
+    this.#levels ??= new Set();
+    return this.#levels;
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
    * The canvas card layer.
    * @type {CardLayer}
    */
@@ -325,9 +376,9 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    * @param {object} changed  Differential data that was used to update the document.
    * @param {Partial<DatabaseUpdateOperation>} options Additional options which modified the update request.
    */
-  update(changed, options, userId) {
+  update(changed, options = {}, userId) {
     const flatChanges = foundry.utils.flattenObject(changed);
-    if (flatChanges[`flags.${MODULE_ID}.-=${canvas.scene.id}`] === null) {
+    if (flatChanges[`flags.${MODULE_ID}.${canvas.scene.id}`] instanceof foundry.data.operators.ForcedDeletion) {
       return this.delete(options, userId);
     }
     const updates = {};

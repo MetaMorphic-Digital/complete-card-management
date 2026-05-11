@@ -28,6 +28,10 @@ export function init() {
     objectClass: ccm_canvas.CardObject,
     layerClass: ccm_canvas.CardLayer,
     hudClass: apps.CardHud,
+    sidebar: {
+      applicationClass: apps.CardTab,
+      order: 150,
+    },
   });
   CONFIG.RegionBehavior.dataModels[MoveCardType] = ccm_canvas.MoveCardBehavior;
   CONFIG.RegionBehavior.typeIcons[MoveCardType] = "fa-solid fa-cards";
@@ -156,7 +160,7 @@ export function passCards(origin, destination, context) {
     const card = origin.cards.get(changes._id);
     const moduleFlags = foundry.utils.getProperty(card, `flags.${MODULE_ID}`) ?? {};
     for (const sceneId of Object.keys(moduleFlags)) {
-      foundry.utils.setProperty(changes, `flags.${MODULE_ID}.-=${sceneId}`, null);
+      foundry.utils.setProperty(changes, `flags.${MODULE_ID}.${sceneId}`, _del);
     }
     cardCollectionRemovals.add(card.uuid);
   }

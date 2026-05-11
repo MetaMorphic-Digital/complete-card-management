@@ -1,0 +1,15 @@
+<ul class="plain placeable-directory">
+    {{#each groups}}
+    <li class="placeable-group" {{#if parent}}data-parent-id="{{ id }}"{{/if}}>
+        <div class="group-header" data-action="selectGroup">
+            <span class="label">{{ label }}</span>
+            <span class="meta">({{ entries.length }})</span>
+        </div>
+        <ul class="plain placeable-directory">
+            {{#each entries}}
+            {{> (lookup @root "entryPartial") }}
+            {{/each}}
+        </ul>
+    </li>
+    {{/each}}
+</ul>
