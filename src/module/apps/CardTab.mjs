@@ -1,6 +1,6 @@
+import { MODULE_ID, generateUpdates, processUpdates } from "../helpers.mjs";
 import CanvasCard from "../canvas/CanvasCard.mjs";
 import CardFilter from "./CardFilter.mjs";
-import { MODULE_ID } from "../helpers.mjs";
 
 /**
  * The Card and Cards-specific placeables tab.
@@ -92,6 +92,40 @@ export default class CardTab extends foundry.applications.sidebar.tabs.Placeable
     context.filters.findSplice(f => f.action === "filterByLevel");
 
     return context;
+  }
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
+  async _onToggleHidden(event, target) {
+    const canvasCard = this._getPlaceableFromElement(target);
+    if (!canvasCard) return;
+    if (canvas.ready && canvasCard.rendered && canvasCard.object.controlled) {
+      const updates = generateUpdates(
+        `flags.${MODULE_ID}.${canvas.scene.id}.hidden`,
+        o => !o,
+        { object: canvasCard, targetPath: "hidden", ignoreLock: true },
+      );
+      await processUpdates(updates);
+    }
+    else await canvasCard.card.update({ [`flags.${MODULE_ID}.${canvas.scene.id}.hidden`]: !canvasCard.hidden });
+  }
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
+  async _onToggleLocked(event, target) {
+    const canvasCard = this._getPlaceableFromElement(target);
+    if (!canvasCard) return;
+    if (canvas.ready && canvasCard.rendered && canvasCard.object.controlled) {
+      const updates = generateUpdates(
+        `flags.${MODULE_ID}.${canvas.scene.id}.locked`,
+        o => !o,
+        { object: canvasCard, targetPath: "locked", ignoreLock: true },
+      );
+      return processUpdates(updates);
+    }
+    else await canvasCard.card.update({ [`flags.${MODULE_ID}.${canvas.scene.id}.locked`]: !canvasCard.locked });
   }
 
   /* -------------------------------------------------- */

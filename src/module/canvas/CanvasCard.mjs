@@ -68,6 +68,15 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
+   * Canvas cards cannot directly be created through normal document operations.
+   */
+  static canUserCreate(user) {
+    return false;
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
    * Synthetic parent.
    * @type {Scene}
    */
@@ -345,7 +354,7 @@ export default class CanvasCard extends foundry.abstract.DataModel {
    */
   update(changed, options = {}, userId) {
     const flatChanges = foundry.utils.flattenObject(changed);
-    if (flatChanges[`flags.${MODULE_ID}.-=${canvas.scene.id}`] === null) {
+    if (flatChanges[`flags.${MODULE_ID}.${canvas.scene.id}`] instanceof foundry.data.operators.ForcedDeletion) {
       return this.delete(options, userId);
     }
     const updates = {};
