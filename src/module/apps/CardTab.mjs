@@ -39,6 +39,14 @@ export default class CardTab extends foundry.applications.sidebar.tabs.Placeable
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
+  hoverEntry(object, hover) {
+    if (!this.rendered) return;
+    this.element.querySelector(`[data-entry-id="${object.id}"]`)?.classList.toggle("hovered", hover);
+  }
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
   async _prepareDirectoryContext(context, options) {
     const controlled = Object.fromEntries(this.layer.controlled.map(o => [o.id, o]));
     context.directoryPartial = this.constructor.DIRECTORY_PARTIAL;
@@ -46,7 +54,7 @@ export default class CardTab extends foundry.applications.sidebar.tabs.Placeable
     const promises = [];
     for (const entry of canvas.cards?.documentCollection ?? []) {
       if (!entry.visible) continue;
-      const { id } = entry;
+      const id = entry.uuid;
       const css = id in controlled ? "active" : "";
       const ctx = { css, id, label: this._getEntryLabel(entry) };
       promises.push(this._prepareEntry(entry, ctx));
@@ -138,7 +146,6 @@ export default class CardTab extends foundry.applications.sidebar.tabs.Placeable
    */
   _getPlaceableFromElement(element) {
     const { entryId } = element.closest("[data-entry-id]")?.dataset ?? {};
-    const uuid = canvas.scene.getFlag(MODULE_ID, "cardCollection").find(uuid => uuid.endsWith(entryId));
-    return fromUuidSync(uuid)?.canvasCard;
+    return fromUuidSync(entryId)?.canvasCard;
   }
 }

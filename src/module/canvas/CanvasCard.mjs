@@ -263,6 +263,30 @@ export default class CanvasCard extends foundry.abstract.DataModel {
   /* -------------------------------------------------- */
 
   /**
+   * Canvas cards do not support levels.
+   * @type {null}
+   */
+  get level() {
+    return null;
+  }
+
+  /* -------------------------------------------------- */
+
+  /** Cached reference. */
+  #levels;
+
+  /**
+   * Canvas cards do not support levels.
+   * @type {Set<never>}
+   */
+  get levels() {
+    this.#levels ??= new Set();
+    return this.#levels;
+  }
+
+  /* -------------------------------------------------- */
+
+  /**
    * The canvas card layer.
    * @type {CardLayer}
    */
