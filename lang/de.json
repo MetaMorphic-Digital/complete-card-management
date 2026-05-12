@@ -1,12 +1,12 @@
 {
   "CCM": {
     "Sheets": {
-      "Cards": "Complete Card Management Karten Sheet",
-      "Card": "Complete Card Management Karte Sheet",
-      "Deck": "Complete Card Management Deck Sheet",
-      "Hand": "Complete Card Management Hand Sheet",
-      "DockedHand": "Complete Card Management Hand Sheet (Angedockt)",
-      "Pile": "Complete Card Management Stapel Sheet"
+      "Cards": "Complete Card Management Karten Bogen",
+      "Card": "Complete Card Management Karte Bogen",
+      "Deck": "Complete Card Management Deck Bogen",
+      "Hand": "Complete Card Management Hand Bogen",
+      "DockedHand": "Complete Card Management Hand Bogen (Angedockt)",
+      "Pile": "Complete Card Management Stapel Bogen"
     },
     "MoveCardBehavior": {
       "FIELDS": {
@@ -112,7 +112,7 @@
       "FailDraw": "Karte ziehen fehlgeschlagen",
       "FailCanvasDeck": "Die oberste Karte dieses Decks ist schon auf der Szene. Schiebe es in einen anderen Stapel, zum Beispiel mit einer Region, um eine neue Karte zu ziehen.",
       "AlreadyInside": "{card} ist bereits in {stack} enthalten.",
-      "NoCopyCutPaste": "Canvas cards cannot be copied, cut, or pasted.",
+      "NoCopyCutPaste": "Karten auf einer Szene können nicht kopiert, ausgeschnitten oder eingefügt werden.",
       "NoCopyPaste": "Karten auf einer Szene können nicht kopiert und eingefügt werden.",
       "NoCopy": "Karten auf einer Szene können nicht kopiert werden.",
       "DeckOwnerNotFound": "Es wurde kein Besitzer zu diesem Deck gefunden der diese Aktion durchführen kann.",
