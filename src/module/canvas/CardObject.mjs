@@ -553,8 +553,8 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
   /** @inheritdoc */
   _initializeDragLeft(event) {
 
-    /** @type {this[]} */
-    const objects = this.layer.controlled;
+    /** @type {CardObject[]} */
+    const objects = this.document.locked ? [this] : this.layer.controlled;
     const clones = [];
     for (const o of objects) {
       if (!o._canDrag(game.user, event)) continue;
