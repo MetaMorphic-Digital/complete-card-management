@@ -94,7 +94,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
     const updates = generateUpdates(
       this._flagPath + ".hidden",
       o => !o,
-      { object: this.document, targetPath: "hidden", ignoreLock: true },
+      { object: this.document, targetPath: "hidden" },
     );
     await processUpdates(updates);
   }
@@ -107,12 +107,7 @@ export default class CardHud extends api.HandlebarsApplicationMixin(hud.BasePlac
    */
   static async #onToggleLocked(event) {
     event.preventDefault();
-    const updates = generateUpdates(
-      this._flagPath + ".locked",
-      o => !o,
-      { object: this.document, targetPath: "locked", ignoreLock: true },
-    );
-    await processUpdates(updates);
+    await this.card.update({ [this._flagPath + ".locked"]: !this.document.locked });
   }
 
   /**

@@ -99,13 +99,13 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
 
     // Update the to-be-updated objects
     const updates = toUpdate.reduce((cards, card, i) => {
-      const parentSlot = cards[card.id];
+      const parentSlot = cards[card.documentName === "Cards" ? "cardStackUpdates" : card.id];
       const updateData = { _id: card.id };
       foundry.utils.setProperty(updateData, `flags.${MODULE_ID}.${canvas.scene.id}.sort`, target + i);
       if (parentSlot) parentSlot.push(updateData);
       else cards[card.parent.id] = [updateData];
       return cards;
-    }, {});
+    }, { cardStackUpdates: [] });
 
     await processUpdates(updates);
 

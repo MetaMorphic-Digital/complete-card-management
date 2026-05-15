@@ -112,7 +112,7 @@ export default class CardTab extends foundry.applications.sidebar.tabs.Placeable
       const updates = generateUpdates(
         `flags.${MODULE_ID}.${canvas.scene.id}.hidden`,
         o => !o,
-        { object: canvasCard, targetPath: "hidden", ignoreLock: true },
+        { object: canvasCard, targetPath: "hidden" },
       );
       await processUpdates(updates);
     }
