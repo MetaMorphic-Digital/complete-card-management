@@ -5,7 +5,7 @@
     <input type="text" name="elevation" value="{{elevation}}" {{disabled (or locked (and isGamePaused (not isGM)))}}>
   </div>
   <button type="button" class="control-icon" data-action="sort" data-tooltip aria-label="{{localize "HUD.ToFrontOrBack"}}">
-      <i class="fa-solid fa-bring-forward" inert></i>
+    <i class="fa-solid fa-bring-forward" inert></i>
   </button>
   <button type="button" class="control-icon" data-action="rotate" data-tooltip="CCM.CardLayer.HUD.Rotate">
     <img src="{{icons.rotate}}" width="36" height="36">
@@ -17,12 +17,12 @@
 
 <div class="col right">
   <button type="button" class="control-icon {{visibilityClass}}" data-action="visibility"
-      data-tooltip aria-label="{{localize (ifThen visibilityClass "HUD.Show" "HUD.Hide")}}">
-      <i class="fa-solid {{ifThen hidden "fa-eye-slash" "fa-eye"}}" inert></i>
+    data-tooltip aria-label="{{localize (ifThen visibilityClass "HUD.Show" "HUD.Hide")}}">
+    <i class="fa-solid {{ifThen hidden "fa-eye-slash" "fa-eye"}}" inert></i>
   </button>
   <button type="button" class="control-icon {{lockedClass}}" data-action="locked"
-      data-tooltip aria-label="{{localize (ifThen lockedClass "HUD.Unlock" "HUD.Lock")}}">
-      <i class="fa-solid {{ifThen locked "fa-lock" "fa-lock-open"}}" inert></i>
+    data-tooltip aria-label="{{localize (ifThen lockedClass "HUD.Unlock" "HUD.Lock")}}">
+    <i class="fa-solid {{ifThen locked "fa-lock" "fa-lock-open"}}" inert></i>
   </button>
   {{#if isCardStack}}
   {{#if (ne card.type "hand")}}

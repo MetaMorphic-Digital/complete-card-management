@@ -576,6 +576,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
       }
       // Clone the object
       const c = o.clone();
+      c._previewType = "dragging";
       clones.push(c);
 
       // Draw the clone
@@ -585,6 +586,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
       c.draw().then(c => c.visible = true);
     }
     event.interactionData.clones = clones;
+    event.interactionData.cancelOnPause = true;
   }
 
   /* -------------------------------------------------- */
