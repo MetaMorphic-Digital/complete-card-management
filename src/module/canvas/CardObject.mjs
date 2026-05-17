@@ -516,6 +516,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     if (layer.hover === this) layer.hover = null;
     this.destroy({ children: true });
   }
+
   /* -------------------------------------------- */
   /*  Interactivity                               */
   /* -------------------------------------------- */
