@@ -53,7 +53,7 @@ export default class CardTab extends foundry.applications.sidebar.tabs.Placeable
     context.entryPartial = this.constructor.ENTRY_PARTIAL;
     const promises = [];
     for (const entry of canvas.cards?.documentCollection ?? []) {
-      if (!entry.visible) continue;
+      if (!entry.visible || !entry.canvasCard) continue;
       const id = entry.uuid;
       const css = id in controlled ? "active" : "";
       const ctx = { css, id, label: this._getEntryLabel(entry) };
