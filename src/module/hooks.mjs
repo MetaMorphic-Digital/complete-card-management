@@ -240,9 +240,10 @@ export async function updateCard(card, changed, options, userId) {
     obj._onCreate(card.toObject(), options, userId);
     if (card.documentName === "Card") {
       if (card.parent && card.parent.canvasCard) card.parent.canvasCard.refreshFace();
-      synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
+      await synthetic._checkRegionTrigger(moduleFlags[canvas.scene.id], userId, true);
     }
   }
+  ui.placeables.render();
 }
 
 /* -------------------------------------------------- */

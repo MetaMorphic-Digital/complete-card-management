@@ -62,6 +62,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
     const uuids = activeScene.getFlag(MODULE_ID, "cardCollection") ?? [];
     return uuids.reduce((coll, uuid) => {
       const doc = fromUuidSync(uuid);
+      // This method is called before canvas cards are constructed,
+      // so it's possible that drawing will fail and no canvas card will be set.
       if (doc) coll.set(uuid, doc);
       return coll;
     }, new foundry.utils.Collection());

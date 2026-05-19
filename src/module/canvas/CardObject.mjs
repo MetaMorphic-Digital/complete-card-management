@@ -503,6 +503,20 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     });
   }
 
+  /* -------------------------------------------------- */
+
+  /**
+   * As of v14, core has moved the delete logic to CanvasDocument#_onDeleteOperation,
+   * however there is no hook and this works just fine for the performance expected of canvas cards.
+   * @inheritdoc
+   */
+  _onDelete(options, userId) {
+    this.release();
+    const layer = this.layer;
+    if (layer.hover === this) layer.hover = null;
+    this.destroy({ children: true });
+  }
+
   /* -------------------------------------------- */
   /*  Interactivity                               */
   /* -------------------------------------------- */
@@ -576,6 +590,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
       }
       // Clone the object
       const c = o.clone();
+      c._previewType = "dragging";
       clones.push(c);
 
       // Draw the clone
@@ -585,6 +600,7 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
       c.draw().then(c => c.visible = true);
     }
     event.interactionData.clones = clones;
+    event.interactionData.cancelOnPause = true;
   }
 
   /* -------------------------------------------------- */
