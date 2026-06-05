@@ -47,9 +47,6 @@ export async function grid(config, options = {}) {
     if (!options.sceneId) throw new Error("Not viewing a scene to place cards.");
     else throw new Error(`Could not find scene with ID '${options.sceneId}'.`);
   }
-  if (config.from.type !== "deck") {
-    throw new Error("You can only create a grid with cards retrieved from a deck.");
-  }
   if (!scene.canUserModify(game.user, "update")) {
     throw new Error("Placing a card requires permission to update the scene.");
   }
@@ -270,9 +267,6 @@ export async function triangle(config, options = {}) {
   if (!scene) {
     if (!options.sceneId) throw new Error("Not viewing a scene to place cards.");
     else throw new Error(`Could not find scene with ID '${options.sceneId}'.`);
-  }
-  if (config.from.type !== "deck") {
-    throw new Error("You can only create a triangle with cards retrieved from a deck.");
   }
   if (!scene.canUserModify(game.user, "update")) {
     throw new Error("Placing a card requires permission to update the scene.");
