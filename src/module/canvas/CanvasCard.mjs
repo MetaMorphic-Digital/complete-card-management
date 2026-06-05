@@ -513,7 +513,15 @@ export default class CanvasCard extends foundry.abstract.DataModel {
           { name: this.card.name, stack: d.name }),
         );
         this.delete();
-        return this.card.pass(d);
+        return this.card.pass(d, {
+          updateData: {
+            flags: {
+              [MODULE_ID]: {
+                [this.parent.id]: _del,
+              },
+            },
+          },
+        });
       }
     }
 
