@@ -26,6 +26,10 @@
   &.docked {
     left: 250px;
     bottom: 150px;
+    .vtt.game.detached & {
+      left: inherit;
+      bottom: inherit;
+    }
     --sidebar-width: 316px;
     /* expanded sidebar + chat notifications */
     @media (min-width: 1324px) {
