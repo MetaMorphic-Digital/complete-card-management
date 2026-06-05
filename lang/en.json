@@ -98,6 +98,7 @@
       }
     },
     "SceneConfig": {
+      "Legend": "Complete Card Management",
       "CanvasPileLabel": "Canvas Pile",
       "CanvasPileHint": "Treat the entire canvas as a card pile. Regions with the Allocate Card type will override this within their coverage."
     },
