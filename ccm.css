@@ -26,7 +26,12 @@
   &.docked {
     left: 250px;
     bottom: 150px;
-    width: calc(100% - 250px - 312px);
+    --sidebar-width: 316px;
+    /* expanded sidebar + chat notifications */
+    @media (min-width: 1324px) {
+      --sidebar-width: 632px;
+    }
+    width: calc(100% - 288px - var(--sidebar-width));
     [data-application-part="cardList"] {
       .cards {
         list-style: none;
