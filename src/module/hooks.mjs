@@ -229,7 +229,7 @@ export async function updateCard(card, changed, options, userId) {
       card.parent.canvasCard.refreshFace();
     }
   }
-  else if (canvas.scene?.id in moduleFlags) { // New cards
+  else if ((canvas.scene?.id in moduleFlags) && !(moduleFlags[canvas.scene.id] instanceof foundry.data.operators.ForcedDeletion)) { // New cards
     if (card.drawn && card.isHome) {
       ui.notifications.error("CCM.Warning.CardDrawn", { localize: true });
       return;
@@ -434,9 +434,9 @@ export function renderSceneConfig(app, html, context, options) {
     localize: true,
   });
 
-  const basicOptions = html.querySelector(".tab[data-group=\"ambience\"][data-tab=\"basic\"]");
+  const basicOptions = html.querySelector(".tab[data-tab=\"misc\"]");
 
-  basicOptions.append(group);
+  basicOptions.insertAdjacentHTML("beforeend", `<fieldset><legend>${_loc("CCM.SceneConfig.Legend")}</legend>${group.outerHTML}</fieldset>`);
 
   app.setPosition();
 }
