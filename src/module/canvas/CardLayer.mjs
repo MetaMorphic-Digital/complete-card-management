@@ -3,7 +3,10 @@ import { gridDialog, triangleDialog } from "../api/layout.mjs";
 import CanvasCard from "./CanvasCard.mjs";
 import CardObject from "./CardObject.mjs";
 
-/** @import {PlaceablesLayerOptions} from "@client/canvas/layers/_types.mjs" */
+/**
+ * @import {Card, Cards} from "@client/documents/_module.mjs";
+ * @import {PlaceablesLayerOptions} from "@client/canvas/layers/_types.mjs"
+ */
 
 /**
  * The main Card layer.
@@ -55,7 +58,10 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
   /* -------------------------------------------------- */
 
   // TODO: investigate if there's caching performance improvements
-  /** @inheritdoc */
+  /**
+   * @type {foundry.utils.Collection<string, Card | Cards>}
+   * @inheritdoc
+   */
   get documentCollection() {
     const activeScene = canvas.scene;
     if (!activeScene) return null;
@@ -82,8 +88,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
-  async _sendToBackOrBringToFront(front) {
-    if (!this.controlled.length) return true;
+  _sendToBackOrBringToFront(front) {
+    if (!this.controlled.length) return false;
 
     // Determine to-be-updated objects and the minimum/maximum sort value of the other objects
     const toUpdate = [];
@@ -93,7 +99,8 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
       if (document.canvasCard?.object?.controlled && !document.locked) toUpdate.push(document);
       else target = (front ? Math.max : Math.min)(target, document.canvasCard.sort);
     }
-    if (!Number.isFinite(target)) return true;
+    if (!Number.isFinite(target)) return false;
+    if (toUpdate.every(front ? d => d.canvasCard.sort > target : d => d.canvasCard.sort < target)) return false;
     target += (front ? 1 : -toUpdate.length);
 
     // Sort the to-be-updated objects by sort in ascending order
@@ -109,7 +116,7 @@ export default class CardLayer extends foundry.canvas.layers.PlaceablesLayer {
       return cards;
     }, { cardStackUpdates: [] });
 
-    await processUpdates(updates);
+    processUpdates(updates);
 
     return true;
   }
