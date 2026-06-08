@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.1
+
+- Fixed an issue where despite being presented as valid options, grid and triangle layouts could not be made from a hand or pile
+- Fixed sizing of docked hand and styling when detached
+- Re-added the "scene pile" setting to the v14 scene config.
+
 ## 3.0.0 Foundry v14
 
 - Increased minimum version to Foundry v13
