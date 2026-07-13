@@ -6,7 +6,8 @@ import { addCard, removeCard } from "./patches.mjs";
 import CCM_CONFIG from "./config.mjs";
 
 /**
- * @import {Card, Cards, Scene} from "@client/documents/_module.mjs";
+ * @import { Card, Cards, Scene } from "@client/documents/_module.mjs";
+ * @import { ContextMenuEntry } from "@client/applications/ux/context-menu.mjs";
  */
 
 /**
@@ -198,7 +199,8 @@ export function passCards(origin, destination, context) {
  */
 export async function createCard(card, options, userId) {
   if (!canvas.scene) return;
-  if (card.getFlag(MODULE_ID, canvas.scene.id)) {
+  const flagData = card.getFlag(MODULE_ID, canvas.scene.id);
+  if (foundry.utils.isPlainObject(flagData)) {
     const synthetic = new ccm_canvas.CanvasCard(card);
     card.canvasCard = synthetic;
     const obj = (synthetic._object = canvas.cards.createObject(synthetic));
@@ -220,7 +222,7 @@ export async function createCard(card, options, userId) {
  * @param {string} userId                                      The ID of the User who triggered the update workflow.
  */
 export async function updateCard(card, changed, options, userId) {
-  const moduleFlags = foundry.utils.getProperty(changed, `flags.${MODULE_ID}`) ?? {};
+  const moduleFlags = foundry.utils.getProperty(card, `flags.${MODULE_ID}`) ?? {};
   /** @type {ccm_canvas.CanvasCard} */
   let synthetic = card.canvasCard;
   if (synthetic && (synthetic.parent === canvas.scene)) { // A synthetic card exists & exists on the canvas
@@ -386,9 +388,9 @@ export function renderPlayers(app, html, context, options) {
  */
 export function getUserContextOptions(html, contextOptions) {
   contextOptions.push({
-    name: _loc("CCM.UserConfig.OpenHand"),
+    label: _loc("CCM.UserConfig.OpenHand"),
     icon: "<i class=\"fa-solid fa-fw fa-cards\"></i>",
-    condition: (li) => {
+    visible: (li) => {
       const user = game.users.get(li.dataset.userId);
       const handId = user.getFlag(MODULE_ID, "playerHand");
       return game.cards.get(handId)?.visible;

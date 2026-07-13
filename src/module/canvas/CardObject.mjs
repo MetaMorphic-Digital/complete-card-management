@@ -603,6 +603,24 @@ export default class CardObject extends foundry.canvas.placeables.PlaceableObjec
     event.interactionData.cancelOnPause = true;
   }
 
+  /* -------------------------------------------- */
+
+  /** @inheritdoc */
+  _onDragStart() {
+    if (!this._original) return;
+    this._original.renderFlags.set({ refreshState: true });
+    // Removed sheet _preview handling because the sheets are not subclasses of PlaceableConfig
+  }
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
+  _onDragEnd() {
+    if (!this._original) return;
+    this._original.renderFlags.set({ refreshState: true });
+    // Removed sheet _preview handling because the sheets are not subclasses of PlaceableConfig
+  }
+
   /* -------------------------------------------------- */
 
   /** @inheritdoc */
