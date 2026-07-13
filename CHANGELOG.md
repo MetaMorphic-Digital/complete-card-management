@@ -1,15 +1,21 @@
 # Changelog
 
+## 3.0.2
+
+- Increased minimum version to v14.364
+- Resolved deprecations for context menus.
+- Resolved bugs related to dragging from non-deck locked stacks.
+
 ## 3.0.1
 
-- Fixed an issue where despite being presented as valid options, grid and triangle layouts could not be made from a hand or pile
-- Fixed sizing of docked hand and styling when detached
+- Fixed an issue where despite being presented as valid options, grid and triangle layouts could not be made from a hand or pile.
+- Fixed sizing of docked hand and styling when detached.
 - Re-added the "scene pile" setting to the v14 scene config.
 
 ## 3.0.0 Foundry v14
 
-- Increased minimum version to Foundry v13
-- Many internal changes to achieve compatibility
+- Increased minimum version to Foundry v14
+- Many internal changes to achieve compatibility.
 
 ## 2.1.2
 - Resolved ghost card issue from dropping a card on the canvas while it's set to function as a pile.
@@ -19,49 +25,49 @@
 - Added context menu to change visible face of cards in the Docked sheet.
 
 ## 2.1.1
-- Added "Draw" button to the docked hand sheet header controls
+- Added "Draw" button to the docked hand sheet header controls.
 - Removed nonfunctional "Gallery View" from the docked hand sheet header controls
 - Improved handling of defaultWidth and defaultHeight layout API parameters.
 
 ## 2.1.0
-- Increased system minimum to v13.346
-- Added a header button to the cards sheets switches the sheet to a gallery-style display of card images
-- Fixed core i18n usage
-- Fixed image display for cards with their backs up
-- Privated various HUD actions to avoid API interaction confusion
+- Increased minimum version to v13.346
+- Added a header button to the cards sheets switches the sheet to a gallery-style display of card images.
+- Fixed core i18n usage.
+- Fixed image display for cards with their backs up.
+- Privated various HUD actions to avoid API interaction confusion.
 - Expanded API to add `gridDialog` and `triangleDialog` alongside card layer buttons to use them.
 
 ## 2.0.6
-- Reintroduced card count in the players list
+- Reintroduced card count in the players list.
 
 ## 2.0.5
-- Added "View Card" button to decks
-- Privated various sheet actions to avoid API interaction confusion
+- Added "View Card" button to decks.
+- Privated various sheet actions to avoid API interaction confusion.
 
 ## 2.0.4
-- v13.340 compatibility
+- v13.340 compatibility.
 - Added socket to allow players to place individual cards.
 - Removed overrides for core pass, deal, reset, play, and draw dialogs.
 
 ## 2.0.3
-- v13.339+ compatibility
-- Updated internal type import handling
-- Fixed ghost card bug (#136)
-- Various i18n fixes
+- v13.339+ compatibility.
+- Updated internal type import handling.
+- Fixed ghost card bug. (#136)
+- Various i18n fixes.
 
 ## 2.0.2
-- Fixed errors that would occur if no scene was active on the canvas
-- Fixed cards sheet drag and drop for v13.336+
+- Fixed errors that would occur if no scene was active on the canvas.
+- Fixed cards sheet drag and drop for v13.336+.
 
 ## 2.0.1
 
-- Migrated i18n usage to rely more on core, fixing some broken strings in the process
-- Added German support
+- Migrated i18n usage to rely more on core, fixing some broken strings in the process.
+- Added German support.
 
 ## 2.0.0 Foundry v13
 
-- Increased minimum version to Foundry v13
-- Many internal changes to achieve compatibility
+- Increased minimum version to Foundry v13.
+- Many internal changes to achieve compatibility.
 
 ## 1.0.2
 
