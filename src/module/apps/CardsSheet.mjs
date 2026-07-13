@@ -689,13 +689,13 @@ export class DockedHandSheet extends HandSheet {
 
     return [
       {
-        name: "CCM.CardSheet.Flip",
-        icon: "<i class=\"fa-solid fa-fw fa-arrows-up-down\"></i>",
+        label: "CCM.CardSheet.Flip",
+        icon: "fa-solid fa-arrows-up-down",
         callback: li => getCard(li).flip(),
       }, {
-        name: "CARDS.ACTIONS.NextFace",
-        icon: "<i class=\"fa-solid fa-fw fa-arrow-right\"></i>",
-        condition: li => {
+        label: "CARDS.ACTIONS.NextFace",
+        icon: "fa-solid fa-arrow-right",
+        visible: li => {
           const card = getCard(li);
           return (card.face !== null) && (card.face < card.faces.length - 1);
         },
@@ -705,9 +705,9 @@ export class DockedHandSheet extends HandSheet {
         },
 
       }, {
-        name: "CARDS.ACTIONS.PreviousFace",
-        icon: "<i class=\"fa-solid fa-fw fa-arrow-left\"></i>",
-        condition: li => getCard(li).face > 0,
+        label: "CARDS.ACTIONS.PreviousFace",
+        icon: "fa-solid fa-arrow-left",
+        visible: li => getCard(li).face > 0,
         callback: li => {
           const card = getCard(li);
           card.update({ face: card.face - 1 });
