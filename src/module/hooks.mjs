@@ -389,7 +389,7 @@ export function renderPlayers(app, html, context, options) {
 export function getUserContextOptions(html, contextOptions) {
   contextOptions.push({
     label: _loc("CCM.UserConfig.OpenHand"),
-    icon: "<i class=\"fa-solid fa-fw fa-cards\"></i>",
+    icon: "fa-solid fa-cards",
     visible: (li) => {
       const user = game.users.get(li.dataset.userId);
       const handId = user.getFlag(MODULE_ID, "playerHand");
@@ -495,13 +495,13 @@ export async function createScene(scene, options, userId) {
 
 /**
  * Add additional context options to cards in cards directory.
- * @param {CardsDirectory} app    The sidebar html.
- * @param {object[]} options      The array of context menu options.
+ * @param {CardsDirectory} app          The sidebar html.
+ * @param {ContextMenuEntry[]} options  The array of context menu options.
  */
 export function addCardsDirectoryOptions(app, options) {
   options.push({
-    name: "CCM.CardSheet.ScryingContext",
-    icon: "<i class='fa-solid fa-eye'></i>",
+    label: "CCM.CardSheet.ScryingContext",
+    icon: "fa-solid fa-eye",
     callback: async (li) => {
       const id = li.dataset.entryId;
       const cards = game.cards.get(id);
