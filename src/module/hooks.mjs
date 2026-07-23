@@ -6,6 +6,7 @@ import { addCard, removeCard } from "./patches.mjs";
 import CCM_CONFIG from "./config.mjs";
 
 /**
+ * @import { CardData } from "@common/documents/_types.mjs";
  * @import { Card, Cards, Scene } from "@client/documents/_module.mjs";
  * @import { ContextMenuEntry } from "@client/applications/ux/context-menu.mjs";
  */
@@ -146,14 +147,14 @@ async function handleCardStackDrop(canvas, data) {
  * A hook event that fires when Cards are passed from one stack to another.
  * @event passCards
  * @category Cards
- * @param {Cards} origin                The origin Cards document.
- * @param {Cards} destination           The destination Cards document.
- * @param {object} context              Additional context which describes the operation.
- * @param {string} context.action       The action name being performed, i.e. "pass", "play", "discard", "draw".
- * @param {object[]} context.toCreate     Card creation operations to be performed in the destination Cards document.
- * @param {object[]} context.toUpdate     Card update operations to be performed in the destination Cards document.
- * @param {object[]} context.fromUpdate   Card update operations to be performed in the origin Cards document.
- * @param {object[]} context.fromDelete   Card deletion operations to be performed in the origin Cards document.
+ * @param {Cards} origin                    The origin Cards document.
+ * @param {Cards} destination               The destination Cards document.
+ * @param {object} context                  Additional context which describes the operation.
+ * @param {string} context.action           The action name being performed, i.e. "pass", "play", "discard", "draw".
+ * @param {CardData[]} context.toCreate     Card creation operations to be performed in the destination Cards document.
+ * @param {CardData[]} context.toUpdate     Card update operations to be performed in the destination Cards document.
+ * @param {CardData[]} context.fromUpdate   Card update operations to be performed in the origin Cards document.
+ * @param {CardData[]} context.fromDelete   Card deletion operations to be performed in the origin Cards document.
  */
 export function passCards(origin, destination, context) {
   const cardCollectionRemovals = new Set(context.fromDelete.map(id => origin.cards.get(id).uuid));
@@ -165,6 +166,8 @@ export function passCards(origin, destination, context) {
     }
     cardCollectionRemovals.add(card.uuid);
   }
+  // Deletions are not properly performed by updateData passed to Card#pass
+  for (const data of context.toCreate) data.flags = foundry.utils.mergeObject({}, data.flags, { applyOperators: true });
   if (!canvas.scene) {
     console.warn("Not viewing a scene to handle Card Layer updates");
     return;

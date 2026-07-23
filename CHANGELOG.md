@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.3
+
+- Increased minimum version to v14.365
+- Fixed bug related to passing between card stacks on the canvas.
+
 ## 3.0.2
 
 - Increased minimum version to v14.364
